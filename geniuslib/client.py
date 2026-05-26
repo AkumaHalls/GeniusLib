@@ -4,6 +4,7 @@
 
 import asyncio
 import logging
+import warnings
 from enum import Enum
 
 from itertools import cycle
@@ -401,10 +402,10 @@ class Client:
     def login_with_keys(self, *keys: str) -> None:
         """Creates an HTTP connection ready for use with the keys you provide.
 
-        .. deprecated:: v2.3.0
-            This function has been deemed deprecated to allow
-            asyncio to clean up the async structures. Please use :func:`Client.login_with_tokens`
-            instead.
+        .. deprecated:: v4.1.0
+            This function is deprecated and will be removed in v5.0.0.
+            It uses a blocking ``run_until_complete`` call which is incompatible
+            with modern async contexts. Use :func:`Client.login_with_tokens` instead.
 
         Parameters
         ----------
@@ -413,6 +414,12 @@ class Client:
 
 
         """
+        warnings.warn(
+            "login_with_keys is deprecated and will be removed in v5.0.0. "
+            "Use login_with_tokens (async) instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.correct_key_count = len(keys)
         self.http = http = self._create_client(None, None)
         http._keys = keys

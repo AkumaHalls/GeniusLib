@@ -10,7 +10,7 @@ from .enums import BuildingType
 
 import re
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from client import Client
 
@@ -103,7 +103,8 @@ class Boosts:
         "helper_cooldown",
     )
 
-    def __init__(self, data: dict = {}):
+    def __init__(self, data: Optional[dict] = None):
+        data = data or {}
         self.builder_boost: TimeDelta = TimeDelta(seconds=data.get("builder_boost", 0))
         self.lab_boost: TimeDelta = TimeDelta(seconds=data.get("lab_boost", 0))
         self.clocktower_boost: TimeDelta = TimeDelta(seconds=data.get("clocktower_boost", 0))

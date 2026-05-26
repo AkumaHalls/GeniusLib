@@ -218,6 +218,11 @@ class HTTPClient:
         self.cache = cache_max_size and FIFO(cache_max_size)
         self._cache_remove_count = 0
         self.stats = stats_max_size and HTTPStats(max_size=stats_max_size)
+        self.total_requests = 0
+        self.total_errors = 0
+        self.total_rate_limits = 0
+        self.total_retries = 0
+        self._last_error: Optional[str] = None
         if base_url and isinstance(base_url, str) and len(base_url) > 0:
             if base_url.endswith("/"):
                 base_url = base_url[:-1]
@@ -237,6 +242,18 @@ class HTTPClient:
 
         self.initialising_keys = asyncio.Event()
         self.initialising_keys.set()
+
+    @property
+    def health_stats(self) -> dict:
+        return {
+            "total_requests": self.total_requests,
+            "total_errors": self.total_errors,
+            "total_rate_limits": self.total_rate_limits,
+            "total_retries": self.total_retries,
+            "last_error": self._last_error,
+            "average_latency": self.stats.get_mixed_average() if self.stats else None,
+            "per_endpoint": self.stats.get_all_average() if self.stats else None,
+        }
 
     def _cache_remove(self, key):
         try:
@@ -301,6 +318,9 @@ class HTTPClient:
                 pass
         request_kwargs = {k: v for k, v in kwargs.items() if k in self.aiohttp_request_kwargs}
         for tries in range(5):
+            self.total_requests += 1
+            if tries > 0:
+                self.total_retries += 1
             try:
                 async with self.__lock, self.__throttle:
                     start = perf_counter()
@@ -354,6 +374,8 @@ class HTTPClient:
                         if response.status == 404:
                             raise NotFound(response, data)
                         if response.status == 429:
+                            self.total_rate_limits += 1
+                            self._last_error = f"rate_limited:{route.stats_key}"
                             LOG.error(
                                     "We have been rate-limited by the API. "
                                     "Reconsider the number of requests you are allowing per second."
@@ -377,6 +399,8 @@ class HTTPClient:
                         raise HTTPException(response, data)
 
             except asyncio.TimeoutError:
+                self.total_errors += 1
+                self._last_error = f"timeout:{route.stats_key}"
                 # api timed out, retry again
                 if tries > 3:
                     raise GatewayError("The API timed out waiting for the request.")
@@ -385,6 +409,8 @@ class HTTPClient:
                 continue
 
         else:
+            self.total_errors += 1
+            self._last_error = f"gateway_error:{route.stats_key}:{response.status}"
             if response.status in (500, 502, 504):
                 if isinstance(data, str):
                     # gateway errors return HTML

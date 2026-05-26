@@ -2,7 +2,7 @@
 # Based on coc.py v4.0.0 (MIT License, copyright (c) 2019-2020 mathsman5133)
 # (c) 2026 AkumaHalls / ClashGenius
 
-__version__ = "4.0.0"
+__version__ = "4.1.0"
 
 from .abc import BasePlayer, BaseClan
 from .buildings import (
@@ -100,5 +100,39 @@ from .war_analytics import (
     count_missed_attacks,
     get_attack_order,
     get_war_result,
+)
+from .raid_analytics import (
+    total_member_attack_stars,
+    total_member_destruction,
+    best_raid_attack,
+    average_attack_destruction,
+    count_missed_raid_attacks,
+    get_inactive_raid_members,
+    member_raid_contribution,
+    district_attack_breakdown,
+    get_raid_cleanup_attacks,
+    get_wasted_attacks,
+    clan_offensive_stats,
+    clan_defensive_stats,
+    raid_summary,
+)
+from .formatters import (
+    town_hall_emoji,
+    format_th,
+    format_role,
+    format_league,
+    format_builder_base_league,
+    format_trophies,
+    format_player_brief,
+    format_member_brief,
+    format_clan_brief,
+    format_clan_detailed,
+    format_war_state,
+    format_war_result,
+    format_war_score,
+    format_attack,
+    format_percentage,
+    format_number,
+    format_raid_brief,
 )
 from . import utils

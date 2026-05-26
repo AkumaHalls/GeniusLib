@@ -78,6 +78,45 @@ get_cleanup_attacks(war, tag)         # ataques que não renderam estrelas novas
 get_war_result(war, tag)              # 'win', 'lose', 'tie' ou 'ongoing'
 ```
 
+### Raid Analytics (novo em v4.1.0)
+
+```python
+from geniuslib.raid_analytics import *
+
+raid_summary(raid_entry)                        # visão completa: ofensivo, defensivo, ataques perdidos, inativos
+clan_offensive_stats(raid_entry)                # total loot, ataques, distritos, eficiência
+clan_defensive_stats(raid_entry)                # loot perdido, ataques recebidos, distritos perdidos
+count_missed_raid_attacks(raid_entry, tag)      # ataques não utilizados no raid
+get_inactive_raid_members(raid_entry)           # membros que não atacaram
+get_raid_cleanup_attacks(raid_entry, tag)       # ataques em distritos já 100% destruídos
+get_wasted_attacks(raid_entry, tag)             # ataques com 0 estrelas e <30% destruição
+district_attack_breakdown(district)             # contagem de ataques por estrelas (3/2/1/0)
+member_raid_contribution(member)               # % de contribuição do membro no loot total
+best_raid_attack(member)                       # melhor ataque do membro (por estrelas + destruição)
+average_attack_destruction(member)             # destruição média por ataque
+```
+
+### Formatters (novo em v4.1.0)
+
+```python
+from geniuslib.formatters import *
+
+format_th(level)                    # "🔑 TH16" com emoji por nível (1-17)
+format_trophies(trophies)           # "🏆 5.000" com separador de milhar
+format_role(role)                   # "👑 Líder" traduzido (Líder, Colíder, Ancião, Membro)
+format_player_brief(player)         # "Nome (#TAG) | 🔑 TH16 | 🏆 5.000"
+format_member_brief(member)         # "👑 Nome | 🔑 TH16 | 🏆 5.000"
+format_clan_brief(clan)            # "Nome (#TAG) | Nível 10 | 45/50"
+format_clan_detailed(clan)         # multi-linha com troféus e VS
+format_war_state(state)            # "⚔️ Em guerra" / "❌ Fora de guerra"
+format_war_result(war, tag)        # "✅ Vitória" / "❌ Derrota" / "🏈 Empate"
+format_war_score(war, tag)         # "45 ⭐ 30"
+format_attack(stars, destruction)  # "⭐⭐☆ 85.3%"
+format_percentage(value)           # "85.3%"
+format_number(value)               # "15.000" (separador de milhar)
+format_raid_brief(raid)            # resumo do raid em uma linha
+```
+
 ### Cache TTL
 
 ```python
@@ -123,11 +162,56 @@ VillageType.home           # 'home'
 WarResult.win              # 'win'
 ```
 
+### HTTP Health Stats (novo em v4.1.0)
+
+```python
+# Acesse as estatísticas de saúde da API via http.health_stats
+stats = client.http.health_stats
+# {
+#   "total_requests": 1523,
+#   "total_errors": 12,
+#   "total_rate_limits": 3,
+#   "total_retries": 8,
+#   "avg_latency_ms": 245.6
+# }
+```
+
+### Client Events (novo em v4.1.0)
+
+O `EventsClient` agora aceita `raid_clan_tag` configurável (em vez do `#2PP` fixo):
+
+```python
+events = EventsClient(client, raid_clan_tag="#ABC123")
+```
+
+### Depreciação
+
+`login_with_keys()` agora emite `DeprecationWarning` — use `login()` com email/senha.
+
+---
+
 ## 🧠 Por que GeniusLib?
 
 Diferente de outras bibliotecas, a GeniusLib já inclui **todos os campos da API** — sem precisar de `raw_attribute` pra acessar dados como `war_opted_in`. Além disso, oferece utilitários embutidos como calculadoras de troféus/medalhas, analytics de guerra e cache TTL — tudo pronto pra usar.
 
 Foi feita sob medida para o ecossistema **ClashGenius**.
+
+## 📄 Changelog
+
+### v4.1.0 (atual)
+
+- **Raid Analytics** — novo módulo `geniuslib.raid_analytics` com 15 funções para análise de Capital Raids
+- **Formatters** — novo módulo `geniuslib.formatters` com 16 funções de formatação para Discord embeds
+- **Health Stats** — propriedade `health_stats` em `HTTPClient` com contadores de requests, erros, rate limits, retries e latência
+- **Raid Poller corrigido** — `EventsClient._raid_poller()` agora aceita `raid_clan_tag` em vez do `#2PP` hardcoded
+- **Depreciação** — `login_with_keys()` agora emite `DeprecationWarning`
+
+### v4.0.0
+
+- Versão inicial baseada em coc.py v4.0.0
+- War Analytics, calculadoras, cache TTL, enums
+
+---
 
 ## 📄 Licença
 

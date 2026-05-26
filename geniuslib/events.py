@@ -419,6 +419,7 @@ class EventsClient(Client):
 
         self.is_cwl_active = options.pop("cwl_active", True)
         self.check_cwl_prep = options.pop("check_cwl_prep", False)
+        self.raid_clan_tag = options.pop("raid_clan_tag", None)
 
         self._locks = {}
 
@@ -782,7 +783,9 @@ class EventsClient(Client):
             "player": self._player_updater,
             "war": self._war_updater,
             "maintenance": self._maintenance_poller,
-            "season": self._end_of_season_poller
+            "season": self._end_of_season_poller,
+            "raid_weekend": self._raid_poller,
+            "clan_games": self._clan_games_poller
         }
 
         for name, value in self._updater_tasks.items():
@@ -793,11 +796,18 @@ class EventsClient(Client):
 
     async def _raid_poller(self):
         # pylint: disable=broad-except, protected-access
+        if not self.raid_clan_tag:
+            LOG.warning("raid_clan_tag not set. Raid weekend events disabled.")
+            return
         try:
             age = 0
             while self.loop.is_running():
                 try:
-                    [raid_log_entry] = await self.get_raid_log("#2PP", limit=1)
+                    raid_logs = await self.get_raid_log(self.raid_clan_tag, limit=1)
+                    if not raid_logs:
+                        await asyncio.sleep(DEFAULT_SLEEP)
+                        continue
+                    [raid_log_entry] = raid_logs
                     raid_log_entry: geniuslib.raid.RaidLogEntry
                 except Maintenance:
                     await asyncio.sleep(15)
@@ -850,7 +860,7 @@ class EventsClient(Client):
             pass
         except (Exception, BaseException) as exception:
             self.dispatch("event_error", exception)
-            return await self._end_of_season_poller()
+            return await self._clan_games_poller()
 
     async def _maintenance_poller(self):
         # pylint: disable=broad-except, protected-access
