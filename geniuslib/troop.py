@@ -150,6 +150,10 @@ class Troop(LeveledUnit):
             if self.is_super_troop:
                 self.base_troop_id: int = static_data["super_troop"]["original_id"]
                 self.base_troop_minimum_level: int = static_data["super_troop"]["original_min_level"]
+        else:
+            self.is_super_troop: bool = False
+            self.is_seasonal: bool = False
+            self.is_siege_machine: bool = False
 
         self.is_home_base: bool = self.village == VillageType.home
         self.is_builder_base: bool = self.village == VillageType.builder_base
