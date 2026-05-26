@@ -131,7 +131,12 @@ class Hero(LeveledUnit):
             return
 
         start_level = self._static_data["levels"][0]["level"]
-        level_data = self._static_data["levels"][self._level - start_level]
+        levels = self._static_data["levels"]
+        level_idx = self._level - start_level
+        if level_idx < 0 or level_idx >= len(levels):
+            return
+
+        level_data = levels[level_idx]
 
         self.hitpoints: int = level_data["hitpoints"]
         self.dps: int = level_data["dps"]
@@ -254,7 +259,12 @@ class Pet(LeveledUnit):
         if not self._static_data:
             return
 
-        level_data = self._static_data["levels"][self._level - 1]
+        levels = self._static_data["levels"]
+        level_idx = self._level - 1
+        if level_idx < 0 or level_idx >= len(levels):
+            return
+
+        level_data = levels[level_idx]
 
         self.hitpoints: int = level_data["hitpoints"]
         self.dps: int = level_data["dps"]
@@ -366,7 +376,12 @@ class Equipment(LeveledUnit):
         if not self._static_data:
             return
 
-        level_data = self._static_data["levels"][self._level - 1]
+        levels = self._static_data["levels"]
+        level_idx = self._level - 1
+        if level_idx < 0 or level_idx >= len(levels):
+            return
+
+        level_data = levels[level_idx]
 
         self.hitpoints: int = level_data["hitpoints"]
         self.dps: int = level_data["dps"]
