@@ -99,6 +99,30 @@ estimate_trophy_change(3, 100, 5000, 4900)         # estimativa de troféus ganh
 estimate_raid_medals(50000, 6, 4, 'Gold I')        # estimativa de medalhas de raid
 ```
 
+### Atributos de Tropas & Feitiços
+
+Nem todos os atributos estão disponíveis em todos os objetos. Por exemplo, `is_home_base` existe em `Troop`/`Hero`, mas **não** em `Spell`. Prefira usar `village` (disponível em todos):
+
+```python
+# ✅ Funciona em Troop, Spell, Hero, Pet, Equipment
+t.village == coc.VillageType.home
+
+# ❌ Pode falhar em Spell (não tem is_home_base)
+t.is_home_base
+```
+
+A biblioteca trata graciosamente unidades desconhecidas (novas tropas/feitiços não incluídos no JSON de dados estáticos), definindo `is_super_troop`, `is_seasonal`, `is_siege_machine` como `False` por padrão.
+
+### Enums Úteis
+
+```python
+from geniuslib.enums import VillageType, WarState, WarResult, Role, SeasonResult
+
+WarState.war_ended         # 'warEnded'
+VillageType.home           # 'home'
+WarResult.win              # 'win'
+```
+
 ## 🧠 Por que GeniusLib?
 
 Diferente de outras bibliotecas, a GeniusLib já inclui **todos os campos da API** — sem precisar de `raw_attribute` pra acessar dados como `war_opted_in`. Além disso, oferece utilitários embutidos como calculadoras de troféus/medalhas, analytics de guerra e cache TTL — tudo pronto pra usar.
