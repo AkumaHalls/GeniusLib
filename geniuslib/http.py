@@ -275,6 +275,8 @@ class HTTPClient:
             await self.__session.close()
 
     async def request(self, route, **kwargs):
+        await self.initialising_keys.wait()
+
         method = route.method
         url = route.url
 
