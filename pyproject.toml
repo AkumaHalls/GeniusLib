@@ -33,5 +33,4 @@ packages = ["geniuslib", "geniuslib.ext.discordlinks", "geniuslib.static", "geni
 include-package-data = true
 
 [tool.setuptools.package-data]
-geniuslib = ["events.pyi"]
-geniuslib.static = ["*"]
+geniuslib = ["events.pyi", "static/*"]
