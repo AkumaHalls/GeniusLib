@@ -10,10 +10,17 @@
 - 🏰 **Capital Raid** — logs de ataque, defesa, distritos e members
 - 🔢 **Tag Encode/Decode** — converta tags base-14 para inteiros e vice-versa
 - 📊 **War Analytics** — `new_stars`, `best_attack`, `best_defense`, `missed_attacks`, `cleanup_attacks`
+- 🔗 **Middleware Pipeline** — intercepte e transforme requests/responses HTTP
+- 🖥️ **CLI embutido** — consulte players, clans, wars e raids pelo terminal
+- 📈 **Upgrade Tracker** — estime custo e tempo de upgrades por TH
+- 📤 **Exportador** — exporte dados para JSON, CSV ou dict
+- ⚖️ **Comparador** — compare dois players ou clãs lado a lado
 - 🏆 **Calculadoras** — estimativa de troféus, medalhas de raid, troféus lendaliga
 - 🕒 **Season Math** — season ID, start/end, league trophies
 - 🧩 **Fácil integração** — funciona com `discord.py` e outros frameworks
 - 🗃️ **Cache TTL** — cache com expiração automática e sweep de fundo
+- ✅ **Testes** — suite completa com 80 testes pytest
+- 📚 **Documentação** — Sphinx docs com referência completa da API
 
 ## 📦 Instalação
 
@@ -184,6 +191,82 @@ O `EventsClient` agora aceita `raid_clan_tag` configurável (em vez do `#2PP` fi
 events = EventsClient(client, raid_clan_tag="#ABC123")
 ```
 
+### Middleware Pipeline (novo em v4.2.0)
+
+```python
+from geniuslib.middleware import Middleware, middleware, request_logger
+
+client.http.add_middleware(request_logger)
+
+@middleware("response")
+async def my_middleware(resp):
+    resp.data["processed"] = True
+    return resp
+
+client.http.add_middleware(my_middleware)
+```
+
+### CLI (novo em v4.2.0)
+
+```sh
+python -m geniuslib.cli player #TAG
+python -m geniuslib.cli clan #TAG
+python -m geniuslib.cli war #TAG
+python -m geniuslib.cli raid #TAG
+python -m geniuslib.cli search "nome do clã"
+python -m geniuslib.cli export #TAG --format csv
+python -m geniuslib.cli compare #TAG1 #TAG2
+```
+
+### Upgrade Tracker (novo em v4.2.0)
+
+```python
+from geniuslib.upgrade_tracker import estimate_upgrade_cost, get_th_upgrade_summary
+
+summary = get_th_upgrade_summary(16)
+print(summary.total_gold)        # custo total em ouro
+print(summary.total_elixir)      # custo total em elixir
+print(summary.total_de)          # custo total em elixir negro
+print(summary.total_time_days)   # tempo total em dias
+```
+
+### Exportador (novo em v4.2.0)
+
+```python
+from geniuslib.exporter import to_json, to_csv
+
+player = await client.get_player("#TAG")
+print(to_json(player))                # JSON pretty-printed
+print(to_csv(player, "player"))       # CSV formatado
+```
+
+### Comparador (novo em v4.2.0)
+
+```python
+from geniuslib.comparer import compare_players, compare_clans
+
+result = compare_players(player1, player2)
+print(result["left"]["trophies"])    # troféus do jogador 1
+print(result["right"]["trophies"])   # troféus do jogador 2
+print(result["diff"]["trophies"])    # diferença
+```
+
+### Testes (novo em v4.2.0)
+
+```sh
+pip install pytest pytest-asyncio
+python -m pytest tests/ -v
+```
+
+### Documentação (novo em v4.2.0)
+
+```sh
+pip install sphinx sphinx-rtd-theme
+cd docs/
+python -m sphinx -b html . _build
+# Abra docs/_build/index.html
+```
+
 ### Depreciação
 
 `login_with_keys()` agora emite `DeprecationWarning` — use `login()` com email/senha.
@@ -198,13 +281,21 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v4.1.0 (atual)
+### v4.2.0 (atual)
 
-- **Raid Analytics** — novo módulo `geniuslib.raid_analytics` com 15 funções para análise de Capital Raids
-- **Formatters** — novo módulo `geniuslib.formatters` com 16 funções de formatação para Discord embeds
-- **Health Stats** — propriedade `health_stats` em `HTTPClient` com contadores de requests, erros, rate limits, retries e latência
-- **Raid Poller corrigido** — `EventsClient._raid_poller()` agora aceita `raid_clan_tag` em vez do `#2PP` hardcoded
-- **Depreciação** — `login_with_keys()` agora emite `DeprecationWarning`
+- **Testes** — suite completa pytest com 80 testes (utils, war, raid, formatters, middleware)
+- **Middleware** — novo módulo `geniuslib.middleware` com pipeline request/response e decorator `@middleware`
+- **CLI** — novo módulo `geniuslib.cli` com subcomandos: player, clan, war, raid, search, export, compare
+- **Upgrade Tracker** — novo módulo `geniuslib.upgrade_tracker` com estimativa de custo/tempo por TH
+- **Exportador** — novo módulo `geniuslib.exporter` com `to_json()`, `to_csv()`, `to_dict()`
+- **Comparador** — novo módulo `geniuslib.comparer` com `compare_players()` e `compare_clans()`
+- **Exemplos** — `examples/` com Discord bot, war analyzer, raid reporter e export CLI
+- **Documentação** — Sphinx docs completas (conf.py, 12 páginas RST)
+- **Middleware integrado** — `HTTPClient.request()` agora passa por pipeline de middleware
+- **Bugfix (formatters)** — `format_role()` e `format_war_state()` quebravam com enum unhashable
+- **Bugfix (utils)** — `get_mixed_average()` crashava com `sum()` em deques
+
+### v4.1.0
 
 ### v4.0.0
 
