@@ -125,12 +125,11 @@ class UpgradeSummary:
 # Approximate upgrade costs and times for key levels.
 # These are community-sourced estimates and may not reflect exact in-game values.
 _BUILDING_COST_TABLE = {
-    # (item_name, level) -> (gold, elixir, de, time_seconds)
     "Town Hall": {
         14: (0, 0, 0, 0),
-        15: (12000000, 10000000, 0, 1900800),  # 22 days
-        16: (16000000, 14000000, 0, 2246400),  # 26 days
-        17: (20000000, 18000000, 0, 2592000),  # 30 days
+        15: (12000000, 10000000, 0, 1900800),
+        16: (16000000, 14000000, 0, 2246400),
+        17: (20000000, 18000000, 0, 2592000),
     },
     "Eagle Artillery": {
         1: (8000000, 0, 0, 864000),
@@ -142,6 +141,106 @@ _LAB_COST_TABLE = {
     "Barbarian": {
         8: (100000, 0, 0, 86400),
         9: (200000, 0, 0, 172800),
+    },
+}
+
+_TH_MAX_LEVELS = {
+    "building": {
+        "Cannon": {14: 12, 15: 14, 16: 15, 17: 16},
+        "Archer Tower": {14: 12, 15: 13, 16: 14, 17: 15},
+        "Mortar": {14: 12, 15: 13, 16: 14, 17: 15},
+        "Wizard Tower": {14: 12, 15: 14, 16: 14, 17: 15},
+        "Air Defense": {14: 11, 15: 12, 16: 13, 17: 14},
+        "Hidden Tesla": {14: 10, 15: 11, 16: 12, 17: 13},
+        "Bomb Tower": {14: 8, 15: 9, 16: 10, 17: 10},
+        "Inferno Tower": {14: 7, 15: 8, 16: 9, 17: 10},
+        "X-Bow": {14: 6, 15: 7, 16: 8, 17: 9},
+        "Eagle Artillery": {14: 2, 15: 3, 16: 4, 17: 5},
+        "Scattershot": {14: 3, 15: 4, 16: 5, 17: 6},
+        "Spell Tower": {16: 2, 17: 3},
+        "Monolith": {16: 2, 17: 3},
+        "Workshop": {14: 4, 15: 4, 16: 4, 17: 4},
+        "Barracks": {14: 15, 15: 15, 16: 15, 17: 15},
+        "Army Camp": {14: 10, 15: 10, 16: 10, 17: 10},
+        "Laboratory": {14: 12, 15: 12, 16: 12, 17: 12},
+        "Spell Factory": {14: 5, 15: 5, 16: 5, 17: 5},
+        "Dark Spell Factory": {14: 5, 15: 5, 16: 5, 17: 5},
+        "Clan Castle": {14: 10, 15: 10, 16: 10, 17: 10},
+        "Pet House": {15: 5, 16: 6, 17: 7},
+        "Blacksmith": {16: 7, 17: 8},
+        "Builder Hut": {14: 5, 15: 5, 16: 5, 17: 6},
+        "Gold Mine": {14: 14, 15: 14, 16: 14, 17: 14},
+        "Elixir Collector": {14: 14, 15: 14, 16: 14, 17: 14},
+        "Dark Elixir Drill": {14: 9, 15: 9, 16: 9, 17: 10},
+        "Gold Storage": {14: 15, 15: 15, 16: 15, 17: 15},
+        "Elixir Storage": {14: 15, 15: 15, 16: 15, 17: 15},
+        "Dark Elixir Storage": {14: 9, 15: 9, 16: 9, 17: 10},
+        "Silo": {17: 2},
+        "Air Sweeper": {14: 7, 15: 7, 16: 7, 17: 7},
+        "Bomb": {14: 9, 15: 9, 16: 9, 17: 9},
+        "Spring Trap": {14: 5, 15: 5, 16: 5, 17: 5},
+        "Giant Bomb": {14: 6, 15: 6, 16: 6, 17: 6},
+        "Air Bomb": {14: 5, 15: 5, 16: 5, 17: 5},
+        "Seeking Air Mine": {14: 4, 15: 4, 16: 4, 17: 4},
+        "Skeleton Trap": {14: 4, 15: 4, 16: 4, 17: 4},
+        "Tornado Trap": {14: 3, 15: 3, 16: 3, 17: 3},
+    },
+    "troop": {
+        "Barbarian": {14: 10, 15: 11, 16: 11, 17: 12},
+        "Archer": {14: 10, 15: 11, 16: 11, 17: 12},
+        "Goblin": {14: 9, 15: 10, 16: 10, 17: 11},
+        "Giant": {14: 10, 15: 11, 16: 11, 17: 12},
+        "Wall Breaker": {14: 10, 15: 11, 16: 11, 17: 12},
+        "Balloon": {14: 9, 15: 10, 16: 11, 17: 12},
+        "Wizard": {14: 10, 15: 11, 16: 11, 17: 12},
+        "Healer": {14: 7, 15: 8, 16: 8, 17: 9},
+        "Dragon": {14: 9, 15: 10, 16: 11, 17: 12},
+        "PEKKA": {14: 9, 15: 10, 16: 10, 17: 11},
+        "Baby Dragon": {14: 6, 15: 7, 16: 8, 17: 9},
+        "Miner": {14: 8, 15: 9, 16: 9, 17: 10},
+        "Electro Dragon": {14: 5, 15: 6, 16: 7, 17: 8},
+        "Yeti": {14: 5, 15: 5, 16: 6, 17: 6},
+        "Dragon Rider": {14: 3, 15: 4, 16: 5, 17: 6},
+        "Electro Titan": {15: 2, 16: 3, 17: 4},
+        "Root Rider": {16: 2, 17: 4},
+        "Ice Golem": {14: 6, 15: 7, 16: 7, 17: 8},
+        "Headhunter": {14: 4, 15: 5, 16: 5, 17: 6},
+        "Apprentice Warden": {16: 2, 17: 5},
+    },
+    "hero": {
+        "Barbarian King": {14: 75, 15: 80, 16: 85, 17: 95},
+        "Archer Queen": {14: 75, 15: 80, 16: 85, 17: 95},
+        "Grand Warden": {14: 50, 15: 55, 16: 60, 17: 70},
+        "Royal Champion": {14: 25, 15: 30, 16: 35, 17: 40},
+        "Minion Prince": {15: 25, 16: 35, 17: 40},
+    },
+    "spell": {
+        "Lightning Spell": {14: 9, 15: 10, 16: 10, 17: 11},
+        "Healing Spell": {14: 8, 15: 9, 16: 9, 17: 10},
+        "Rage Spell": {14: 6, 15: 7, 16: 7, 17: 8},
+        "Jump Spell": {14: 4, 15: 4, 16: 4, 17: 5},
+        "Freeze Spell": {14: 6, 15: 7, 16: 7, 17: 8},
+        "Clone Spell": {14: 4, 15: 5, 16: 5, 17: 6},
+        "Invisibility Spell": {14: 4, 15: 5, 16: 5, 17: 6},
+        "Recall Spell": {14: 2, 15: 3, 16: 3, 17: 4},
+        "Bat Spell": {14: 4, 15: 5, 16: 5, 17: 6},
+        "Poison Spell": {14: 7, 15: 8, 16: 8, 17: 9},
+        "Earthquake Spell": {14: 5, 15: 5, 16: 5, 17: 5},
+        "Haste Spell": {14: 5, 15: 5, 16: 5, 17: 5},
+        "Skeleton Spell": {14: 6, 15: 7, 16: 7, 17: 8},
+    },
+    "pet": {
+        "L.A.S.S.I.": {14: 15, 15: 20, 16: 25, 17: 30},
+        "Electro Owl": {14: 15, 15: 20, 16: 25, 17: 30},
+        "Mighty Yak": {14: 15, 15: 20, 16: 25, 17: 30},
+        "Unicorn": {14: 15, 15: 20, 16: 25, 17: 30},
+        "Frosty": {15: 20, 16: 25, 17: 30},
+        "Diggy": {16: 20, 17: 25},
+        "Poison Lizard": {16: 20, 17: 25},
+        "Spirit Fox": {16: 10, 17: 15},
+        "Angry Jelly": {17: 15},
+        "Sneezer": {17: 15},
+        "Phoenix": {17: 5},
     },
 }
 
@@ -311,12 +410,17 @@ def get_th_upgrade_summary(
     if target_th is None:
         target_th = current_th + 1
 
+    if target_th and target_th <= current_th:
+        target_th = None
+
     summary = UpgradeSummary(
         player_tag=player.tag,
         current_th=current_th,
-        target_th=target_th,
+        target_th=target_th or current_th,
         builder_count=builder_count,
     )
+
+    effective_th = target_th or current_th
 
     buildings = getattr(player, "buildings", [])
     troops = getattr(player, "troops", [])
@@ -324,12 +428,16 @@ def get_th_upgrade_summary(
     spells = getattr(player, "spells", [])
     pets = getattr(player, "pets", [])
 
+    th_table = _TH_MAX_LEVELS
+
     for b in buildings:
         name = getattr(b, "name", "Unknown")
         level = getattr(b, "level", 0)
-        max_level = getattr(b, "max_level", 0)
-        if level < max_level:
-            _record_upgrade(summary, name, "building", level, max_level)
+        api_max = getattr(b, "max_level", 0)
+        th_max = th_table.get("building", {}).get(name, {}).get(effective_th, api_max)
+        target = min(th_max, api_max) if api_max else th_max
+        if level < target:
+            _record_upgrade(summary, name, "building", level, target)
 
     for collection, item_type in [
         (troops, "troop"), (heroes, "hero"),
@@ -338,9 +446,11 @@ def get_th_upgrade_summary(
         for item in collection:
             name = getattr(item, "name", "Unknown")
             level = getattr(item, "level", 0)
-            max_level = getattr(item, "max_level", 0)
-            if level < max_level:
-                _record_upgrade(summary, name, item_type, level, max_level)
+            api_max = getattr(item, "max_level", 0)
+            th_max = th_table.get(item_type, {}).get(name, {}).get(effective_th, api_max)
+            target = min(th_max, api_max) if api_max else th_max
+            if level < target:
+                _record_upgrade(summary, name, item_type, level, target)
 
     return summary
 
@@ -362,8 +472,9 @@ def format_upgrade_summary(summary: UpgradeSummary) -> str:
         (u.to_level - u.from_level) for u in summary.upgrades
     ) if summary.upgrades else 0
 
+    th_label = f"TH{summary.current_th}" if summary.target_th == summary.current_th else f"TH{summary.current_th} → TH{summary.target_th}"
     lines = [
-        f"📊 Resumo de Upgrades TH{summary.current_th} → TH{summary.target_th}",
+        f"📊 {th_label} — Resumo de Upgrades",
         f"  🏠 Jogador: {summary.player_tag}",
         f"  🪙 Ouro: {summary.total_gold:,}" if summary.total_gold else None,
         f"  🧪 Elixir: {summary.total_elixir:,}" if summary.total_elixir else None,
