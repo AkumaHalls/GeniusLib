@@ -246,6 +246,24 @@ def estimate_upgrade_time(
     return timedelta(seconds=total_seconds)
 
 
+def _record_upgrade(summary, name: str, item_type: str, from_level: int, to_level: int):
+    """Record an upgrade into the summary, using cost tables or level info as fallback."""
+    costs = estimate_upgrade_cost(from_level, to_level, name, item_type)
+    if costs:
+        for c in costs:
+            summary.upgrades.append(c)
+            summary.total_gold += c.gold
+            summary.total_elixir += c.elixir
+            summary.total_dark_elixir += c.dark_elixir
+            summary.total_time_seconds += c.time_seconds
+    else:
+        fallback = UpgradeCost(
+            name=name, item_type=item_type,
+            from_level=from_level, to_level=to_level,
+        )
+        summary.upgrades.append(fallback)
+
+
 def get_th_upgrade_summary(
     player,
     target_th: Optional[int] = None,
@@ -256,6 +274,10 @@ def get_th_upgrade_summary(
     Iterates over the player's buildings, troops, heroes, spells,
     and pets to compute total remaining upgrade costs and time
     to reach the target Town Hall level.
+
+    When exact costs are not available in the internal tables,
+    the upgrade is still recorded with level progress info
+    (current level → max level) so the count is always accurate.
 
     Parameters
     ----------
@@ -293,13 +315,7 @@ def get_th_upgrade_summary(
         level = getattr(b, "level", 0)
         max_level = getattr(b, "max_level", 0)
         if level < max_level:
-            costs = estimate_upgrade_cost(level, max_level, name, "building")
-            for c in costs:
-                summary.upgrades.append(c)
-                summary.total_gold += c.gold
-                summary.total_elixir += c.elixir
-                summary.total_dark_elixir += c.dark_elixir
-                summary.total_time_seconds += c.time_seconds
+            _record_upgrade(summary, name, "building", level, max_level)
 
     for collection, item_type in [
         (troops, "troop"), (heroes, "hero"),
@@ -310,13 +326,7 @@ def get_th_upgrade_summary(
             level = getattr(item, "level", 0)
             max_level = getattr(item, "max_level", 0)
             if level < max_level:
-                costs = estimate_upgrade_cost(level, max_level, name, item_type)
-                for c in costs:
-                    summary.upgrades.append(c)
-                    summary.total_gold += c.gold
-                    summary.total_elixir += c.elixir
-                    summary.total_dark_elixir += c.dark_elixir
-                    summary.total_time_seconds += c.time_seconds
+                _record_upgrade(summary, name, item_type, level, max_level)
 
     return summary
 
@@ -334,14 +344,18 @@ def format_upgrade_summary(summary: UpgradeSummary) -> str:
     str
         Formatted summary string.
     """
+    total_levels = sum(
+        (u.to_level - u.from_level) for u in summary.upgrades
+    ) if summary.upgrades else 0
+
     lines = [
         f"📊 Resumo de Upgrades TH{summary.current_th} → TH{summary.target_th}",
         f"  🏠 Jogador: {summary.player_tag}",
-        f"  🪙 Ouro: {summary.total_gold:,}",
-        f"  🧪 Elixir: {summary.total_elixir:,}",
-        f"  💎 Elixir Negro: {summary.total_dark_elixir:,}",
-        f"  ⏱ Tempo total: {summary.total_time_delta}",
-        f"  ⏳ Tempo real ({summary.builder_count} builders): ~{summary.estimated_real_time}",
-        f"  📦 Total de upgrades: {len(summary.upgrades)}",
+        f"  🪙 Ouro: {summary.total_gold:,}" if summary.total_gold else None,
+        f"  🧪 Elixir: {summary.total_elixir:,}" if summary.total_elixir else None,
+        f"  💎 Elixir Negro: {summary.total_dark_elixir:,}" if summary.total_dark_elixir else None,
+        f"  ⏱ Tempo total: {summary.total_time_delta}" if summary.total_time_seconds else None,
+        f"  ⏳ Tempo real ({summary.builder_count} builders): ~{summary.estimated_real_time}" if summary.total_time_seconds else None,
+        f"  📦 Total de upgrades: {len(summary.upgrades)} (níveis restantes: {total_levels})",
     ]
-    return "\n".join(lines)
+    return "\n".join(line for line in lines if line is not None)
