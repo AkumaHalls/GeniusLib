@@ -246,6 +246,15 @@ def estimate_upgrade_time(
     return timedelta(seconds=total_seconds)
 
 
+_DEFAULT_DAYS_PER_LEVEL = {
+    "building": 3,
+    "troop": 7,
+    "hero": 5,
+    "spell": 4,
+    "pet": 5,
+    "equipment": 3,
+}
+
 def _record_upgrade(summary, name: str, item_type: str, from_level: int, to_level: int):
     """Record an upgrade into the summary, using cost tables or level info as fallback."""
     costs = estimate_upgrade_cost(from_level, to_level, name, item_type)
@@ -257,11 +266,16 @@ def _record_upgrade(summary, name: str, item_type: str, from_level: int, to_leve
             summary.total_dark_elixir += c.dark_elixir
             summary.total_time_seconds += c.time_seconds
     else:
+        levels = to_level - from_level
+        est_days = _DEFAULT_DAYS_PER_LEVEL.get(item_type, 3)
+        est_seconds = levels * est_days * 86400
         fallback = UpgradeCost(
             name=name, item_type=item_type,
             from_level=from_level, to_level=to_level,
+            time_seconds=est_seconds,
         )
         summary.upgrades.append(fallback)
+        summary.total_time_seconds += est_seconds
 
 
 def get_th_upgrade_summary(
