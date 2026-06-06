@@ -538,8 +538,10 @@ class HTTPStats(dict):
 
     def get_mixed_average(self):
         """Get the average latency / performance counter for all API endpoints"""
-        stats = [*self.values()]
-        return sum(stats) / len(stats)
+        all_values = [v for values in self.values() for v in values]
+        if not all_values:
+            return 0.0
+        return sum(all_values) / len(all_values)
 
     def get_all_average(self):
         """Get the average latency / performance counter for each API endpoint."""

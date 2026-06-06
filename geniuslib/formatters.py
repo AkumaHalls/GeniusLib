@@ -2,6 +2,7 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 
 from .enums import Role, WarState, WarResult
@@ -31,13 +32,14 @@ def format_th(level: int) -> str:
 
 
 def format_role(role: Role) -> str:
+    role_str = role.value if isinstance(role, Enum) else str(role)
     lookup = {
-        Role.leader: "\U0001F451 L\u00edder",
-        Role.co_leader: "\U0001F4A0 Col\u00edder",
-        Role.elder: "\U0001F4A1 Anci\u00e3o",
-        Role.member: "\U0001F4CB Membro",
+        "leader": "\U0001F451 L\u00edder",
+        "coLeader": "\U0001F4A0 Col\u00edder",
+        "elder": "\U0001F4A1 Anci\u00e3o",
+        "member": "\U0001F4CB Membro",
     }
-    return lookup.get(role, str(role))
+    return lookup.get(role_str, str(role))
 
 
 def format_league(league: Optional[League]) -> str:
@@ -91,13 +93,14 @@ def format_clan_detailed(clan: Clan) -> str:
 
 
 def format_war_state(state: WarState) -> str:
+    state_str = state.value if isinstance(state, Enum) else str(state)
     lookup = {
-        WarState.not_in_war: "\u274C Fora de guerra",
-        WarState.preparation: "\u23F3 Preparação",
-        WarState.in_war: "\u2694\uFE0F Em guerra",
-        WarState.war_ended: "\U0001F3C6 Guerra encerrada",
+        "notInWar": "\u274C Fora de guerra",
+        "preparation": "\u23F3 Preparação",
+        "inWar": "\u2694\uFE0F Em guerra",
+        "warEnded": "\U0001F3C6 Guerra encerrada",
     }
-    return lookup.get(state, str(state))
+    return lookup.get(state_str, str(state))
 
 
 def format_war_result(war: ClanWar, clan_tag: str) -> str:

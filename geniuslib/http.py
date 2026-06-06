@@ -28,6 +28,7 @@ from .errors import (
     GatewayError,
 )
 from .utils import FIFO, HTTPStats
+from .middleware import Middleware, Request as MiddlewareRequest, Response as MiddlewareResponse
 
 LOG = logging.getLogger(__name__)
 KEY_MINIMUM, KEY_MAXIMUM = 1, 10
@@ -243,6 +244,8 @@ class HTTPClient:
         self.initialising_keys = asyncio.Event()
         self.initialising_keys.set()
 
+        self.middleware = Middleware()
+
     @property
     def health_stats(self) -> dict:
         return {
@@ -286,6 +289,13 @@ class HTTPClient:
             "Accept-Encoding": "gzip, deflate",
         }
         kwargs["headers"] = headers
+
+        mw_req = MiddlewareRequest(method=method, url=url, headers=headers, kwargs=kwargs)
+        mw_result = await self.middleware.run_request(mw_req)
+        if mw_result is None:
+            LOG.debug("Request aborted by middleware for %s %s", method, url)
+            raise RuntimeError("Request aborted by middleware")
+        kwargs = mw_result.kwargs
 
         if "json" in kwargs:
             kwargs["headers"]["Content-Type"] = "application/json"
@@ -357,6 +367,15 @@ class HTTPClient:
 
                         if 200 <= response.status < 300:
                             LOG.debug("%s has received %s", url, data)
+                            mw_resp = MiddlewareResponse(
+                                status=response.status,
+                                data=data,
+                                headers=dict(response.headers),
+                                elapsed_ms=perf,
+                            )
+                            mw_result = await self.middleware.run_response(mw_resp)
+                            if mw_result is not None:
+                                data = mw_result.data
                             return data
 
                         if response.status == 400:
@@ -618,6 +637,36 @@ class HTTPClient:
         self.keys = cycle(self._keys)
         self.initialising_keys.set()
         LOG.info("Successfully initialised keys for use.")
+
+    def add_middleware(self, *funcs) -> None:
+        """Register one or more middleware functions.
+
+        Middleware functions should be decorated with ``@middleware('request')``
+        or ``@middleware('response')``, or be async callables with a
+        ``_middleware_type`` attribute.
+
+        Parameters
+        ----------
+        *funcs
+            Middleware functions to register.
+        """
+        for func in funcs:
+            mw_type = getattr(func, "_middleware_type", None)
+            if mw_type == "request":
+                self.middleware.add_request(func)
+            elif mw_type == "response":
+                self.middleware.add_response(func)
+            else:
+                LOG.warning("Middleware %s has no _middleware_type; skipping", func)
+
+    def remove_middleware(self, *funcs) -> None:
+        """Remove one or more middleware functions."""
+        for func in funcs:
+            mw_type = getattr(func, "_middleware_type", None)
+            if mw_type == "request":
+                self.middleware.remove_request(func)
+            elif mw_type == "response":
+                self.middleware.remove_response(func)
 
     async def get_data_from_url(self, url):
         async with self.__session.get(url) as response:
