@@ -407,9 +407,6 @@ def get_th_upgrade_summary(
         Summary of all pending upgrades.
     """
     current_th = getattr(player, "town_hall", 0)
-    if target_th is None:
-        target_th = current_th + 1
-
     if target_th and target_th <= current_th:
         target_th = None
 
