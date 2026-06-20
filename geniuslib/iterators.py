@@ -1,0 +1,217 @@
+# GeniusLib - Clash of Clans API wrapper
+# Based on coc.py (MIT License, copyright (c) 2019-2020 mathsman5133)
+# (c) 2026 AkumaHalls / ClashGenius
+
+import asyncio
+
+from collections.abc import Iterable
+
+from .errors import Maintenance, NotFound, Forbidden
+
+
+class _AsyncIterator:
+    """Base class for all async iterators."""
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        try:
+            msg = await self._next()
+        except StopAsyncIteration:
+            raise StopAsyncIteration()
+        else:
+            return msg
+
+    async def flatten(self):
+        """
+        |coro|
+
+        Flattens the async iterator into a :class:`list` with all the elements.
+
+        Returns
+        --------
+        :class:`list` - A list of every element in the async iterator.
+        """
+        ret = []
+        while True:
+            try:
+                msg = await self._next()
+            except StopAsyncIteration:
+                return ret
+            else:
+                ret.append(msg)
+
+    async def _next(self):
+        return
+
+
+class TaggedIterator(_AsyncIterator):
+    """Implements filling of the queue and fetching results."""
+
+    def __init__(self, client, tags: Iterable, cls, **kwargs):
+        # pylint: disable=too-many-arguments
+        self.client = client
+        self.tags = tags
+
+        self.cls = cls
+        self.kwargs = kwargs
+
+        self.queue = asyncio.Queue()
+        self.queue_empty = True
+
+        self.get_method = None  # set in subclass
+
+    async def _run_method(self, tag: str):
+        # pylint: disable=not-callable
+        try:
+            # I'm yet to find a way to only pass an arg/kwarg if it's not None, so lets just do this in interim
+            if self.cls:
+                return await self.get_method(tag, cls=self.cls, **self.kwargs)
+            return await self.get_method(tag, **self.kwargs)
+        except (NotFound, Forbidden, Maintenance):
+            return None
+
+    async def _fill_queue(self):
+        tasks = [self.client.loop.create_task(self._run_method(n)) for n in self.tags]
+
+        results = await asyncio.gather(*tasks)
+
+        for result in results:
+            if result:
+                await self.queue.put(result)
+
+    async def _next(self):
+        """Retrieves the next item from the queue. If empty, fill the queue first."""
+        if self.queue_empty:
+            try:
+                await self._fill_queue()
+            except KeyError:
+                await self.client.reset_keys()
+                return await self._next()
+
+            self.queue_empty = False
+
+        try:
+            return self.queue.get_nowait()
+        except asyncio.QueueEmpty:
+            raise StopAsyncIteration
+
+class SeasonIterator(_AsyncIterator):
+    """Iterator for paginated Legend League season rankings."""
+
+    def __init__(self, client, league_id: int, season_id: str, cls, limit=100, **kwargs):
+        self.client = client
+        self.league_id = league_id
+        self.season_id = season_id
+        self.cls = cls
+        self.limit = limit
+        self.kwargs = kwargs
+
+        self.buffer: list = []
+        self.after: str | None = None
+        self.exhausted = False
+
+    async def _fetch_next_page(self):
+        if self.exhausted:
+            raise StopAsyncIteration
+
+        params = {
+            **self.kwargs,
+            "limit": self.limit
+        }
+        if self.after:
+            params["after"] = self.after
+
+        data = await self.client.http.get_league_season_info(
+            self.league_id, self.season_id, **params
+        )
+
+        self.buffer = [
+            self.cls(data=item, client=self.client)
+            for item in data.get("items", [])
+        ]
+
+        # Get pagination cursor
+        try:
+            self.after = data["paging"]["cursors"]["after"]
+        except KeyError:
+            self.exhausted = True
+            self.after = None
+
+        if not self.buffer:
+            self.exhausted = True
+            raise StopAsyncIteration
+
+    async def _next(self):
+        while not self.buffer:
+            await self._fetch_next_page()
+
+        return self.buffer.pop(0)
+
+
+class ClanIterator(TaggedIterator):
+    """Iterator for use with :meth:`~geniuslib.Client.get_clans`"""
+
+    def __init__(self, client, tags: Iterable, cls=None, **kwargs):
+        # pylint: disable=too-many-arguments
+        super().__init__(client, tags, cls, **kwargs)
+        self.get_method = client.get_clan
+
+
+class PlayerIterator(TaggedIterator):
+    """Iterator for use with :meth:`~geniuslib.Client.get_players`"""
+
+    def __init__(self, client, tags: Iterable, cls=None, **kwargs):
+        # pylint: disable=too-many-arguments
+        super().__init__(client, tags, cls, **kwargs)
+        self.get_method = self.get_player
+
+        self.members = kwargs.pop("members", {})
+
+    async def get_player(self, tag, cls=None, **kwargs):
+        if cls:
+            player = await self.client.get_player(tag, cls=cls, **kwargs)
+        else:
+            player = await self.client.get_player(tag, **kwargs)
+
+        player._inject_clan_member(self.members.get(tag))
+        return player
+
+
+class ClanWarIterator(TaggedIterator):
+    """Iterator for use with :meth:`~geniuslib.Client.get_clan_wars`"""
+
+    def __init__(self, client, tags: Iterable, cls=None, **kwargs):
+        # pylint: disable=too-many-arguments
+        super().__init__(client, tags, cls, **kwargs)
+        self.get_method = client.get_clan_war
+
+
+class LeagueWarIterator(TaggedIterator):
+    """Iterator for use with :meth:`~geniuslib.Client.get_league_wars`"""
+
+    def __init__(self, client, tags: Iterable, clan_tag=None, cls=None, **kwargs):
+        # pylint: disable=too-many-arguments
+        super().__init__(client, tags, cls, clan_tag=clan_tag, **kwargs)
+        self.get_method = client.get_league_war
+        self.clan_tag = clan_tag
+
+    async def _next(self):
+        war = await super()._next()
+        if war is None:
+            return None
+        elif self.clan_tag is None:
+            return war
+        elif war.clan_tag != self.clan_tag:
+            return await self._next()
+        else:
+            return war
+
+class CurrentWarIterator(TaggedIterator):
+    """Iterator for use with :meth:`~geniuslib.Client.get_current_wars`"""
+
+    def __init__(self, client, tags: Iterable, cls=None, **kwargs):
+        # pylint: disable=too-many-arguments
+        super().__init__(client, tags, cls, **kwargs)
+        self.get_method = client.get_current_war
