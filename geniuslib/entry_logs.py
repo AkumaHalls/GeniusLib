@@ -54,10 +54,14 @@ class LogPaginator(ABC):
         self._sync_index += 1
         return ret
 
-    def __getitem__(self, index: int) -> Union[ClanWarLogEntry, RaidLogEntry]:
+    def __getitem__(self, index):
         """Support indexing the object. This will not fetch any addition
         items from the endpoint"""
         try:
+            if isinstance(index, slice):
+                return [self._model(data=item,
+                                    client=self._client, response_retry=self._response_retry, clan_tag=self._clan_tag)
+                        for item in self._init_logs[index]]
             return self._model(data=self._init_logs[index],
                                client=self._client, response_retry=self._response_retry, clan_tag=self._clan_tag)
         except Exception:
