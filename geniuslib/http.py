@@ -502,6 +502,9 @@ class HTTPClient:
     # leagues
 
     def search_leagues(self, **kwargs):
+        return self.request(Route("GET", self.base_url, "/leagues", **kwargs), **kwargs)
+
+    def search_league_tiers(self, **kwargs):
         return self.request(Route("GET", self.base_url, "/leaguetiers", **kwargs), **kwargs)
 
     def search_capital_leagues(self, **kwargs):
@@ -514,6 +517,9 @@ class HTTPClient:
         return self.request(Route("GET", self.base_url, "/builderbaseleagues", **kwargs), **kwargs)
 
     def get_league(self, league_id, **kwargs):
+        return self.request(Route("GET", self.base_url, "/leagues/{}".format(league_id)), **kwargs)
+
+    def get_league_tier(self, league_id, **kwargs):
         return self.request(Route("GET", self.base_url, "/leaguetiers/{}".format(league_id)), **kwargs)
 
     def get_capital_league(self, league_id, **kwargs):
@@ -531,6 +537,9 @@ class HTTPClient:
     def get_league_season_info(self, league_id, season_id, **kwargs):
         return self.request(Route("GET", self.base_url, "/leagues/{}/seasons/{}".format(league_id, season_id), **kwargs),
                             **kwargs)
+
+    def get_league_group(self, league_group_tag, league_season_id, **kwargs):
+        return self.request(Route("GET", self.base_url, "/leaguegroup/{}/{}".format(league_group_tag, league_season_id)), **kwargs)
 
     # players
 

@@ -2,7 +2,7 @@
 # Based on coc.py v4.0.0 (MIT License, copyright (c) 2019-2020 mathsman5133)
 # (c) 2026 AkumaHalls / ClashGenius
 
-__version__ = "4.3.0"
+__version__ = "5.0.0"
 
 from .abc import BasePlayer, BaseClan
 from .buildings import (
@@ -70,6 +70,8 @@ from .miscmodels import (
     Icon,
     Label,
     League,
+    LeagueGroupClan,
+    LeagueGroupInfo,
     LegendStatistics,
     LoadGameData,
     Location,

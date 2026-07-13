@@ -17,7 +17,7 @@ from .game_data import AccountData, ArmyRecipe, StaticData
 from .clans import Clan, RankedClan
 from .errors import Forbidden, GatewayError, NotFound, PrivateWarLog
 from .enums import WarRound
-from .miscmodels import BaseLeague, GoldPassSeason, Label, League, Location, LoadGameData, Translation
+from .miscmodels import BaseLeague, GoldPassSeason, Label, League, LeagueGroupInfo, Location, LoadGameData, Translation
 from .http import HTTPClient, BasicThrottler, BatchThrottler
 from .iterators import (
     PlayerIterator,
@@ -251,7 +251,7 @@ class Client:
                             "ClanMember": ClanMember, "ClanWarLogEntry": ClanWarLogEntry, "RaidLogEntry": RaidLogEntry,
                             "ClanWarLeagueGroup": ClanWarLeagueGroup, "Location": Location,
                             "League": League, "BaseLeague": BaseLeague, "GoldPassSeason": GoldPassSeason,
-                            "Label": Label}
+                            "Label": Label, "LeagueGroupInfo": LeagueGroupInfo}
 
         # cache
         self._players = {}
@@ -1699,9 +1699,9 @@ class Client:
         return [cls(data=n, client=self) for n in data["items"]]
 
     # leagues
-    async def search_leagues(self, *, limit: int = None, before: str = None, after: str = None, cls: Type[League] = None,
+    async def search_league_tiers(self, *, limit: int = None, before: str = None, after: str = None, cls: Type[League] = None,
                              **kwargs) -> List[League]:
-        """Get list of leagues.
+        """Get list of league tiers.
 
         Parameters
         -----------
@@ -1731,12 +1731,12 @@ class Client:
             cls = self.objects_cls['League']
         if not issubclass(cls, League):
             raise TypeError("cls must be a subclass of League.")
-        data = await self.http.search_leagues(limit=limit, before=before, after=after, **{**self._defaults, **kwargs})
+        data = await self.http.search_league_tiers(limit=limit, before=before, after=after, **{**self._defaults, **kwargs})
         return [cls(data=n, client=self) for n in data["items"]]
 
-    async def get_league(self, league_id: int, cls: Type[League] = None, **kwargs) -> League:
+    async def get_league_tier(self, league_id: int, cls: Type[League] = None, **kwargs) -> League:
         """
-        Get league information
+        Get league tier information
 
         Parameters
         -----------
@@ -1764,17 +1764,17 @@ class Client:
             cls = self.objects_cls['League']
         if not issubclass(cls, League):
             raise TypeError("cls must be a subclass of League.")
-        data = await self.http.get_league(league_id, **{**self._defaults, **kwargs})
+        data = await self.http.get_league_tier(league_id, **{**self._defaults, **kwargs})
         return cls(data=data, client=self)
 
-    async def get_league_named(self, league_name: str, cls: Type[League] = None, **kwargs) -> Optional[League]:
-        """Get a league by name.
+    async def get_league_tier_named(self, league_name: str, cls: Type[League] = None, **kwargs) -> Optional[League]:
+        """Get a league tier by name.
 
         This is somewhat equivalent to
 
         .. code-block:: python3
 
-            leagues = await client.search_leagues(limit=None)
+            leagues = await client.search_league_tiers(limit=None)
             return utils.get(leagues, name=league_name)
 
 
@@ -1802,7 +1802,138 @@ class Client:
             cls = self.objects_cls['League']
         if not issubclass(cls, League):
             raise TypeError("cls must be a subclass of League.")
+        return get(await self.search_league_tiers(cls=cls, **{**self._defaults, **kwargs}), name=league_name)
+
+    async def search_leagues(self, *, limit: int = None, before: str = None, after: str = None, cls: Type[League] = None,
+                             **kwargs) -> List[League]:
+        """Get list of trophy leagues (Bronze League I, Silver League III, etc.).
+
+        Parameters
+        -----------
+        limit : int
+            Number of items to fetch. Defaults to ``None`` (all leagues).
+        before : str, optional
+            For use with paging. Not implemented yet.
+        after: str, optional
+            For use with paging. Not implemented yet.
+
+        Raises
+        ------
+        Maintenance
+            The API is currently in maintenance.
+
+        GatewayError
+            The API hit an unexpected gateway exception.
+
+        Returns
+        --------
+        List[:class:`League`]
+            The requested trophy leagues.
+        """
+        if cls is None:
+            cls = self.objects_cls['League']
+        if not issubclass(cls, League):
+            raise TypeError("cls must be a subclass of League.")
+        data = await self.http.search_leagues(limit=limit, before=before, after=after, **{**self._defaults, **kwargs})
+        return [cls(data=n, client=self) for n in data["items"]]
+
+    async def get_league(self, league_id: int, cls: Type[League] = None, **kwargs) -> League:
+        """Get trophy league information by ID.
+
+        Parameters
+        -----------
+        league_id : int
+            The League ID to search for.
+
+        Raises
+        ------
+        Maintenance
+            The API is currently in maintenance.
+
+        GatewayError
+            The API hit an unexpected gateway exception.
+
+        NotFound
+            No league was found with the supplied league ID.
+
+        Returns
+        --------
+        :class:`League`
+            The league with the requested ID.
+        """
+        if cls is None:
+            cls = self.objects_cls['League']
+        if not issubclass(cls, League):
+            raise TypeError("cls must be a subclass of League.")
+        data = await self.http.get_league(league_id, **{**self._defaults, **kwargs})
+        return cls(data=data, client=self)
+
+    async def get_league_named(self, league_name: str, cls: Type[League] = None, **kwargs) -> Optional[League]:
+        """Get a trophy league by name.
+
+        Parameters
+        -----------
+        league_name : str
+            The league name to search for.
+        cls:
+            Target class to use to model that data returned.
+
+        Raises
+        ------
+        Maintenance
+            The API is currently in maintenance.
+
+        GatewayError
+            The API hit an unexpected gateway exception.
+
+        Returns
+        --------
+        :class:`League`
+            The first league matching the league name. Could be ``None`` if not found.
+        """
+        if cls is None:
+            cls = self.objects_cls['League']
+        if not issubclass(cls, League):
+            raise TypeError("cls must be a subclass of League.")
         return get(await self.search_leagues(cls=cls, **{**self._defaults, **kwargs}), name=league_name)
+
+    async def get_league_group(self, league_group_tag: str, league_season_id: str, cls: Type[LeagueGroupInfo] = None,
+                               **kwargs) -> LeagueGroupInfo:
+        """Get league group information for a specific clan and season.
+
+        Parameters
+        -----------
+        league_group_tag : str
+            The clan tag (e.g. ``#2LUPR2QJL``).
+        league_season_id : str
+            The league season ID (e.g. ``2024-01``).
+        cls:
+            Target class to use to model that data returned.
+
+        Raises
+        ------
+        Maintenance
+            The API is currently in maintenance.
+
+        GatewayError
+            The API hit an unexpected gateway exception.
+
+        NotFound
+            No league group was found with the supplied parameters.
+
+        Returns
+        --------
+        :class:`LeagueGroupInfo`
+            The league group information.
+        """
+        if cls is None:
+            cls = self.objects_cls['LeagueGroupInfo']
+        if not issubclass(cls, LeagueGroupInfo):
+            raise TypeError("cls must be a subclass of LeagueGroupInfo.")
+        if self.correct_tags:
+            league_group_tag = correct_tag(league_group_tag)
+        data = await self.http.get_league_group(league_group_tag, league_season_id, **{**self._defaults, **kwargs})
+        return cls(data=data, client=self)
 
     async def search_builder_base_leagues(self, *, limit: int = None, before: str = None, after: str = None,
                                           cls: Type[BaseLeague] = None, **kwargs)-> List[BaseLeague]:

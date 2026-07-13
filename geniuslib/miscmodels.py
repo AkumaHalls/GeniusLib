@@ -3,7 +3,7 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 from datetime import datetime
-from typing import Any, Optional, Type, TypeVar
+from typing import Any, List, Optional, Type, TypeVar
 
 from .enums import ExtendedEnum, PlayerHouseElementType, VillageType
 from .utils import from_timestamp
@@ -294,6 +294,75 @@ class League(BaseLeague):
         # pylint: disable=invalid-name
         data_get = data.get
         self.icon = try_enum(Icon, data=data_get("iconUrls"), client=self._client)
+
+
+class LeagueGroupClan:
+    """Represents a clan in a league group.
+
+    Attributes
+    ----------
+    tag:
+        :class:`str`: The clan tag.
+    name:
+        :class:`str`: The clan name.
+    members:
+        :class:`int`: Number of members in the clan for this season.
+    """
+
+    __slots__ = ("tag", "name", "members", "_client")
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        attrs = [("tag", self.tag), ("name", self.name), ("members", self.members)]
+        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.tag == other.tag
+
+    def __init__(self, *, data, client=None):
+        self._client = client
+        self._from_data(data)
+
+    def _from_data(self, data: dict) -> None:
+        self.tag: str = data.get("tag")
+        self.name: str = data.get("name")
+        self.members: int = data.get("members")
+
+
+class LeagueGroupInfo:
+    """Represents league group information for a specific clan and season.
+
+    Returned by the ``/leaguegroup/{leagueGroupTag}/{leagueSeasonId}`` endpoint.
+
+    Attributes
+    ----------
+    state:
+        :class:`str`: The state of the league group (e.g. ``inWar``, ``ended``).
+    season:
+        :class:`str`: The season identifier (e.g. ``2024-01``).
+    clans:
+        List[:class:`LeagueGroupClan`]: The clans participating in the league group.
+    """
+
+    __slots__ = ("state", "season", "clans", "_client")
+
+    def __repr__(self):
+        attrs = [("state", self.state), ("season", self.season), ("clans", len(self.clans))]
+        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.season == other.season
+
+    def __init__(self, *, data, client=None):
+        self._client = client
+        self._from_data(data)
+
+    def _from_data(self, data: dict) -> None:
+        self.state: str = data.get("state")
+        self.season: str = data.get("season")
+        self.clans: List[LeagueGroupClan] = [LeagueGroupClan(data=c, client=self._client) for c in data.get("clans", [])]
 
 
 class Season:
