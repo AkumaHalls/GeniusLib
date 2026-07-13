@@ -825,8 +825,9 @@ class EventsClient(Client):
                     await asyncio.sleep(age)
         except asyncio.CancelledError:
             pass
-        except (Exception, BaseException) as exception:
+        except Exception as exception:
             self.dispatch("event_error", exception)
+            await asyncio.sleep(DEFAULT_SLEEP)
             return await self._raid_poller()
 
     async def _end_of_season_poller(self):
@@ -838,8 +839,9 @@ class EventsClient(Client):
                 self.dispatch("new_season_start")
         except asyncio.CancelledError:
             pass
-        except (Exception, BaseException) as exception:
+        except Exception as exception:
             self.dispatch("event_error", exception)
+            await asyncio.sleep(DEFAULT_SLEEP)
             return await self._end_of_season_poller()
 
     async def _clan_games_poller(self):
@@ -854,12 +856,16 @@ class EventsClient(Client):
                 else:
                     event = "clan_games_end"
                     mute_time = clan_games_end - now
+                if mute_time.total_seconds() <= 0:
+                    self.dispatch(event)
+                    continue
                 await asyncio.sleep(mute_time.total_seconds())
                 self.dispatch(event)
         except asyncio.CancelledError:
             pass
-        except (Exception, BaseException) as exception:
+        except Exception as exception:
             self.dispatch("event_error", exception)
+            await asyncio.sleep(DEFAULT_SLEEP)
             return await self._clan_games_poller()
 
     async def _maintenance_poller(self):
@@ -887,8 +893,9 @@ class EventsClient(Client):
 
         except asyncio.CancelledError:
             pass
-        except (Exception, BaseException) as exception:
+        except Exception as exception:
             self.dispatch("event_error", exception)
+            await asyncio.sleep(DEFAULT_SLEEP)
             return await self._maintenance_poller()
 
     async def _war_updater(self):
@@ -915,12 +922,13 @@ class EventsClient(Client):
 
         except asyncio.CancelledError:
             return
-        except (Exception, BaseException) as exception:
+        except Exception as exception:
             self.dispatch("event_error", exception)
 
             for lock in (v for k, v in self._locks.items() if "war" in k):
                 self._safe_unlock(lock)
 
+            await asyncio.sleep(DEFAULT_SLEEP)
             return await self._war_updater()
 
     async def _clan_updater(self):
@@ -941,12 +949,13 @@ class EventsClient(Client):
 
         except asyncio.CancelledError:
             return
-        except (Exception, BaseException) as exception:
+        except Exception as exception:
             self.dispatch("event_error", exception)
 
             for lock in (v for k, v in self._locks.items() if "clan" in k):
                 self._safe_unlock(lock)
 
+            await asyncio.sleep(DEFAULT_SLEEP)
             return await self._clan_updater()
 
     async def _player_updater(self):
@@ -967,12 +976,13 @@ class EventsClient(Client):
 
         except asyncio.CancelledError:
             return
-        except (Exception, BaseException) as exception:
+        except Exception as exception:
             self.dispatch("event_error", exception)
 
             for lock in (v for k, v in self._locks.items() if "player" in k):
                 self._safe_unlock(lock)
 
+            await asyncio.sleep(DEFAULT_SLEEP)
             return await self._player_updater()
 
     @staticmethod
@@ -1084,7 +1094,7 @@ class EventsClient(Client):
             meth = self.get_clan_war
 
         try:
-            war = await meth(clan_tag, cls=self.war_cls, round=cwl_round)
+            war = await meth(clan_tag, cls=self.war_cls, cwl_round=cwl_round)
         except (Maintenance, PrivateWarLog):
             self._safe_unlock(lock)
             return

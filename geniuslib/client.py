@@ -311,7 +311,7 @@ class Client:
                        "ClanMember": ClanMember, "ClanWarLogEntry": ClanWarLogEntry, "RaidLogEntry": RaidLogEntry,
                        "ClanWarLeagueGroup": ClanWarLeagueGroup, "Location": Location,
                        "League": League, "BaseLeague": BaseLeague, "GoldPassSeason": GoldPassSeason,
-                       "Label": Label}
+                       "Label": Label, "LeagueGroupInfo": LeagueGroupInfo}
         if name not in default_cls:
             raise ValueError(f"Setting a cls with the name {name} is not supported.")
         if not issubclass(cls, default_cls[name]):
@@ -403,7 +403,7 @@ class Client:
         """Creates an HTTP connection ready for use with the keys you provide.
 
         .. deprecated:: v4.1.0
-            This function is deprecated and will be removed in v5.0.0.
+            This function is deprecated and will be removed in v6.0.0.
             It uses a blocking ``run_until_complete`` call which is incompatible
             with modern async contexts. Use :func:`Client.login_with_tokens` instead.
 
@@ -415,7 +415,7 @@ class Client:
 
         """
         warnings.warn(
-            "login_with_keys is deprecated and will be removed in v5.0.0. "
+            "login_with_keys is deprecated and will be removed in v6.0.0. "
             "Use login_with_tokens (async) instead.",
             DeprecationWarning,
             stacklevel=2,
@@ -449,7 +449,8 @@ class Client:
     async def close(self) -> None:
         """Closes the HTTP connection from within a loop function such as
         async def main()"""
-        await self.http.close()
+        if self.http:
+            await self.http.close()
 
     def dispatch(self, event_name: str, *args, **kwargs) -> None:
         """Dispatches an event listener matching the `event_name` parameter."""
@@ -475,7 +476,7 @@ class Client:
         max_members: int = None,
         min_clan_points: int = None,
         min_clan_level: int = None,
-        label_ids: List[Union[Label, int]] = [],
+        label_ids: List[Union[Label, int]] = None,
         limit: int = None,
         before: str = None,
         after: str = None,
@@ -544,7 +545,7 @@ class Client:
             maxMembers=max_members,
             minClanPoints=min_clan_points,
             minClanLevel=min_clan_level,
-            label_ids=",".join([str(x.id) if isinstance(x, Label) else str(x) for x in label_ids
+            label_ids=",".join([str(x.id) if isinstance(x, Label) else str(x) for x in (label_ids or [])
                                 if isinstance(x, (Label, int,))]),
             limit=limit,
             before=before,
@@ -884,7 +885,7 @@ class Client:
         if cls is None:
             cls = self.objects_cls['RaidLogEntry']
         if not issubclass(cls, RaidLogEntry):
-            raise TypeError("cls must be a subclass of ClanWarLogEntry.")
+            raise TypeError("cls must be a subclass of RaidLogEntry.")
 
         if self.correct_tags:
             clan_tag = correct_tag(clan_tag)

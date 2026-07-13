@@ -165,7 +165,7 @@ class ClanWar:
             24 * 60 * 60,
         ]
         if (
-                self.start_time.time - self.preparation_start_time.time).seconds in prep_list:
+                self.start_time.time - self.preparation_start_time.time).total_seconds() in prep_list:
             return "friendly"
 
         return "random"

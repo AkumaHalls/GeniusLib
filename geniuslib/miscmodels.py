@@ -2,7 +2,7 @@
 # Based on coc.py (MIT License, copyright (c) 2019-2020 mathsman5133)
 # (c) 2026 AkumaHalls / ClashGenius
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, List, Optional, Type, TypeVar
 
 from .enums import ExtendedEnum, PlayerHouseElementType, VillageType
@@ -121,12 +121,9 @@ class LoadGameData:
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
-            try:
-                getattr(self.__class__, key)
-            except AttributeError:
+            if not hasattr(self.__class__, key):
                 raise RuntimeError("%s was not a valid LoadGameData option.", key)
-            else:
-                setattr(self.__class__, key, value)
+            setattr(self, key, value)
 
 
 class TimeDelta:
@@ -164,8 +161,8 @@ class TimeDelta:
         _hours_left, _mins = divmod(minutes, 60)
 
         self.days = days + _days
-        self.hours = hours + _hours + _hours_left
-        self.minutes = minutes + _mins
+        self.hours = _hours + _hours_left
+        self.minutes = _mins
         self.seconds = seconds
 
     def total_seconds(self):
@@ -256,7 +253,7 @@ class BaseLeague:
         return self.name
 
     def __eq__(self, other):
-        return isinstance(self, other.__class__) and other.id == self.id
+        return isinstance(other, self.__class__) and other.id == self.id
 
 
 class League(BaseLeague):
@@ -421,7 +418,7 @@ class LegendStatistics:
             and self.current_season == other.current_season
             and self.best_builder_base_season == other.best_builder_base_season
             and self.previous_season == other.previous_season
-            and self.previous_builder_base_season == self.previous_builder_base_season
+            and self.previous_builder_base_season == other.previous_builder_base_season
         )
 
     def __init__(self, *, data):
@@ -596,10 +593,10 @@ class Timestamp:
         return self.time < other.time
 
     def __le__(self, other):
-        less_than = Timestamp.__lt__(other, self)
+        less_than = Timestamp.__lt__(self, other)
         if less_than is NotImplemented:
             return NotImplemented
-        return not less_than
+        return not less_than or self == other
 
     def __init__(self, *, data):
         self.raw_time = data
@@ -612,7 +609,7 @@ class Timestamp:
     @property
     def now(self) -> datetime:
         """:class:`datetime`: Returns the time of the timestamp as a datetime object in UTC."""
-        return datetime.utcnow()
+        return datetime.now(tz=timezone.utc).replace(tzinfo=None)
 
     @property
     def seconds_until(self) -> int:
@@ -717,7 +714,7 @@ class ChatLanguage:
         return self.name
 
     def __eq__(self, other):
-        return isinstance(self, other.__class__) and other.id == self.id
+        return isinstance(other, self.__class__) and other.id == self.id
 
 
 class GoldPassSeason:
@@ -737,7 +734,10 @@ class GoldPassSeason:
     def __init__(self, *, data):
         self.start_time = try_enum(Timestamp, data.get("startTime"))
         self.end_time = try_enum(Timestamp, data.get("endTime"))
-        self.duration = self.end_time.time - self.start_time.time
+        if self.start_time and self.end_time:
+            self.duration = self.end_time.time - self.start_time.time
+        else:
+            self.duration = None
 
     def __eq__(self, other):
         return (isinstance(other, GoldPassSeason)

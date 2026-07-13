@@ -495,6 +495,11 @@ class FIFO(UserDict):
             del self[self.__keys.popleft()]
 
     def __setitem__(self, key, value):
+        if key in self.data:
+            try:
+                self.__keys.remove(key)
+            except ValueError:
+                pass
         self.__keys.append(key)
         super().__setitem__(key, value)
         self.__verify_max_size()
@@ -508,8 +513,10 @@ class FIFO(UserDict):
         return super().__contains__(key)
 
     def copy(self):
-        self.data = self.data.copy()
-        return self
+        new_fifo = FIFO(self.max_size)
+        new_fifo.data = self.data.copy()
+        new_fifo._FIFO__keys = deque(self.__keys)
+        return new_fifo
 
 
 class HTTPStats(dict):

@@ -123,7 +123,7 @@ class Middleware:
             try:
                 result = await mw(req)
             except Exception as e:
-                LOG.error("Request middleware %s raised %s", mw.__name__, e)
+                LOG.error("Request middleware %s raised %s", getattr(mw, '__name__', str(mw)), e)
                 raise
             if result is None:
                 return None
@@ -136,7 +136,7 @@ class Middleware:
             try:
                 result = await mw(resp)
             except Exception as e:
-                LOG.error("Response middleware %s raised %s", mw.__name__, e)
+                LOG.error("Response middleware %s raised %s", getattr(mw, '__name__', str(mw)), e)
                 raise
             if result is None:
                 return None

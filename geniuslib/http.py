@@ -9,7 +9,7 @@ import re
 from collections import deque
 from datetime import datetime, timezone
 from itertools import cycle
-from time import process_time, perf_counter
+from time import monotonic, perf_counter
 from typing import Optional
 from urllib.parse import urlencode
 from base64 import b64decode as base64_b64decode
@@ -64,13 +64,13 @@ class BasicThrottler:
         async with self.lock:
             last_run = self.last_run
             if last_run:
-                difference = process_time() - last_run
+                difference = monotonic() - last_run
                 need_to_sleep = self.sleep_time - difference
                 if need_to_sleep > 0:
                     LOG.debug("Request throttled. Sleeping for %s", need_to_sleep)
                     await asyncio.sleep(need_to_sleep)
 
-            self.last_run = process_time()
+            self.last_run = monotonic()
             return self
 
     async def __aexit__(self, exception_type, exception, traceback):
@@ -98,7 +98,7 @@ class BatchThrottler:
 
     async def __aenter__(self):
         while True:
-            now = process_time()
+            now = monotonic()
 
             # Pop items(which are start times) that are no longer in the
             # time window
@@ -350,7 +350,13 @@ class HTTPClient:
                             data["timestamp"] = datetime.now(tz=timezone.utc).timestamp()
                         try:
                             # set a callback to remove the item from cache once it's stale.
-                            delta = int(response.headers["Cache-Control"].strip("max-age=").strip("public max-age="))
+                            cache_control = response.headers.get("Cache-Control", "")
+                            delta = 0
+                            for directive in cache_control.split(","):
+                                directive = directive.strip()
+                                if directive.startswith("max-age="):
+                                    delta = int(directive.split("=", 1)[1])
+                                    break
                             # encounter for changed description in cache control header. for realtime it is always
                             # 600 but that is not true. Correct is 0
                             data["_response_retry"] = delta if 'realtime' not in url else 0
@@ -406,7 +412,7 @@ class HTTPClient:
                         if response.status == 503:
                             if isinstance(data, str):
                                 # weird case where a 503 will be raised, but html returned.
-                                text = re.compile(r"<[^>]+>").sub(data, "")
+                                text = re.compile(r"<[^>]+>").sub("", data)
                                 raise Maintenance(response, text)
 
                             raise Maintenance(response, data)
@@ -435,7 +441,7 @@ class HTTPClient:
             if response.status in (500, 502, 504):
                 if isinstance(data, str):
                     # gateway errors return HTML
-                    text = re.compile(r"<[^>]+>").sub(data, "")
+                    text = re.compile(r"<[^>]+>").sub("", data)
                     raise GatewayError(response, text)
 
                 raise GatewayError(response, data)
@@ -575,85 +581,90 @@ class HTTPClient:
         LOG.debug("Initialising keys from the developer site.")
         self.initialising_keys.clear()
 
-        # Use context manager to automatically clean up after ourselves
-        async with aiohttp.ClientSession() as session:
-            body = {"email": self.email, "password": self.password}
-            resp = await session.post("https://developer.clashofclans.com/api/login", json=body)
-            if resp.status == 403:
-                LOG.error("Invalid credentials used when attempting to log in")
-                await self.close()
-                raise InvalidCredentials()
+        try:
+            # Use context manager to automatically clean up after ourselves
+            async with aiohttp.ClientSession() as session:
+                body = {"email": self.email, "password": self.password}
+                resp = await session.post("https://developer.clashofclans.com/api/login", json=body)
+                if resp.status == 403:
+                    LOG.error("Invalid credentials used when attempting to log in")
+                    await self.close()
+                    raise InvalidCredentials()
 
-            LOG.info("Successfully logged into the developer site.")
+                LOG.info("Successfully logged into the developer site.")
 
-            resp_payload = await resp.json()
-            if not self.ip:
-                ip = json_loads(base64_b64decode(resp_payload["temporaryAPIToken"].split(".")[1] + "====").decode("utf-8"))["limits"][1]["cidrs"][0].split("/")[0]
-            else:
-                ip = self.ip
-            LOG.info("Found IP address to be %s", ip)
+                resp_payload = await resp.json()
+                if not self.ip:
+                    ip = json_loads(base64_b64decode(resp_payload["temporaryAPIToken"].split(".")[1] + "====").decode("utf-8"))["limits"][1]["cidrs"][0].split("/")[0]
+                else:
+                    ip = self.ip
+                LOG.info("Found IP address to be %s", ip)
 
-            resp = await session.post("https://developer.clashofclans.com/api/apikey/list")
-            keys = (await resp.json()).get("keys", [])
-            for key in keys:
-                LOG.debug(f"Key {key}")
-                if key["name"] != self.key_names or ip not in key["cidrRanges"]:
-                    continue
-                self._keys.append(key["key"])
-                if len(self._keys) == self.key_count:
-                    break
-
-            LOG.info("Retrieved %s valid keys from the developer site.", len(self._keys))
-
-            if len(self._keys) < self.key_count:
-                for key in keys[:]:
-                    if key["name"] != self.key_names or ip in key["cidrRanges"]:
+                resp = await session.post("https://developer.clashofclans.com/api/apikey/list")
+                keys = (await resp.json()).get("keys", [])
+                for key in keys:
+                    LOG.debug(f"Key {key}")
+                    if key["name"] != self.key_names or ip not in key["cidrRanges"]:
                         continue
-                    LOG.info(
-                            "Deleting key with the name %s and IP %s (not matching our current IP address).",
-                            self.key_names, key["cidrRanges"],
+                    self._keys.append(key["key"])
+                    if len(self._keys) == self.key_count:
+                        break
+
+                LOG.info("Retrieved %s valid keys from the developer site.", len(self._keys))
+
+                if len(self._keys) < self.key_count:
+                    for key in keys[:]:
+                        if key["name"] != self.key_names or ip in key["cidrRanges"]:
+                            continue
+                        LOG.info(
+                                "Deleting key with the name %s and IP %s (not matching our current IP address).",
+                                self.key_names, key["cidrRanges"],
+                        )
+                        resp = await session.post("https://developer.clashofclans.com/api/apikey/revoke", json={"id": key["id"]})
+                        if resp.status == 200:
+                            keys.remove(key)
+
+                    while len(self._keys) < self.key_count and len(keys) < KEY_MAXIMUM:
+                        data = {
+                            "name"       : self.key_names,
+                            "description": "Created on {}".format(datetime.now().strftime("%c")),
+                            "cidrRanges" : [ip],
+                            "scopes"     : [self.key_scopes],
+                        }
+
+                        LOG.info("Creating key with data %s.", str(data))
+
+                        resp = await session.post("https://developer.clashofclans.com/api/apikey/create", json=data)
+                        key = await resp.json()
+
+                        if resp.status != 200:
+                            LOG.error(key.get("description"))
+                            raise ValueError(key.get("description"))
+
+                        self._keys.append(key["key"]["key"])
+
+                if len(keys) == 10 and len(self._keys) < self.key_count:
+                    LOG.critical("%s keys were requested to be used, but a maximum of %s could be "
+                                 "found/made on the developer site, as it has a maximum of 10 keys per account. "
+                                 "Please delete some keys or lower your `key_count` level."
+                                 "I will use %s keys for the life of this client.",
+                                 self.key_count, len(self._keys), len(self._keys))
+
+                if len(self._keys) == 0:
+                    await self.close()
+                    raise RuntimeError(
+                            "There are {} API keys already created and none match a key_name of '{}'."
+                            "Please specify a key_name kwarg, or go to 'https://developer.clashofclans.com' to delete "
+                            "unused keys.".format(len(keys), self.key_names)
                     )
-                    resp = await session.post("https://developer.clashofclans.com/api/apikey/revoke", json={"id": key["id"]})
-                    if resp.status == 200:
-                        keys.remove(key)
 
-                while len(self._keys) < self.key_count and len(keys) < KEY_MAXIMUM:
-                    data = {
-                        "name"       : self.key_names,
-                        "description": "Created on {}".format(datetime.now().strftime("%c")),
-                        "cidrRanges" : [ip],
-                        "scopes"     : [self.key_scopes],
-                    }
+            self.keys = cycle(self._keys)
+            self.initialising_keys.set()
+            LOG.info("Successfully initialised keys for use.")
 
-                    LOG.info("Creating key with data %s.", str(data))
-
-                    resp = await session.post("https://developer.clashofclans.com/api/apikey/create", json=data)
-                    key = await resp.json()
-
-                    if resp.status != 200:
-                        LOG.error(key.get("description"))
-                        raise ValueError(key.get("description"))
-
-                    self._keys.append(key["key"]["key"])
-
-            if len(keys) == 10 and len(self._keys) < self.key_count:
-                LOG.critical("%s keys were requested to be used, but a maximum of %s could be "
-                             "found/made on the developer site, as it has a maximum of 10 keys per account. "
-                             "Please delete some keys or lower your `key_count` level."
-                             "I will use %s keys for the life of this client.",
-                             self.key_count, len(self._keys), len(self._keys))
-
-            if len(self._keys) == 0:
-                await self.close()
-                raise RuntimeError(
-                        "There are {} API keys already created and none match a key_name of '{}'."
-                        "Please specify a key_name kwarg, or go to 'https://developer.clashofclans.com' to delete "
-                        "unused keys.".format(len(keys), self.key_names)
-                )
-
-        self.keys = cycle(self._keys)
-        self.initialising_keys.set()
-        LOG.info("Successfully initialised keys for use.")
+        except Exception:
+            LOG.exception("Failed to initialise keys.")
+            self.initialising_keys.set()
 
     def add_middleware(self, *funcs) -> None:
         """Register one or more middleware functions.

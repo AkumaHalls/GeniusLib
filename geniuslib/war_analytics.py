@@ -27,7 +27,10 @@ def new_stars(attack: WarAttack) -> int:
     if not defender.defenses:
         return attack.stars
 
-    previous_best = max(d.stars for d in defender.defenses if d.order != attack.order)
+    other_defenses = [d.stars for d in defender.defenses if d.order != attack.order]
+    if not other_defenses:
+        return attack.stars
+    previous_best = max(other_defenses)
     return max(0, attack.stars - previous_best)
 
 
