@@ -281,7 +281,24 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v4.3.0 (atual)
+### v5.0.3 (atual)
+
+- **Bugfix (LogPaginator)** — `__getitem__` agora suporta slice notation (`log[:5]`), evitando `AttributeError: 'list' object has no attribute 'get'`
+- **Corrigido em** — `entry_logs.py`, `tasks_cog.py` (ClashGenius)
+
+### v5.0.2
+
+- fix: rename `get_league_group` → `get_league_group_info` to avoid shadowing CWL method
+
+### v5.0.1
+
+- fix: 70+ bugs across 12 files
+
+### v5.0.0
+
+- Add missing league endpoints, fix naming
+
+### v4.3.0
 
 - **TH18 completo** — suporte total a Town Hall 18 no Upgrade Tracker (43 construções, 8 heróis, 12 pets, 18 poções, 32 tropas)
 - **Novo herói: Dragon Duke** — adicionado ao `HERO_ORDER`, static data e upgrade tracker (nível máx 25)
