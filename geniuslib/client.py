@@ -1898,7 +1898,7 @@ class Client:
             raise TypeError("cls must be a subclass of League.")
         return get(await self.search_leagues(cls=cls, **{**self._defaults, **kwargs}), name=league_name)
 
-    async def get_league_group(self, league_group_tag: str, league_season_id: str, cls: Type[LeagueGroupInfo] = None,
+    async def get_league_group_info(self, league_group_tag: str, league_season_id: str, cls: Type[LeagueGroupInfo] = None,
                                **kwargs) -> LeagueGroupInfo:
         """Get league group information for a specific clan and season.
 

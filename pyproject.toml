@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "geniuslib"
 authors = [{ name = "AkumaHalls" }]
 maintainers = [{ name = "AkumaHalls" }]
-version = "5.0.1"
+version = "5.0.2"
 description = "GeniusLib - Biblioteca Python assíncrona para a API do Clash of Clans"
 requires-python = ">=3.10.0"
 readme = "README.md"
