@@ -94,7 +94,8 @@ class BattleLogEntry:
         data_get = data.get
         self.battle_type: str = data_get("battleType")
         self.attack: bool = data_get("attack")
-        self.timestamp: Optional[datetime] = from_timestamp(data_get("timestamp"))
+        raw_ts = data_get("timestamp")
+        self.timestamp: Optional[datetime] = from_timestamp(raw_ts) if raw_ts else None
         self.army_share_code: str = data_get("armyShareCode")
         self.opponent_player_tag: str = data_get("opponentPlayerTag")
         self.stars: int = data_get("stars")
