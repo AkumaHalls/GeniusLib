@@ -12,6 +12,102 @@ from .battlelog import (
     LeagueTierGroup,
     LeagueTierGroupMember,
 )
+from .utils import format_season_id
+
+
+def decode_army_code(code: str, static_data: dict) -> dict:
+    """Decode an army share code into human-readable components.
+
+    Parameters
+    ----------
+    code:
+        The raw ``armyShareCode`` from the battle log API.
+    static_data:
+        The client's ``_static_data`` dict mapping internal IDs to static data records.
+
+    Returns
+    -------
+    :class:`dict`
+        Dictionary with ``troops``, ``spells``, ``heroes`` (each a list of
+        ``{"name": str, "quantity": int}``).
+    """
+    if not code or not static_data:
+        return {"troops": [], "spells": [], "heroes": []}
+
+    TROOP_BASE = 4000000
+    SPELL_BASE = 26000000
+    HERO_BASE = 28000000
+    PET_BASE = 73000000
+    EQUIP_BASE = 90000000
+
+    import re
+
+    troop_items = []
+    spell_items = []
+    hero_items = []
+
+    sections = re.finditer(
+        r"h(?P<heroes>[^idus]+)"
+        r"|u(?P<units>[\d+x-]+)"
+        r"|s(?P<spells>[\d+x-]+)",
+        code,
+    )
+
+    for m in sections:
+        if m.group("heroes"):
+            hero_entries = m.group("heroes").split("-")
+            hero_re = re.compile(
+                r"(?P<hero_id>\d+)"
+                r"(?:m\d+)?"
+                r"(?:p(?P<pet_id>\d+))?"
+                r"(?:e(?P<eq1>\d+)(?:_(?P<eq2>\d+))?)?"
+            )
+            for he in hero_entries:
+                hm = hero_re.fullmatch(he)
+                if not hm:
+                    continue
+                hero_id = HERO_BASE + int(hm.group("hero_id"))
+                hero_data = static_data.get(hero_id, {})
+                hero_name = hero_data.get("name", f"Hero#{hm.group('hero_id')}")
+                pet_name = None
+                if hm.group("pet_id"):
+                    pet_id = PET_BASE + int(hm.group("pet_id"))
+                    pet_data = static_data.get(pet_id, {})
+                    pet_name = pet_data.get("name", f"Pet#{hm.group('pet_id')}")
+                eq_names = []
+                for eq_group in ("eq1", "eq2"):
+                    eq_val = hm.group(eq_group)
+                    if eq_val:
+                        eq_id = EQUIP_BASE + int(eq_val)
+                        eq_data = static_data.get(eq_id, {})
+                        eq_names.append(eq_data.get("name", f"Eq#{eq_val}"))
+                hero_items.append({
+                    "name": hero_name,
+                    "pet": pet_name,
+                    "equipment": eq_names,
+                })
+
+        elif m.group("units"):
+            for part in m.group("units").split("-"):
+                if "x" not in part:
+                    continue
+                qty_str, id_str = part.split("x", 1)
+                item_id = TROOP_BASE + int(id_str)
+                data = static_data.get(item_id, {})
+                name = data.get("name", f"Troop#{id_str}")
+                troop_items.append({"name": name, "quantity": int(qty_str)})
+
+        elif m.group("spells"):
+            for part in m.group("spells").split("-"):
+                if "x" not in part:
+                    continue
+                qty_str, id_str = part.split("x", 1)
+                item_id = SPELL_BASE + int(id_str)
+                data = static_data.get(item_id, {})
+                name = data.get("name", f"Spell#{id_str}")
+                spell_items.append({"name": name, "quantity": int(qty_str)})
+
+    return {"troops": troop_items, "spells": spell_items, "heroes": hero_items}
 
 
 def battle_win_rate(entries: List[BattleLogEntry]) -> float:
@@ -354,7 +450,12 @@ def league_history_progression(history: List[LeagueHistoryEntry]) -> dict:
     trophies = [h.league_trophies for h in sorted_history]
 
     trophy_trend = [
-        {"season": h.league_season_id, "trophies": h.league_trophies, "placement": h.placement}
+        {
+            "season": h.league_season_id,
+            "season_label": format_season_id(h.league_season_id),
+            "trophies": h.league_trophies,
+            "placement": h.placement,
+        }
         for h in sorted_history
     ]
 

@@ -2,7 +2,7 @@
 # Based on coc.py v4.0.0 (MIT License, copyright (c) 2019-2020 mathsman5133)
 # (c) 2026 AkumaHalls / ClashGenius
 
-__version__ = "5.1.1"
+__version__ = "5.1.2"
 
 from .abc import BasePlayer, BaseClan
 from .battlelog import (
@@ -142,6 +142,7 @@ from .battlelog_analytics import (
     tier_group_attack_analysis,
     tier_group_defense_analysis,
     tier_group_mvp,
+    decode_army_code,
 )
 from .formatters import (
     town_hall_emoji,

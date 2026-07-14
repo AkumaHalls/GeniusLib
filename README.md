@@ -281,7 +281,14 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v5.1.1 (atual)
+### v5.1.2 (atual)
+
+- **decode_army_code()** — nova função em `battlelog_analytics` que decodifica army share codes em nomes legíveis (tropas, spells, heróis, pets, equipment)
+- **format_season_id()** — nova função em `utils` que converte timestamps Unix de season em datas legíveis ("Jun 2026")
+- **league_history_progression** — agora inclui `season_label` formatado no `trophy_trend`
+- **Fix deprecation** — `utcfromtimestamp` substituído por `datetime.fromtimestamp(..., tz=timezone.utc)`
+
+### v5.1.1
 
 - **Bugfix (BattleLogEntry)** — `from_timestamp()` agora é protegido contra `None` no campo `timestamp`, corrigindo `TypeError` quando o timestamp não está presente no battle log
 

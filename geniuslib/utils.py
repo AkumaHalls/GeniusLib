@@ -9,7 +9,7 @@ import re
 import time as _time
 
 from collections import deque, UserDict
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, UTC
 from functools import wraps
 from operator import attrgetter
 from typing import Any, Callable, Generic, Iterable, List, Optional, Type, TypeVar, Union
@@ -716,3 +716,35 @@ def _get_maybe_first(dict_items, lookup, default=None):
             return items[0]
         except (IndexError, KeyError):
             return default
+
+
+_MONTH_NAMES_PT = {
+    1: "Jan", 2: "Fev", 3: "Mar", 4: "Abr", 5: "Mai", 6: "Jun",
+    7: "Jul", 7: "Jul", 8: "Ago", 9: "Set", 10: "Out", 11: "Nov", 12: "Dez",
+}
+
+
+def format_season_id(season_id: int) -> str:
+    """Convert a league history season ID (Unix timestamp) to a human-readable label.
+
+    Parameters
+    ----------
+    season_id:
+        The ``leagueSeasonId`` from the league history API (Unix timestamp in seconds).
+
+    Returns
+    -------
+    :class:`str`
+        A label like ``"Jun 2026"``.
+
+    Example
+    -------
+    >>> format_season_id(1779685200)
+    'Jun 2026'
+    """
+    try:
+        dt = datetime.fromtimestamp(season_id, tz=timezone.utc)
+        month_name = _MONTH_NAMES_PT.get(dt.month, str(dt.month))
+        return f"{month_name} {dt.year}"
+    except (OSError, ValueError, OverflowError):
+        return str(season_id)
