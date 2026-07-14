@@ -281,7 +281,15 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v5.0.3 (atual)
+### v5.1.0 (atual)
+
+- **Battlelog Models** — novo módulo `geniuslib.battlelog` com 6 modelos Tier B: `BattleLogResource`, `BattleLogEntry`, `LeagueHistoryEntry`, `LeagueTierGroupBattleLogEntry`, `LeagueTierGroupMember`, `LeagueTierGroup`
+- **Battlelog Analytics** — novo módulo `geniuslib.battlelog_analytics` com 15 funções de análise: win rate, attack/defense stats, loot summary, streak, consistency score, daily/period summary, league progression, season stats, tier distribution, tier group member/attack/defense analysis, MVP
+- **Client atualizado** — `get_player_battlelog()` e `get_player_league_history()` agora retornam objetos model ao invés de dicts brutos; suporte a parâmetro `cls` para injeção de classe customizada
+- **110 testes** — suite completa com 30 novos testes para analytics de battlelog
+- **Bugfix (from_timestamp)** — modelos battlelog agora protegem contra `None` antes de chamar `from_timestamp()`
+
+### v5.0.3
 
 - **Bugfix (LogPaginator)** — `__getitem__` agora suporta slice notation (`log[:5]`), evitando `AttributeError: 'list' object has no attribute 'get'`
 - **Corrigido em** — `entry_logs.py`, `tasks_cog.py` (ClashGenius)

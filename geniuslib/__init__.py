@@ -2,9 +2,17 @@
 # Based on coc.py v4.0.0 (MIT License, copyright (c) 2019-2020 mathsman5133)
 # (c) 2026 AkumaHalls / ClashGenius
 
-__version__ = "5.0.3"
+__version__ = "5.1.0"
 
 from .abc import BasePlayer, BaseClan
+from .battlelog import (
+    BattleLogEntry,
+    BattleLogResource,
+    LeagueHistoryEntry,
+    LeagueTierGroup,
+    LeagueTierGroupBattleLogEntry,
+    LeagueTierGroupMember,
+)
 from .buildings import (
     Building,
     GearUp,
@@ -117,6 +125,23 @@ from .raid_analytics import (
     clan_offensive_stats,
     clan_defensive_stats,
     raid_summary,
+)
+from .battlelog_analytics import (
+    battle_win_rate,
+    battle_attack_stats,
+    battle_defense_stats,
+    battle_loot_summary,
+    battle_streak,
+    battle_consistency_score,
+    battle_daily_summary,
+    battle_period_summary,
+    league_history_progression,
+    league_season_stats,
+    league_tier_distribution,
+    tier_group_member_stats,
+    tier_group_attack_analysis,
+    tier_group_defense_analysis,
+    tier_group_mvp,
 )
 from .formatters import (
     town_hall_emoji,

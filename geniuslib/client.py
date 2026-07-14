@@ -31,6 +31,7 @@ from .players import Player, ClanMember, RankedPlayer
 from .hero import Hero, Pet, Equipment
 from .spell import Spell
 from .troop import Troop
+from .battlelog import BattleLogEntry, LeagueHistoryEntry
 from .raid import RaidLogEntry
 from .utils import correct_tag, get
 from .wars import ClanWar, ClanWarLogEntry, ClanWarLeagueGroup, ExtendedCWLGroup
@@ -251,7 +252,8 @@ class Client:
                             "ClanMember": ClanMember, "ClanWarLogEntry": ClanWarLogEntry, "RaidLogEntry": RaidLogEntry,
                             "ClanWarLeagueGroup": ClanWarLeagueGroup, "Location": Location,
                             "League": League, "BaseLeague": BaseLeague, "GoldPassSeason": GoldPassSeason,
-                            "Label": Label, "LeagueGroupInfo": LeagueGroupInfo}
+                            "Label": Label, "LeagueGroupInfo": LeagueGroupInfo,
+                            "BattleLogEntry": BattleLogEntry, "LeagueHistoryEntry": LeagueHistoryEntry}
 
         # cache
         self._players = {}
@@ -2534,13 +2536,15 @@ class Client:
                                                    ignore_cached_errors=kwargs.get('ignore_cached_errors', self.ignore_cached_errors))
         return data and data["status"] == "ok" or False
 
-    async def get_player_battlelog(self, player_tag: str, **kwargs) -> List[dict]:
+    async def get_player_battlelog(self, player_tag: str, cls: Type[BattleLogEntry] = None, **kwargs) -> List[BattleLogEntry]:
         """Get a player's battle log.
 
         Parameters
         ----------
         player_tag : str
             The player tag to search for.
+        cls:
+            Target class to use to model that data returned.
 
         Raises
         ------
@@ -2549,21 +2553,27 @@ class Client:
 
         Returns
         --------
-        List[dict]
-            A list of battle log entries as raw dicts.
+        List[:class:`BattleLogEntry`]
+            A list of battle log entries.
         """
+        if cls is None:
+            cls = self.objects_cls['BattleLogEntry']
+        if not issubclass(cls, BattleLogEntry):
+            raise TypeError("cls must be a subclass of BattleLogEntry.")
         if self.correct_tags:
             player_tag = correct_tag(player_tag)
         data = await self.http.get_player_battlelog(player_tag, **{**self._defaults, **kwargs})
-        return data.get("items", [])
+        return [cls(data=item, client=self, **kwargs) for item in data.get("items", [])]
 
-    async def get_player_league_history(self, player_tag: str, **kwargs) -> List[dict]:
+    async def get_player_league_history(self, player_tag: str, cls: Type[LeagueHistoryEntry] = None, **kwargs) -> List[LeagueHistoryEntry]:
         """Get a player's league history.
 
         Parameters
         ----------
         player_tag : str
             The player tag to search for.
+        cls:
+            Target class to use to model that data returned.
 
         Raises
         ------
@@ -2572,13 +2582,17 @@ class Client:
 
         Returns
         --------
-        List[dict]
-            A list of league history entries as raw dicts.
+        List[:class:`LeagueHistoryEntry`]
+            A list of league history entries.
         """
+        if cls is None:
+            cls = self.objects_cls['LeagueHistoryEntry']
+        if not issubclass(cls, LeagueHistoryEntry):
+            raise TypeError("cls must be a subclass of LeagueHistoryEntry.")
         if self.correct_tags:
             player_tag = correct_tag(player_tag)
         data = await self.http.get_player_league_history(player_tag, **{**self._defaults, **kwargs})
-        return data.get("items", [])
+        return [cls(data=item, client=self, **kwargs) for item in data.get("items", [])]
 
     async def get_current_goldpass_season(self, cls: Type[GoldPassSeason] = None, **kwargs) -> GoldPassSeason:
         """Get the current gold pass season
