@@ -281,7 +281,11 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v5.1.0 (atual)
+### v5.1.1 (atual)
+
+- **Bugfix (BattleLogEntry)** — `from_timestamp()` agora é protegido contra `None` no campo `timestamp`, corrigindo `TypeError` quando o timestamp não está presente no battle log
+
+### v5.1.0
 
 - **Battlelog Models** — novo módulo `geniuslib.battlelog` com 6 modelos Tier B: `BattleLogResource`, `BattleLogEntry`, `LeagueHistoryEntry`, `LeagueTierGroupBattleLogEntry`, `LeagueTierGroupMember`, `LeagueTierGroup`
 - **Battlelog Analytics** — novo módulo `geniuslib.battlelog_analytics` com 15 funções de análise: win rate, attack/defense stats, loot summary, streak, consistency score, daily/period summary, league progression, season stats, tier distribution, tier group member/attack/defense analysis, MVP
