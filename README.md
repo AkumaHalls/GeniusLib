@@ -338,7 +338,20 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v5.1.2 (atual)
+### v5.3.0 (atual)
+
+- **`get_assets_dir()`** — retorna caminho absoluto da pasta de assets bundled para servir em qualquer framework web
+- **`ASSETS_PREFIX`** — constante `"/assets"` configurável para o prefixo dos paths
+- **`asset_url` agora retorna paths absolutos** — ex: `/assets/troops/barbarian/icon.webp`
+- **Documentação de assets** — seção completa no README com exemplos para aiohttp, FastAPI e Flask
+
+### v5.2.0
+
+- **ClashKingAssets integrados** — 3000+ assets oficiais em WebP (troops, heroes, spells, equipment, pets, buildings, leagues)
+- Propriedade `asset_url` nos modelos: `Troop`, `Hero`, `Pet`, `Equipment`, `Spell`
+- Funções `asset_path()` e `clean_asset_name()` em `utils.py`
+
+### v5.1.2
 
 - **decode_army_code()** — nova função em `battlelog_analytics` que decodifica army share codes em nomes legíveis (tropas, spells, heróis, pets, equipment)
 - **format_season_id()** — nova função em `utils` que converte timestamps Unix de season em datas legíveis ("Jun 2026")
