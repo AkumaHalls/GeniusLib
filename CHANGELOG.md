@@ -4,6 +4,20 @@ Todas as mudanças notáveis neste projeto.
 
 ---
 
+## [5.3.0] — 2026-07-15
+
+### Adicionado
+- **`get_assets_dir()`** — nova função em `utils.py` que retorna o caminho absoluto da pasta de assets bundled, facilitando servir os assets em qualquer framework web
+- **`ASSETS_PREFIX`** — constante `"/assets"` configurável para o prefixo dos paths de assets
+- **`asset_url` agora retorna paths absolutos** — ex: `/assets/troops/barbarian/icon.webp` (antes retornava `assets/troops/barbarian/icon.webp`)
+- **Documentação de assets** — seção completa no README com exemplos para aiohttp, FastAPI e Flask
+
+### Alterado
+- `asset_path()` agora usa `ASSETS_PREFIX` como base
+- Versão: `5.3.0`
+
+---
+
 ## [5.2.0] — 2026-07-15
 
 ### Adicionado

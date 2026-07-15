@@ -5,6 +5,7 @@
 import asyncio
 import inspect
 import calendar
+import os
 import re
 import time as _time
 
@@ -750,6 +751,31 @@ def format_season_id(season_id: int) -> str:
         return str(season_id)
 
 
+ASSETS_PREFIX = "/assets"
+
+
+def get_assets_dir() -> str:
+    """Retorna o caminho absoluto da pasta de assets bundled no package.
+
+    Útil para servir os assets em frameworks web::
+
+        from geniuslib.utils import get_assets_dir
+
+        # aiohttp
+        app.router.add_static('/assets/', get_assets_dir())
+
+        # FastAPI / Starlette
+        from starlette.staticfiles import StaticFiles
+        app.mount('/assets/', StaticFiles(directory=get_assets_dir()), name="assets")
+
+    Returns
+    -------
+    :class:`str`
+        Caminho absoluto para ``geniuslib/static/assets/``
+    """
+    return os.path.join(os.path.dirname(__file__), "static", "assets")
+
+
 def clean_asset_name(name: str) -> str:
     """Normaliza um nome de unidade para o formato usado nos assets.
 
@@ -797,16 +823,17 @@ def asset_path(category: str, name: str, level: int = None, subcategory: str = N
     Returns
     -------
     :class:`str`
-        Caminho relativo como ``"troops/barbarian/icon.webp"``
+        Caminho absoluto para uso em ``<img src="...">``
+        (ex: ``"/assets/troops/barbarian/icon.webp"``)
     """
     cleaned = clean_asset_name(name)
 
     if level is not None:
-        return f"assets/{category}/{cleaned}/level_{level}.webp"
+        return f"{ASSETS_PREFIX}/{category}/{cleaned}/level_{level}.webp"
 
     # Spells e equipment são arquivos diretos
     if category in ("spells", "equipment"):
-        return f"assets/{category}/{cleaned}.webp"
+        return f"{ASSETS_PREFIX}/{category}/{cleaned}.webp"
 
     # Demais categorias têm subpasta com icon.webp
-    return f"assets/{category}/{cleaned}/icon.webp"
+    return f"{ASSETS_PREFIX}/{category}/{cleaned}/icon.webp"

@@ -159,6 +159,63 @@ t.is_home_base
 
 A biblioteca trata graciosamente unidades desconhecidas (novas tropas/feitiços não incluídos no JSON de dados estáticos), definindo `is_super_troop`, `is_seasonal`, `is_siege_machine` como `False` por padrão.
 
+### Assets de Imagens (v5.3.0)
+
+A GeniusLib inclui **3000+ assets oficiais** (ícones de tropas, heróis, spells, equipment, pets, construções) bundled no package. Cada modelo (`Troop`, `Spell`, `Hero`, `Pet`, `Equipment`) possui a propriedade `asset_url` que retorna o path pronto para uso em `<img src="...">`:
+
+```python
+from geniuslib import Client
+
+client = Client()
+player = await client.get_player("#TAG")
+
+for troop in player.troops:
+    print(f"{troop.name}: {troop.asset_url}")
+    # "Barbarian": "/assets/troops/barbarian/icon.webp"
+    # "Lightning Spell": "/assets/spells/lightning_spell.webp"
+    # "Archer Queen": "/assets/heroes/archer_queen/icon.webp"
+
+for hero in player.heroes:
+    print(f"{hero.name}: {hero.asset_url}")
+    for eq in hero.equipment:
+        print(f"  {eq.name}: {eq.asset_url}")
+```
+
+#### Como servir os assets no seu projeto
+
+Use `get_assets_dir()` para obter o caminho absoluto da pasta de assets e monte uma rota estática:
+
+```python
+from geniuslib.utils import get_assets_dir
+
+# === aiohttp ===
+from aiohttp import web
+app = web.Application()
+app.router.add_static('/assets/', get_assets_dir())
+
+# === FastAPI / Starlette ===
+from fastapi import FastAPI
+from starlette.staticfiles import StaticFiles
+app = FastAPI()
+app.mount('/assets/', StaticFiles(directory=get_assets_dir()), name="assets")
+
+# === Flask ===
+from flask import Flask, send_from_directory
+app = Flask(__name__)
+
+@app.route('/assets/<path:filename>')
+def serve_asset(filename):
+    return send_from_directory(get_assets_dir(), filename)
+```
+
+Depois, basta usar os paths no HTML:
+
+```html
+<img src="/assets/troops/barbarian/icon.webp" alt="Barbarian">
+<img src="/assets/heroes/archer_queen/icon.webp" alt="Archer Queen">
+<img src="/assets/spells/lightning_spell.webp" alt="Lightning Spell">
+```
+
 ### Enums Úteis
 
 ```python

@@ -2,7 +2,7 @@
 # Based on coc.py v4.0.0 (MIT License, copyright (c) 2019-2020 mathsman5133)
 # (c) 2026 AkumaHalls / ClashGenius
 
-__version__ = "5.2.0"
+__version__ = "5.3.0"
 
 from .abc import BasePlayer, BaseClan
 from .battlelog import (
@@ -183,3 +183,4 @@ from .upgrade_tracker import (
 from .exporter import to_json, to_csv, to_dict, export_players, export_clans
 from .comparer import compare_players, compare_clans
 from . import utils
+from .utils import get_assets_dir, ASSETS_PREFIX
