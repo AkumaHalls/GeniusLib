@@ -1,10 +1,10 @@
 from typing import Iterable, Callable, Union, Coroutine, Type, Dict
 
-from coc.client import Client
-from coc.players import Player, ClanMember
-from coc.clans import Clan
-from coc.wars import ClanWar
-from coc.war_attack import WarAttack
+from .client import Client
+from .players import Player, ClanMember
+from .clans import Clan
+from .wars import ClanWar
+from .war_attack import WarAttack
 
 _ClanType = Type[Clan]
 _PlayerType = Type[Player]
@@ -206,6 +206,7 @@ class EventsClient(Client):
     clan_retry_interval: int
     player_retry_interval: int
     war_retry_interval: int
+    maintenance_player_tag: str
 
     clan_cls: Type[Clan]
     player_cls: Type[Player]
@@ -216,7 +217,6 @@ class EventsClient(Client):
     _war_updates: set
 
     _listeners: Dict
-
 
     is_cwl_active: bool
 

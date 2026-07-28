@@ -117,7 +117,7 @@ class BatchThrottler:
             await asyncio.sleep(retry_interval)
 
         # Push new task's start time
-        self._task_logs.append(process_time())
+        self._task_logs.append(monotonic())
 
         return self
 
@@ -403,11 +403,12 @@ class HTTPClient:
                         if response.status == 429:
                             self.total_rate_limits += 1
                             self._last_error = f"rate_limited:{route.stats_key}"
-                            LOG.error(
-                                    "We have been rate-limited by the API. "
-                                    "Reconsider the number of requests you are allowing per second."
+                            LOG.warning(
+                                    "Rate-limited by the API (429). "
+                                    "Retrying after backoff (attempt %d/5).", tries + 1
                             )
-                            raise HTTPException(response, data)
+                            await asyncio.sleep((tries + 1) * 5)
+                            continue
 
                         if response.status == 503:
                             if isinstance(data, str):

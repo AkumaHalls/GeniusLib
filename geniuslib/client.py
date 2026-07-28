@@ -144,7 +144,8 @@ class Client:
     member_cls: :class:`Type[ClanMember]`
         Class to be used for clan member objects. Defaults to :class:`ClanMember`.
 
-    ranke
+    ranked_cls: :class:`Type[RankedPlayer]`
+        Class to be used for ranked player objects. Defaults to :class:`RankedPlayer`.
 
     clan_cls: :class:`Type[Clan]`
         Class to be used for clan objects. Defaults to :class:`Clan`.
@@ -184,11 +185,6 @@ class Client:
         "_clans",
         "_wars",
         "objects_cls",
-        "_troop_holder",
-        "_spell_holder",
-        "_hero_holder",
-        "_pet_holder",
-        "_equipment_holder",
         "_static_data",
         "_translations",
         "_name_to_id_mapping",

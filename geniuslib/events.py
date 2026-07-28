@@ -420,6 +420,7 @@ class EventsClient(Client):
         self.is_cwl_active = options.pop("cwl_active", True)
         self.check_cwl_prep = options.pop("check_cwl_prep", False)
         self.raid_clan_tag = options.pop("raid_clan_tag", None)
+        self.maintenance_player_tag = options.pop("maintenance_player_tag", "#JY9J2Y99")
 
         self._locks = {}
 
@@ -874,7 +875,7 @@ class EventsClient(Client):
         try:
             while self.loop.is_running():
                 try:
-                    player = await self.get_player("#JY9J2Y99")
+                    player = await self.get_player(self.maintenance_player_tag)
                     await asyncio.sleep(player._response_retry + 1)
                 except Maintenance:
                     if maintenance_start is None:

@@ -196,7 +196,11 @@ def maybe_sort(
     """Returns list or iter based on itr if sort is false otherwise sorted
     with key defaulting to operator.attrgetter('order')
     """
-    return (list, iter)[itr](n for n in sorted(seq, key=key)) if sort else (list, iter)[itr](n for n in seq)
+    if sort:
+        items = (n for n in sorted(seq, key=key))
+    else:
+        items = (n for n in seq)
+    return list(items) if not itr else items
 
 
 def item(
@@ -721,7 +725,7 @@ def _get_maybe_first(dict_items, lookup, default=None):
 
 _MONTH_NAMES_PT = {
     1: "Jan", 2: "Fev", 3: "Mar", 4: "Abr", 5: "Mai", 6: "Jun",
-    7: "Jul", 7: "Jul", 8: "Ago", 9: "Set", 10: "Out", 11: "Nov", 12: "Dez",
+    7: "Jul", 8: "Ago", 9: "Set", 10: "Out", 11: "Nov", 12: "Dez",
 }
 
 

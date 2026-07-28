@@ -19,7 +19,7 @@
 - 🕒 **Season Math** — season ID, start/end, league trophies
 - 🧩 **Fácil integração** — funciona com `discord.py` e outros frameworks
 - 🗃️ **Cache TTL** — cache com expiração automática e sweep de fundo
-- ✅ **Testes** — suite completa com 80 testes pytest
+- ✅ **Testes** — suite completa com 110 testes pytest
 - 📚 **Documentação** — Sphinx docs com referência completa da API
 
 ## 📦 Instalação
@@ -28,7 +28,29 @@
 pip install git+https://github.com/AkumaHalls/GeniusLib.git
 ```
 
-## 🚀 Exemplo rápido
+## 🚀 Exemplos
+
+### Login com tokens (recomendado)
+
+```python
+import geniuslib
+import asyncio
+
+client = geniuslib.Client()
+
+async def main():
+    await client.login_with_tokens("SEU_TOKEN_AQUI")
+
+    player = await client.get_player("#TAG")
+    print(f'Jogador: {player.name} (TH{player.town_hall})')
+    print(f'Troféus: {player.trophies} | Clã: {player.clan.name}')
+
+    await client.close()
+
+asyncio.run(main())
+```
+
+### Login com email/senha
 
 ```python
 import geniuslib
@@ -41,14 +63,31 @@ async def main():
 
     clan = await client.get_clan('#2PP')
     print(f'Clã: {clan.name} ({clan.tag})')
+    print(f'Nível {clan.level} — {clan.member_count}/50 membros')
+    print(f'Guerras: {clan.war_wins}W / {clan.war_losses}L / {clan.war_ties}T')
 
     for member in clan.members:
         status = '✅' if member.war_opted_in else '❌'
-        print(f'{status} {member.name} (TH{member.town_hall})')
+        print(f'{status} {member.name} (TH{member.town_hall}, {member.trophies}🏆)')
 
     await client.close()
 
 asyncio.run(main())
+```
+
+### Player detalhado com tropas e heróis
+
+```python
+player = await client.get_player("#TAG")
+print(f'{player.name} — TH{player.town_hall} ({player.town_hall_level})')
+
+for hero in player.heroes:
+    eq_names = ", ".join(eq.name for eq in hero.equipment)
+    print(f'  {hero.name}: nível {hero.level}/{hero.max_level} [{eq_names}]')
+
+for troop in player.troops:
+    if troop.is_home_base:
+        print(f'  {troop.name}: nível {troop.level}/{troop.max_level}')
 ```
 
 ## 🧰 Utilitários
@@ -65,11 +104,12 @@ decode_tag(256)        # '#2PP'
 ### Season Math
 
 ```python
-from geniuslib.utils import get_season_id, get_season_start, get_season_end
+from geniuslib.utils import get_season_id, get_season_start, get_season_end, format_season_id
 
-get_season_id()        # '2026-05'
-get_season_start()     # datetime da última segunda-feira do mês às 5am UTC
-get_season_end()       # datetime do início da próxima season
+get_season_id()                        # '2026-07'
+get_season_start()                     # datetime da última segunda-feira do mês às 5am UTC
+get_season_end()                       # datetime do início da próxima season
+format_season_id(1779685200)           # 'Jul 2026'
 ```
 
 ### War Analytics
@@ -103,7 +143,30 @@ best_raid_attack(member)                       # melhor ataque do membro (por es
 average_attack_destruction(member)             # destruição média por ataque
 ```
 
-### Formatters (novo em v4.1.0, estável desde v4.3.0)
+### BattleLog Analytics (v5.1.0+)
+
+```python
+from geniuslib.battlelog_analytics import *
+
+entries = await client.get_player_battlelog("#TAG")
+
+# Análise de desempenho
+win_rate = battle_win_rate(entries)                    # 0.75 (75%)
+attack_stats = battle_attack_stats(entries)            # {avg_stars, avg_destruction, total_attacks}
+defense_stats = battle_defense_stats(entries)          # {avg_stars, total_defenses}
+
+# Sequência e consistência
+streak = battle_streak(entries)                        # {'current': 3, 'longest': 5}
+score = battle_consistency_score(entries)               # 0.85
+
+# Progressão de liga
+progression = league_history_progression(history)      # trophy_trend, best_league, worst_league
+tier_dist = league_tier_distribution(history)          # {LeagueName: count}
+
+# Decodificar Army Share Code
+troops, spells, heroes, pets, equip = decode_army_code("AAAAAEAAAAAAAAAA")
+# → tropas=["Barbarian"], spells=[], heroes=["Barbarian King"], pets=[], equip=[]
+```
 
 ```python
 from geniuslib.formatters import *
@@ -151,7 +214,7 @@ Nem todos os atributos estão disponíveis em todos os objetos. Por exemplo, `is
 
 ```python
 # ✅ Funciona em Troop, Spell, Hero, Pet, Equipment
-t.village == coc.VillageType.home
+t.village == geniuslib.VillageType.home
 
 # ❌ Pode falhar em Spell (não tem is_home_base)
 t.is_home_base
@@ -240,12 +303,37 @@ stats = client.http.health_stats
 # }
 ```
 
-### Client Events (novo em v4.1.0, estável desde v4.3.0)
-
-O `EventsClient` agora aceita `raid_clan_tag` configurável (em vez do `#2PP` fixo):
+### Client Events (v4.1.0+)
 
 ```python
-events = EventsClient(client, raid_clan_tag="#ABC123")
+from geniuslib.events import EventsClient
+
+events = EventsClient(client,
+    raid_clan_tag="#ABC123",
+    maintenance_player_tag="#JY9J2Y99",  # tag usada para detectar manutenção
+    cwl_active=True,
+    check_cwl_prep=False,
+)
+```
+
+Detecte eventos em tempo real com decorators:
+
+```python
+@ClanEvents.member_join()
+async def on_member_join(member_before, member_after):
+    print(f"{member_after.name} entrou no clã!")
+
+@PlayerEvents.trophies()
+async def on_trophies_change(before, after):
+    print(f"{after.name}: {before.trophies} → {after.trophies} 🏆")
+
+@WarEvents.war_attack()
+async def on_war_attack(member, attack):
+    print(f"{attack.attacker} atacou {attack.defender}: {attack.stars}⭐")
+
+@ClientEvents.maintenance_start
+async def on_maintenance():
+    print("⚠️ Servidores em manutenção!")
 ```
 
 ### Middleware Pipeline (novo em v4.2.0)
@@ -263,17 +351,19 @@ async def my_middleware(resp):
 client.http.add_middleware(my_middleware)
 ```
 
-### CLI (novo em v4.2.0)
+### CLI (v4.2.0, disponível via `python -m geniuslib` desde v5.4.0)
 
 ```sh
-python -m geniuslib.cli player #TAG
-python -m geniuslib.cli clan #TAG
-python -m geniuslib.cli war #TAG
-python -m geniuslib.cli raid #TAG
-python -m geniuslib.cli search "nome do clã"
-python -m geniuslib.cli export #TAG --format csv
-python -m geniuslib.cli compare #TAG1 #TAG2
+python -m geniuslib player #TAG
+python -m geniuslib clan #TAG
+python -m geniuslib war #TAG
+python -m geniuslib raid #TAG
+python -m geniuslib search "nome do clã"
+python -m geniuslib export #TAG --format json
+python -m geniuslib compare player #TAG1 #TAG2
 ```
+
+> **Nota:** Em versões anteriores (pré-v5.4.0), use `python -m geniuslib.cli`.
 
 ### Upgrade Tracker (novo em v4.2.0)
 
@@ -326,7 +416,8 @@ python -m sphinx -b html . _build
 
 ### Depreciação
 
-`login_with_keys()` agora emite `DeprecationWarning` — use `login()` com email/senha.
+- `login_with_keys()` — emite `DeprecationWarning` (será removido na v6.0.0). Use `login_with_tokens()` assíncrono.
+- `login_with_tokens()` é o método recomendado para autenticação com tokens diretos da API.
 
 ---
 
@@ -338,14 +429,17 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v5.3.0 (atual)
+### v5.4.0 (atual)
 
-- **`get_assets_dir()`** — retorna caminho absoluto da pasta de assets bundled para servir em qualquer framework web
-- **`ASSETS_PREFIX`** — constante `"/assets"` configurável para o prefixo dos paths
-- **`asset_url` agora retorna paths absolutos** — ex: `/assets/troops/barbarian/icon.webp`
-- **Documentação de assets** — seção completa no README com exemplos para aiohttp, FastAPI e Flask
+- **BatchThrottler corrigido** — `process_time()` substituído por `monotonic()`, resolvendo `NameError`
+- **CLI via `python -m geniuslib`** — `__main__.py` agora conectado ao módulo `cli`
+- **Type stub corrigido** — `events.pyi` importa de `geniuslib` em vez de `coc`
+- **Auto-retry HTTP 429** — rate-limit agora faz até 5 tentativas com backoff em vez de crash
+- **`maintenance_player_tag` configurável** — tag do poller de manutenção personalizável (default `#JY9J2Y99`)
+- **Chave duplicada removida** — `_MONTH_NAMES_PT` corrigido
+- **110 testes** — suite completa pytest
 
-### v5.2.0
+### v5.3.0
 
 - **ClashKingAssets integrados** — 3000+ assets oficiais em WebP (troops, heroes, spells, equipment, pets, buildings, leagues)
 - Propriedade `asset_url` nos modelos: `Troop`, `Hero`, `Pet`, `Equipment`, `Spell`

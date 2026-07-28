@@ -18,7 +18,22 @@ Todas as mudanças notáveis neste projeto.
 
 ---
 
-## [5.2.0] — 2026-07-15
+## [5.4.0] — 2026-07-28
+
+### Corrigido
+- **BatchThrottler quebrado** — `process_time()` substituído por `monotonic()` em `http.py:120`, resolvendo `NameError` que impedia o uso do throttler em lote
+- **`events.pyi` importando de `coc`** — corrigido para importar de `geniuslib`, tornando o type stub funcional
+- **`__main__.py` vazio** — agora chama `cli.main()` via `asyncio.run()`, permitindo `python -m geniuslib`
+- **Chave duplicada em `_MONTH_NAMES_PT`** — removida entrada duplicada `7: "Jul"` em `utils.py`
+- **Tag de player hardcoded** — `_maintenance_poller` agora usa `self.maintenance_player_tag` configurável (default `#JY9J2Y99`)
+- **Slots não utilizados** — removidos `_troop_holder`, `_spell_holder`, `_hero_holder`, `_pet_holder`, `_equipment_holder` de `client.py`
+- **Docstring truncada** — `ranke` corrigido para `ranked_cls` com documentação completa
+- **`maybe_sort` sombreando `iter` builtin** — reescrita da função para clareza e segurança
+
+### Melhorado
+- **Auto-retry para HTTP 429** — em vez de levantar exceção imediata, agora faz até 5 tentativas com backoff exponencial (`(tries+1)*5` segundos)
+- **`EventsClient.maintenance_player_tag`** — parâmetro configurável no construtor para o tag usado no poller de manutenção
+- **Atualização de versão:** `5.4.0`
 
 ### Adicionado
 - **ClashKingAssets integrados** — mais de 3000 assets oficiais do Clash of Clans em WebP
