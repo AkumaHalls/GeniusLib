@@ -429,7 +429,7 @@ Foi feita sob medida para o ecossistema **ClashGenius**.
 
 ## 📄 Changelog
 
-### v5.4.0 (atual)
+### v5.5.0 (atual)
 
 - **BatchThrottler corrigido** — `process_time()` substituído por `monotonic()`, resolvendo `NameError`
 - **CLI via `python -m geniuslib`** — `__main__.py` agora conectado ao módulo `cli`

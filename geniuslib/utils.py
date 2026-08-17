@@ -527,17 +527,26 @@ class FIFO(UserDict):
 class HTTPStats(dict):
     """Implements a basic key: deque value to aid with HTTP performance stats."""
 
-    __slots__ = ("max_size",)
+    __slots__ = ("max_size", "max_keys")
 
-    def __init__(self, max_size):
+    def __init__(self, max_size, max_keys=1000):
         self.max_size = max_size
+        self.max_keys = max_keys
         super().__init__()
+
+    def _evict_old_keys(self):
+        if len(self) > self.max_keys:
+            excess = len(self) - self.max_keys
+            keys_to_remove = list(self.keys())[:excess]
+            for k in keys_to_remove:
+                super().__delitem__(k)
 
     def __setitem__(self, key, value):
         try:
             super().__getitem__(key).append(value)
         except (KeyError, AttributeError):
             super().__setitem__(key, deque((value,), maxlen=self.max_size))
+            self._evict_old_keys()
 
     def get_average(self, key):
         """Get the average latency / performance counter for an API endpoint"""
@@ -550,10 +559,14 @@ class HTTPStats(dict):
 
     def get_mixed_average(self):
         """Get the average latency / performance counter for all API endpoints"""
-        all_values = [v for values in self.values() for v in values]
-        if not all_values:
+        total = 0.0
+        count = 0
+        for values in self.values():
+            total += sum(values)
+            count += len(values)
+        if count == 0:
             return 0.0
-        return sum(all_values) / len(all_values)
+        return total / count
 
     def get_all_average(self):
         """Get the average latency / performance counter for each API endpoint."""

@@ -424,6 +424,8 @@ class EventsClient(Client):
 
         self._locks = {}
 
+        self._data_maxsize = 500
+
     def _setup(self):
         self._updater_tasks = {
             "clan": self.loop.create_task(self._clan_updater()),
@@ -447,6 +449,30 @@ class EventsClient(Client):
         self._clans = {}
         self._players = {}
         self._wars = {}
+
+    def _evict_data_dicts(self):
+        for store in (self._clans, self._players, self._wars):
+            if len(store) > self._data_maxsize:
+                excess = len(store) - self._data_maxsize
+                keys_to_remove = list(store.keys())[:excess]
+                for k in keys_to_remove:
+                    store.pop(k, None)
+
+    async def close(self) -> None:
+        if hasattr(self, '_updater_tasks') and self._updater_tasks:
+            for task in self._updater_tasks.values():
+                if not task.done():
+                    task.cancel()
+            self._updater_tasks.clear()
+        if hasattr(self, '_clans'):
+            self._clans.clear()
+        if hasattr(self, '_players'):
+            self._players.clear()
+        if hasattr(self, '_wars'):
+            self._wars.clear()
+        if hasattr(self, '_locks'):
+            self._locks.clear()
+        await super().close()
 
     def add_clan_updates(self, *tags):
         """Add clan tags to receive updates for.
@@ -601,6 +627,7 @@ class EventsClient(Client):
 
     def _update_clan(self, clan):
         self._clans[clan.tag] = clan
+        self._evict_data_dicts()
 
     def _get_cached_player(self, player_tag):
         try:
@@ -610,6 +637,7 @@ class EventsClient(Client):
 
     def _update_player(self, player):
         self._players[player.tag] = player
+        self._evict_data_dicts()
 
     def _get_cached_war(self, key):
         try:
@@ -619,6 +647,7 @@ class EventsClient(Client):
 
     def _update_war(self, key, war):
         self._wars[key] = war
+        self._evict_data_dicts()
 
     def event(self, function):
         """A decorator or regular function that registers an event.

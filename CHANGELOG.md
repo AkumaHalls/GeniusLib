@@ -18,6 +18,19 @@ Todas as mudanças notáveis neste projeto.
 
 ---
 
+## [5.5.0] — 2026-08-17
+
+### Corrigido
+- **`events.py`** — `_clans`, `_players`, `_wars` agora têm max de 500 entradas com evicção, impedindo crescimento indefinido de objetos do jogo em memória
+- **`events.py`** — `close()` agora cancela os 7 updater tasks (`_clan_updater`, `_player_updater`, `_war_updater`, `_maintenance_poller`, `_end_of_season_poller`, `_raid_poller`, `_clan_games_poller`) e limpa todos os caches e locks
+- **`utils.py`** — `HTTPStats` agora tem `max_keys=1000` com evicção de chaves antigas, impedindo crescimento indefinido com URLs únicas
+- **`utils.py`** — `get_mixed_average()` otimizado para não criar lista flatten temporária, reduzindo pico de memória
+
+### Alterado
+- **Versão:** `5.5.0`
+
+---
+
 ## [5.4.0] — 2026-07-28
 
 ### Corrigido
