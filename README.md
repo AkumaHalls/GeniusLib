@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # GeniusLib
 
@@ -330,4 +330,3 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 Built by [AkumaHalls](https://github.com/AkumaHalls) for the [ClashGenius](https://github.com/AkumaHalls/ClashGenius) project.
 Based on the original [coc.py](https://github.com/mathsman5133/coc.py) by mathsman5133.
-]]>
