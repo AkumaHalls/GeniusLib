@@ -1,36 +1,86 @@
 [build-system]
-requires = ["setuptools>=61.2"]
+requires = ["setuptools>=61.2", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "geniuslib"
-authors = [{ name = "AkumaHalls" }]
-maintainers = [{ name = "AkumaHalls" }]
+authors = [{ name = "AkumaHalls", email = "akumahalls@proton.me" }]
+maintainers = [{ name = "AkumaHalls", email = "akumahalls@proton.me" }]
 version = "5.5.0"
-description = "GeniusLib - Biblioteca Python assíncrona para a API do Clash of Clans"
-requires-python = ">=3.10.0"
+description = "Async Python wrapper for the Clash of Clans API — events, war analytics, raid analytics, middleware, CLI, and 3000+ bundled game assets."
 readme = "README.md"
 license = { text = "MIT" }
-keywords = ["geniuslib", "clash of clans", "clash api", "coc", "clashgenius"]
-classifiers = ["Development Status :: 5 - Production/Stable",
-    "Programming Language :: Python",
-    "Natural Language :: Portuguese",
-    "Operating System :: OS Independent",]
-dependencies = ["aiohttp", "orjson"]
+requires-python = ">=3.10"
+keywords = [
+    "clash-of-clans",
+    "coc-api",
+    "clash-of-clans-api",
+    "discord-bot",
+    "async",
+    "gaming",
+    "supercell",
+    "war-analytics",
+    "clashgenius",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Games/Entertainment",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Framework :: AsyncIO",
+    "Natural Language :: English",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aiohttp>=3.9",
+    "orjson>=3.9",
+]
+
 [project.urls]
-documentation = "https://github.com/AkumaHalls/GeniusLib"
-repository = "https://github.com/AkumaHalls/GeniusLib"
+Homepage = "https://github.com/AkumaHalls/GeniusLib"
+Documentation = "https://geniuslib.readthedocs.io"
+Repository = "https://github.com/AkumaHalls/GeniusLib"
+Changelog = "https://github.com/AkumaHalls/GeniusLib/blob/main/CHANGELOG.md"
+Issues = "https://github.com/AkumaHalls/GeniusLib/issues"
 
 [project.optional-dependencies]
-docs = ["sphinx",
-    "sphinx_rtd_theme",
-    "sphinxcontrib_trio",
-    "autodocsumm",
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
 ]
 
 [tool.setuptools]
-packages = ["geniuslib", "geniuslib.ext.discordlinks", "geniuslib.static", "geniuslib.ext.triggers"]
-include-package-data = true
+packages = [
+    "geniuslib",
+    "geniuslib.ext.discordlinks",
+    "geniuslib.static",
+    "geniuslib.ext.triggers",
+]
+include-package-data = false
 
 [tool.setuptools.package-data]
-geniuslib = ["events.pyi", "static/*", "static/assets/**/*"]
+geniuslib = ["events.pyi", "static/static_data.json"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

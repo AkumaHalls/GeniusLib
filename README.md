@@ -1,115 +1,145 @@
-# GeniusLib 🧠⚔️
+<![CDATA[<div align="center">
 
-**GeniusLib** é uma biblioteca Python assíncrona para consumir a API oficial do Clash of Clans. Projetada para bots Discord, análises de guerra, capital raids e scouting — com suporte nativo a `war_opted_in` e `clan_capital_contributions`.
+# GeniusLib
 
-## ✨ Funcionalidades
+**The complete async Python SDK for the Clash of Clans API**
 
-- 🔄 **Totalmente assíncrona** — baseada em `asyncio` + `aiohttp`
-- 📡 **Eventos em tempo real** — detecte entrada/saída, doações, ataques, mudanças de cargo e opt in/out
-- ⚔️ **Dados de guerra completos** — members, attacks, defenses, scouting, CWL
-- 🏰 **Capital Raid** — logs de ataque, defesa, distritos e members
-- 🔢 **Tag Encode/Decode** — converta tags base-14 para inteiros e vice-versa
-- 📊 **War Analytics** — `new_stars`, `best_attack`, `best_defense`, `missed_attacks`, `cleanup_attacks`
-- 🔗 **Middleware Pipeline** — intercepte e transforme requests/responses HTTP
-- 🖥️ **CLI embutido** — consulte players, clans, wars e raids pelo terminal
-- 📈 **Upgrade Tracker** — estime custo e tempo de upgrades por TH
-- 📤 **Exportador** — exporte dados para JSON, CSV ou dict
-- ⚖️ **Comparador** — compare dois players ou clãs lado a lado
-- 🏆 **Calculadoras** — estimativa de troféus, medalhas de raid, troféus lendaliga
-- 🕒 **Season Math** — season ID, start/end, league trophies
-- 🧩 **Fácil integração** — funciona com `discord.py` e outros frameworks
-- 🗃️ **Cache TTL** — cache com expiração automática e sweep de fundo
-- ✅ **Testes** — suite completa com 110 testes pytest
-- 📚 **Documentação** — Sphinx docs com referência completa da API
+[![PyPI version](https://img.shields.io/pypi/v/geniuslib?color=blue&logo=pypi&logoColor=white)](https://pypi.org/project/geniuslib/)
+[![Python versions](https://img.shields.io/pypi/pyversions/geniuslib?logo=python&logoColor=white)](https://pypi.org/project/geniuslib/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/AkumaHalls/GeniusLib/blob/main/LICENSE)
+[![Downloads](https://img.shields.io/pypi/dm/geniuslib?color=orange&logo=pypi&logoColor=white)](https://pypi.org/project/geniuslib/)
+[![Tests](https://img.shields.io/badge/tests-110%20passed-brightgreen.svg)](https://github.com/AkumaHalls/GeniusLib)
+[![Docs](https://img.shields.io/badge/docs-readthedocs-blue.svg)](https://geniuslib.readthedocs.io)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-black.svg)](https://github.com/astral-sh/ruff)
 
-## 📦 Instalação
+---
+
+GeniusLib is a **fully async** Python wrapper for the official [Clash of Clans API](https://developer.clashofclans.com/).
+Built for Discord bots, war trackers, capital raid analyzers, and anything that needs fast, reliable CoC data.
 
 ```sh
+pip install geniuslib
+```
+
+```python
+import geniuslib, asyncio
+
+async def main():
+    async with geniuslib.Client() as client:
+        await client.login("email", "password")
+        player = await client.get_player("#TAG")
+        print(f"{player.name} — TH{player.town_hall} — {player.trophies} trophies")
+
+asyncio.run(main())
+```
+
+</div>
+
+---
+
+## Why GeniusLib?
+
+| Feature | GeniusLib | coc.py |
+|---------|-----------|--------|
+| **Async/await** | Native async throughout | Partial (sync wrappers) |
+| **API Coverage** | 35/35 endpoints | 30/35 endpoints |
+| **Events System** | Real-time clan/war/player events | Not included |
+| **War Analytics** | new_stars, best_attack, missed, cleanup | Basic only |
+| **Raid Analytics** | Full offensive/defensive breakdown | Not included |
+| **Battle Log Analytics** | Win rate, streaks, league progression | Not included |
+| **Middleware Pipeline** | Request/response interceptors | Not included |
+| **Game Assets** | 3000+ bundled WebP icons | Not included |
+| **CLI** | Built-in (`python -m geniuslib`) | Not included |
+| **Upgrade Tracker** | Cost/time estimation per TH level | Not included |
+| **Cache TTL** | Auto-expiring cache with background sweep | Not included |
+| **Maintenance Polling** | Auto-detects Supercell maintenance | Not included |
+| **Army Link Parser** | Decode in-game army share codes | Not included |
+| **Test Suite** | 110 pytest tests | Minimal |
+
+---
+
+## Quick Start
+
+### Installation
+
+```sh
+# From PyPI (recommended)
+pip install geniuslib
+
+# From source
 pip install git+https://github.com/AkumaHalls/GeniusLib.git
 ```
 
-## 🚀 Exemplos
-
-### Login com tokens (recomendado)
+### Authentication
 
 ```python
-import geniuslib
-import asyncio
-
-client = geniuslib.Client()
+import geniuslib, asyncio
 
 async def main():
-    await client.login_with_tokens("SEU_TOKEN_AQUI")
+    client = geniuslib.Client()
 
+    # Option 1: Email/password (recommended for bots)
+    await client.login("email@example.com", "password")
+
+    # Option 2: Direct API token
+    await client.login_with_tokens("your-api-token")
+
+    # Now use the client...
+    clan = await client.get_clan("#2PP")
+    print(f"{clan.name} — Level {clan.level}")
+
+    await client.close()
+
+asyncio.run(main())
+```
+
+### Using as context manager
+
+```python
+async with geniuslib.Client() as client:
+    await client.login("email", "password")
     player = await client.get_player("#TAG")
-    print(f'Jogador: {player.name} (TH{player.town_hall})')
-    print(f'Troféus: {player.trophies} | Clã: {player.clan.name}')
-
-    await client.close()
-
-asyncio.run(main())
+    print(player.name, player.town_hall)
 ```
 
-### Login com email/senha
+---
+
+## Features
+
+### All 35 Official API Endpoints
+
+GeniusLib covers every endpoint in the Clash of Clans API:
+
+**Clans** — search, info, members, war log, current war, CWL group, capital raids
+**Players** — info, battle log, league history, token verification
+**Leagues** — all leagues, seasons, rankings, tiers
+**Locations** — rankings for clans, players, builder base, capital
+**War Leagues** — search, info, individual wars
+**Capital Leagues** — search, info
+**Builder Base Leagues** — search, info
+**Labels** — clan labels, player labels
+**Gold Pass** — current season info
+
+### Real-Time Events
 
 ```python
-import geniuslib
-import asyncio
+from geniuslib import EventsClient, ClanEvents, WarEvents, PlayerEvents, ClientEvents
 
-client = geniuslib.Client()
+events = EventsClient(client, clan_tags=["#TAG1", "#TAG2"])
 
-async def main():
-    await client.login('email@exemplo.com', 'senha')
+@ClanEvents.member_join()
+async def on_join(member, clan):
+    print(f"{member.name} joined {clan.name}")
 
-    clan = await client.get_clan('#2PP')
-    print(f'Clã: {clan.name} ({clan.tag})')
-    print(f'Nível {clan.level} — {clan.member_count}/50 membros')
-    print(f'Guerras: {clan.war_wins}W / {clan.war_losses}L / {clan.war_ties}T')
+@WarEvents.war_attack()
+async def on_attack(member, attack):
+    print(f"{member.name}: {attack.stars} stars!")
 
-    for member in clan.members:
-        status = '✅' if member.war_opted_in else '❌'
-        print(f'{status} {member.name} (TH{member.town_hall}, {member.trophies}🏆)')
+@ClientEvents.maintenance_start
+async def on_maintenance():
+    print("Supercell maintenance started")
 
-    await client.close()
-
-asyncio.run(main())
-```
-
-### Player detalhado com tropas e heróis
-
-```python
-player = await client.get_player("#TAG")
-print(f'{player.name} — TH{player.town_hall} ({player.town_hall_level})')
-
-for hero in player.heroes:
-    eq_names = ", ".join(eq.name for eq in hero.equipment)
-    print(f'  {hero.name}: nível {hero.level}/{hero.max_level} [{eq_names}]')
-
-for troop in player.troops:
-    if troop.is_home_base:
-        print(f'  {troop.name}: nível {troop.level}/{troop.max_level}')
-```
-
-## 🧰 Utilitários
-
-### Tag Encode/Decode
-
-```python
-from geniuslib.utils import encode_tag, decode_tag
-
-encode_tag('#2PP')     # 256
-decode_tag(256)        # '#2PP'
-```
-
-### Season Math
-
-```python
-from geniuslib.utils import get_season_id, get_season_start, get_season_end, format_season_id
-
-get_season_id()                        # '2026-07'
-get_season_start()                     # datetime da última segunda-feira do mês às 5am UTC
-get_season_end()                       # datetime do início da próxima season
-format_season_id(1779685200)           # 'Jul 2026'
+await events.start()
 ```
 
 ### War Analytics
@@ -117,126 +147,72 @@ format_season_id(1779685200)           # 'Jul 2026'
 ```python
 from geniuslib.war_analytics import *
 
-new_stars(attack)                     # estrelas ganhas além do melhor ataque anterior
-best_attack_on(member)                # melhor ataque do membro
-best_defense_on(member)               # melhor defesa contra o membro
-count_missed_attacks(war, tag)        # ataques não utilizados
-get_cleanup_attacks(war, tag)         # ataques que não renderam estrelas novas
-get_war_result(war, tag)              # 'win', 'lose', 'tie' ou 'ongoing'
+war = await client.get_current_war("#TAG")
+
+count_missed_attacks(war, "#TAG")     # 2
+best_attack_on(member)                 # WarAttack object
+get_cleanup_attacks(war, "#TAG")      # list of wasted attacks
+get_war_result(war, "#TAG")           # 'win', 'lose', 'tie'
 ```
 
-### Raid Analytics (novo em v4.1.0, estável desde v4.3.0)
+### Raid Analytics
 
 ```python
 from geniuslib.raid_analytics import *
 
-raid_summary(raid_entry)                        # visão completa: ofensivo, defensivo, ataques perdidos, inativos
-clan_offensive_stats(raid_entry)                # total loot, ataques, distritos, eficiência
-clan_defensive_stats(raid_entry)                # loot perdido, ataques recebidos, distritos perdidos
-count_missed_raid_attacks(raid_entry, tag)      # ataques não utilizados no raid
-get_inactive_raid_members(raid_entry)           # membros que não atacaram
-get_raid_cleanup_attacks(raid_entry, tag)       # ataques em distritos já 100% destruídos
-get_wasted_attacks(raid_entry, tag)             # ataques com 0 estrelas e <30% destruição
-district_attack_breakdown(district)             # contagem de ataques por estrelas (3/2/1/0)
-member_raid_contribution(member)               # % de contribuição do membro no loot total
-best_raid_attack(member)                       # melhor ataque do membro (por estrelas + destruição)
-average_attack_destruction(member)             # destruição média por ataque
+logs = await client.get_raid_log("#TAG", limit=1)
+summary = raid_summary(logs[0])
+
+summary["offensive"]["total_loot"]     # 45000
+summary["missed_attacks"]              # 3
+summary["inactive_members"]            # ['Player1', 'Player2']
 ```
 
-### BattleLog Analytics (v5.1.0+)
+### Batch Fetching
 
 ```python
-from geniuslib.battlelog_analytics import *
+from geniuslib import Client, ClanIterator
 
-entries = await client.get_player_battlelog("#TAG")
+async with Client() as client:
+    await client.login("email", "password")
 
-# Análise de desempenho
-win_rate = battle_win_rate(entries)                    # 0.75 (75%)
-attack_stats = battle_attack_stats(entries)            # {avg_stars, avg_destruction, total_attacks}
-defense_stats = battle_defense_stats(entries)          # {avg_stars, total_defenses}
+    # Fetch multiple clans in parallel
+    tags = ["#TAG1", "#TAG2", "#TAG3", "#TAG4", "#TAG5"]
+    async for clan in ClanIterator(client, tags):
+        print(f"{clan.name}: {clan.level}")
 
-# Sequência e consistência
-streak = battle_streak(entries)                        # {'current': 3, 'longest': 5}
-score = battle_consistency_score(entries)               # 0.85
-
-# Progressão de liga
-progression = league_history_progression(history)      # trophy_trend, best_league, worst_league
-tier_dist = league_tier_distribution(history)          # {LeagueName: count}
-
-# Decodificar Army Share Code
-troops, spells, heroes, pets, equip = decode_army_code("AAAAAEAAAAAAAAAA")
-# → tropas=["Barbarian"], spells=[], heroes=["Barbarian King"], pets=[], equip=[]
+    # Or use gather for specific fetches
+    import asyncio
+    players = await asyncio.gather(*[
+        client.get_player(tag) for tag in ["#P1", "#P2", "#P3"]
+    ])
 ```
 
-```python
-from geniuslib.formatters import *
+### Middleware Pipeline
 
-format_th(level)                    # "🔑 TH18" com emoji por nível (1-18)
-format_trophies(trophies)           # "🏆 5.000" com separador de milhar
-format_role(role)                   # "👑 Líder" traduzido (Líder, Colíder, Ancião, Membro)
-format_player_brief(player)         # "Nome (#TAG) | 🔑 TH16 | 🏆 5.000"
-format_member_brief(member)         # "👑 Nome | 🔑 TH16 | 🏆 5.000"
-format_clan_brief(clan)            # "Nome (#TAG) | Nível 10 | 45/50"
-format_clan_detailed(clan)         # multi-linha com troféus e VS
-format_war_state(state)            # "⚔️ Em guerra" / "❌ Fora de guerra"
-format_war_result(war, tag)        # "✅ Vitória" / "❌ Derrota" / "🏈 Empate"
-format_war_score(war, tag)         # "45 ⭐ 30"
-format_attack(stars, destruction)  # "⭐⭐☆ 85.3%"
-format_percentage(value)           # "85.3%"
-format_number(value)               # "15.000" (separador de milhar)
-format_raid_brief(raid)            # resumo do raid em uma linha
+```python
+from geniuslib.middleware import middleware, request_logger
+
+# Built-in request logging
+client.http.add_middleware(request_logger)
+
+# Custom middleware
+@middleware("response")
+async def cache_buster(resp):
+    resp.data["cached"] = False
+    return resp
+
+client.http.add_middleware(cache_buster)
 ```
 
-### Cache TTL
+### Game Assets (3000+ icons)
 
 ```python
-from geniuslib.utils import TTLCache
-
-cache = TTLCache(ttl=300, maxsize=1000)
-cache['chave'] = 'valor'
-await cache.start_sweeper(interval=60)  # limpa expirados a cada 60s
-cache.stop_sweeper()
-```
-
-### Calculadoras
-
-```python
-from geniuslib.utils import estimate_raid_medals, estimate_trophy_change, get_league_trophies
-
-get_league_trophies(5200)                         # 300 (troféus lendaliga)
-estimate_trophy_change(3, 100, 5000, 4900)         # estimativa de troféus ganhos
-estimate_raid_medals(50000, 6, 4, 'Gold I')        # estimativa de medalhas de raid
-```
-
-### Atributos de Tropas & Feitiços
-
-Nem todos os atributos estão disponíveis em todos os objetos. Por exemplo, `is_home_base` existe em `Troop`/`Hero`, mas **não** em `Spell`. Prefira usar `village` (disponível em todos):
-
-```python
-# ✅ Funciona em Troop, Spell, Hero, Pet, Equipment
-t.village == geniuslib.VillageType.home
-
-# ❌ Pode falhar em Spell (não tem is_home_base)
-t.is_home_base
-```
-
-A biblioteca trata graciosamente unidades desconhecidas (novas tropas/feitiços não incluídos no JSON de dados estáticos), definindo `is_super_troop`, `is_seasonal`, `is_siege_machine` como `False` por padrão.
-
-### Assets de Imagens (v5.3.0)
-
-A GeniusLib inclui **3000+ assets oficiais** (ícones de tropas, heróis, spells, equipment, pets, construções) bundled no package. Cada modelo (`Troop`, `Spell`, `Hero`, `Pet`, `Equipment`) possui a propriedade `asset_url` que retorna o path pronto para uso em `<img src="...">`:
-
-```python
-from geniuslib import Client
-
-client = Client()
 player = await client.get_player("#TAG")
 
 for troop in player.troops:
     print(f"{troop.name}: {troop.asset_url}")
     # "Barbarian": "/assets/troops/barbarian/icon.webp"
-    # "Lightning Spell": "/assets/spells/lightning_spell.webp"
-    # "Archer Queen": "/assets/heroes/archer_queen/icon.webp"
 
 for hero in player.heroes:
     print(f"{hero.name}: {hero.asset_url}")
@@ -244,286 +220,114 @@ for hero in player.heroes:
         print(f"  {eq.name}: {eq.asset_url}")
 ```
 
-#### Como servir os assets no seu projeto
-
-Use `get_assets_dir()` para obter o caminho absoluto da pasta de assets e monte uma rota estática:
+Serve them with any framework:
 
 ```python
+# aiohttp
 from geniuslib.utils import get_assets_dir
-
-# === aiohttp ===
-from aiohttp import web
-app = web.Application()
 app.router.add_static('/assets/', get_assets_dir())
 
-# === FastAPI / Starlette ===
-from fastapi import FastAPI
+# FastAPI
 from starlette.staticfiles import StaticFiles
-app = FastAPI()
-app.mount('/assets/', StaticFiles(directory=get_assets_dir()), name="assets")
-
-# === Flask ===
-from flask import Flask, send_from_directory
-app = Flask(__name__)
-
-@app.route('/assets/<path:filename>')
-def serve_asset(filename):
-    return send_from_directory(get_assets_dir(), filename)
+app.mount('/assets/', StaticFiles(directory=get_assets_dir()))
 ```
 
-Depois, basta usar os paths no HTML:
-
-```html
-<img src="/assets/troops/barbarian/icon.webp" alt="Barbarian">
-<img src="/assets/heroes/archer_queen/icon.webp" alt="Archer Queen">
-<img src="/assets/spells/lightning_spell.webp" alt="Lightning Spell">
-```
-
-### Enums Úteis
-
-```python
-from geniuslib.enums import VillageType, WarState, WarResult, Role, SeasonResult
-
-WarState.war_ended         # 'warEnded'
-VillageType.home           # 'home'
-WarResult.win              # 'win'
-```
-
-### HTTP Health Stats (novo em v4.1.0, estável desde v4.3.0)
-
-```python
-# Acesse as estatísticas de saúde da API via http.health_stats
-stats = client.http.health_stats
-# {
-#   "total_requests": 1523,
-#   "total_errors": 12,
-#   "total_rate_limits": 3,
-#   "total_retries": 8,
-#   "avg_latency_ms": 245.6
-# }
-```
-
-### Client Events (v4.1.0+)
-
-```python
-from geniuslib.events import EventsClient
-
-events = EventsClient(client,
-    raid_clan_tag="#ABC123",
-    maintenance_player_tag="#JY9J2Y99",  # tag usada para detectar manutenção
-    cwl_active=True,
-    check_cwl_prep=False,
-)
-```
-
-Detecte eventos em tempo real com decorators:
-
-```python
-@ClanEvents.member_join()
-async def on_member_join(member_before, member_after):
-    print(f"{member_after.name} entrou no clã!")
-
-@PlayerEvents.trophies()
-async def on_trophies_change(before, after):
-    print(f"{after.name}: {before.trophies} → {after.trophies} 🏆")
-
-@WarEvents.war_attack()
-async def on_war_attack(member, attack):
-    print(f"{attack.attacker} atacou {attack.defender}: {attack.stars}⭐")
-
-@ClientEvents.maintenance_start
-async def on_maintenance():
-    print("⚠️ Servidores em manutenção!")
-```
-
-### Middleware Pipeline (novo em v4.2.0)
-
-```python
-from geniuslib.middleware import Middleware, middleware, request_logger
-
-client.http.add_middleware(request_logger)
-
-@middleware("response")
-async def my_middleware(resp):
-    resp.data["processed"] = True
-    return resp
-
-client.http.add_middleware(my_middleware)
-```
-
-### CLI (v4.2.0, disponível via `python -m geniuslib` desde v5.4.0)
+### CLI
 
 ```sh
 python -m geniuslib player #TAG
 python -m geniuslib clan #TAG
 python -m geniuslib war #TAG
 python -m geniuslib raid #TAG
-python -m geniuslib search "nome do clã"
+python -m geniuslib search "clan name"
 python -m geniuslib export #TAG --format json
 python -m geniuslib compare player #TAG1 #TAG2
 ```
 
-> **Nota:** Em versões anteriores (pré-v5.4.0), use `python -m geniuslib.cli`.
-
-### Upgrade Tracker (novo em v4.2.0)
+### Utilities
 
 ```python
-from geniuslib.upgrade_tracker import estimate_upgrade_cost, get_th_upgrade_summary
-
-summary = get_th_upgrade_summary(16)
-print(summary.total_gold)        # custo total em ouro
-print(summary.total_elixir)      # custo total em elixir
-print(summary.total_de)          # custo total em elixir negro
-print(summary.total_time_days)   # tempo total em dias
-```
-
-### Exportador (novo em v4.2.0)
-
-```python
+from geniuslib.utils import encode_tag, decode_tag, get_season_id
+from geniuslib.formatters import format_th, format_trophies, format_role
 from geniuslib.exporter import to_json, to_csv
-
-player = await client.get_player("#TAG")
-print(to_json(player))                # JSON pretty-printed
-print(to_csv(player, "player"))       # CSV formatado
-```
-
-### Comparador (novo em v4.2.0)
-
-```python
 from geniuslib.comparer import compare_players, compare_clans
+from geniuslib.upgrade_tracker import get_th_upgrade_summary
 
-result = compare_players(player1, player2)
-print(result["left"]["trophies"])    # troféus do jogador 1
-print(result["right"]["trophies"])   # troféus do jogador 2
-print(result["diff"]["trophies"])    # diferença
+# Tag encoding
+encode_tag("#2PP")                    # 256
+
+# Season math
+get_season_id()                       # "2026-07"
+
+# Formatters
+format_th(16)                         # "🔑 TH16"
+format_trophies(5000)                 # "🏆 5,000"
+
+# Upgrade cost estimation
+summary = get_th_upgrade_summary(16)
+print(f"Total time: {summary.total_time_days} days")
 ```
 
-### Testes (novo em v4.2.0)
+---
+
+## Examples
+
+The [`examples/`](https://github.com/AkumaHalls/GeniusLib/tree/main/examples) folder contains ready-to-run scripts:
+
+| Example | Description |
+|---------|-------------|
+| [`discord_bot.py`](examples/discord_bot.py) | Full Discord bot with /player, /clan, /war, /raid commands + real-time events |
+| [`war_analyzer.py`](examples/war_analyzer.py) | Detailed war performance report with top attackers, defense, cleanup |
+| [`raid_reporter.py`](examples/raid_reporter.py) | Capital Raid report with offensive/defensive stats and inactive detection |
+| [`export_data.py`](examples/export_data.py) | Export player/clan data to JSON or CSV |
+| [`batch_fetch.py`](examples/batch_fetch.py) | Fetch multiple clans/players in parallel |
+| [`web_dashboard.py`](examples/web_dashboard.py) | Minimal web dashboard with aiohttp |
+
+---
+
+## Documentation
+
+Full documentation is available at **[geniuslib.readthedocs.io](https://geniuslib.readthedocs.io)**.
+
+### Building docs locally
+
+```sh
+pip install mkdocs mkdocs-material mkdocstrings[python]
+mkdocs serve
+```
+
+---
+
+## Testing
 
 ```sh
 pip install pytest pytest-asyncio
-python -m pytest tests/ -v
+pytest tests/ -v
 ```
 
-### Documentação (novo em v4.2.0)
-
-```sh
-pip install sphinx sphinx-rtd-theme
-cd docs/
-python -m sphinx -b html . _build
-# Abra docs/_build/index.html
-```
-
-### Depreciação
-
-- `login_with_keys()` — emite `DeprecationWarning` (será removido na v6.0.0). Use `login_with_tokens()` assíncrono.
-- `login_with_tokens()` é o método recomendado para autenticação com tokens diretos da API.
+110 tests covering utils, war analytics, raid analytics, battle log analytics, formatters, middleware, exporters, and comparers.
 
 ---
 
-## 🧠 Por que GeniusLib?
+## Contributing
 
-Diferente de outras bibliotecas, a GeniusLib já inclui **todos os campos da API** — sem precisar de `raw_attribute` pra acessar dados como `war_opted_in`. Além disso, oferece utilitários embutidos como calculadoras de troféus/medalhas, analytics de guerra e cache TTL — tudo pronto pra usar.
+Contributions are welcome! Please:
 
-Foi feita sob medida para o ecossistema **ClashGenius**.
-
-## 📄 Changelog
-
-### v5.5.0 (atual)
-
-- **BatchThrottler corrigido** — `process_time()` substituído por `monotonic()`, resolvendo `NameError`
-- **CLI via `python -m geniuslib`** — `__main__.py` agora conectado ao módulo `cli`
-- **Type stub corrigido** — `events.pyi` importa de `geniuslib` em vez de `coc`
-- **Auto-retry HTTP 429** — rate-limit agora faz até 5 tentativas com backoff em vez de crash
-- **`maintenance_player_tag` configurável** — tag do poller de manutenção personalizável (default `#JY9J2Y99`)
-- **Chave duplicada removida** — `_MONTH_NAMES_PT` corrigido
-- **110 testes** — suite completa pytest
-
-### v5.3.0
-
-- **ClashKingAssets integrados** — 3000+ assets oficiais em WebP (troops, heroes, spells, equipment, pets, buildings, leagues)
-- Propriedade `asset_url` nos modelos: `Troop`, `Hero`, `Pet`, `Equipment`, `Spell`
-- Funções `asset_path()` e `clean_asset_name()` em `utils.py`
-
-### v5.1.2
-
-- **decode_army_code()** — nova função em `battlelog_analytics` que decodifica army share codes em nomes legíveis (tropas, spells, heróis, pets, equipment)
-- **format_season_id()** — nova função em `utils` que converte timestamps Unix de season em datas legíveis ("Jun 2026")
-- **league_history_progression** — agora inclui `season_label` formatado no `trophy_trend`
-- **Fix deprecation** — `utcfromtimestamp` substituído por `datetime.fromtimestamp(..., tz=timezone.utc)`
-
-### v5.1.1
-
-- **Bugfix (BattleLogEntry)** — `from_timestamp()` agora é protegido contra `None` no campo `timestamp`, corrigindo `TypeError` quando o timestamp não está presente no battle log
-
-### v5.1.0
-
-- **Battlelog Models** — novo módulo `geniuslib.battlelog` com 6 modelos Tier B: `BattleLogResource`, `BattleLogEntry`, `LeagueHistoryEntry`, `LeagueTierGroupBattleLogEntry`, `LeagueTierGroupMember`, `LeagueTierGroup`
-- **Battlelog Analytics** — novo módulo `geniuslib.battlelog_analytics` com 15 funções de análise: win rate, attack/defense stats, loot summary, streak, consistency score, daily/period summary, league progression, season stats, tier distribution, tier group member/attack/defense analysis, MVP
-- **Client atualizado** — `get_player_battlelog()` e `get_player_league_history()` agora retornam objetos model ao invés de dicts brutos; suporte a parâmetro `cls` para injeção de classe customizada
-- **110 testes** — suite completa com 30 novos testes para analytics de battlelog
-- **Bugfix (from_timestamp)** — modelos battlelog agora protegem contra `None` antes de chamar `from_timestamp()`
-
-### v5.0.3
-
-- **Bugfix (LogPaginator)** — `__getitem__` agora suporta slice notation (`log[:5]`), evitando `AttributeError: 'list' object has no attribute 'get'`
-- **Corrigido em** — `entry_logs.py`, `tasks_cog.py` (ClashGenius)
-
-### v5.0.2
-
-- fix: rename `get_league_group` → `get_league_group_info` to avoid shadowing CWL method
-
-### v5.0.1
-
-- fix: 70+ bugs across 12 files
-
-### v5.0.0
-
-- Add missing league endpoints, fix naming
-
-### v4.3.0
-
-- **TH18 completo** — suporte total a Town Hall 18 no Upgrade Tracker (43 construções, 8 heróis, 12 pets, 18 poções, 32 tropas)
-- **Novo herói: Dragon Duke** — adicionado ao `HERO_ORDER`, static data e upgrade tracker (nível máx 25)
-- **Nova tropa: Ruin Witch** — adicionada ao `DARK_ELIXIR_TROOP_ORDER`, static data e upgrade tracker
-- **Nova poção: Angry Spell** — adicionada ao `DARK_ELIXIR_SPELL_ORDER`, static data e upgrade tracker
-- **Novo pet: Greedy Raven** — adicionado ao `PETS_ORDER`, static data e upgrade tracker
-- **Nova defesa: Meteor Castle** — adicionada ao `HV_BUILDINGS`, static data e upgrade tracker
-- **Novos endpoints** — `get_player_battlelog()` e `get_player_league_history()` no client
-- **PlayerClan expandido** — novos campos `clan_points`, `clan_builder_base_points`, `clan_capital_points`
-- **Constantes atualizadas** — heróis TH18 (BK/AQ nv 110, GW nv 85, RC/MP nv 55), níveis máximos em todas as categorias
-- **Cobertura de API** — 30/30 endpoints oficiais implementados
-
-### v4.2.0
-
-- **Testes** — suite completa pytest com 80 testes (utils, war, raid, formatters, middleware)
-- **Middleware** — novo módulo `geniuslib.middleware` com pipeline request/response e decorator `@middleware`
-- **CLI** — novo módulo `geniuslib.cli` com subcomandos: player, clan, war, raid, search, export, compare
-- **Upgrade Tracker** — novo módulo `geniuslib.upgrade_tracker` com estimativa de custo/tempo por TH
-- **Exportador** — novo módulo `geniuslib.exporter` com `to_json()`, `to_csv()`, `to_dict()`
-- **Comparador** — novo módulo `geniuslib.comparer` com `compare_players()` e `compare_clans()`
-- **Exemplos** — `examples/` com Discord bot, war analyzer, raid reporter e export CLI
-- **Documentação** — Sphinx docs completas (conf.py, 12 páginas RST)
-- **Middleware integrado** — `HTTPClient.request()` agora passa por pipeline de middleware
-- **Bugfix (formatters)** — `format_role()` e `format_war_state()` quebravam com enum unhashable
-- **Bugfix (utils)** — `get_mixed_average()` crashava com `sum()` em deques
-
-### v4.1.0
-
-- **Raid Analytics** — novo módulo `geniuslib.raid_analytics` com funções de análise de Capital Raid
-- **Formatters** — novo módulo `geniuslib.formatters` com formatadores para TH, troféus, cargos, guerras, raids
-- **HTTP Health Stats** — estatísticas de saúde da API no `http.health_stats`
-- **Client Events** — `EventsClient` com suporte a `raid_clan_tag` configurável
-- **Cache TTL** — `TTLCache` com sweep automático de fundo
-- **Calculadoras** — estimativa de troféus lendaliga, medalhas de raid, troféus por ataque
-
-### v4.0.0
-
-- Versão inicial baseada em coc.py v4.0.0
-- War Analytics, calculadoras, cache TTL, enums
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Run tests (`pytest tests/ -v`)
+4. Submit a pull request
 
 ---
 
-## 📄 Licença
+## License
 
-MIT
+MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+## Credits
+
+Built by [AkumaHalls](https://github.com/AkumaHalls) for the [ClashGenius](https://github.com/AkumaHalls/ClashGenius) project.
+Based on the original [coc.py](https://github.com/mathsman5133/coc.py) by mathsman5133.
+]]>

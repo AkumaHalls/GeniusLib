@@ -20,6 +20,13 @@ Todas as mudanças notáveis neste projeto.
 
 ## [5.5.0] — 2026-08-17
 
+### Adicionado
+- **PyPI publicado** — `pip install geniuslib` agora disponível em https://pypi.org/project/geniuslib/5.5.0/
+- **Assets no GitHub Release** — pacote `geniuslib-assets-5.5.0.tar.gz` com todas as imagens de jogo (~385 MB) disponível como release asset (PyPI limita a 100 MB)
+- **MkDocs** — documentação completa com Material theme em `mkdocs.yml` e páginas em `docs/`
+- **Exemplos novos** — `examples/batch_fetch.py` (fetch paralelo com ClanIterator/PlayerIterator) e `examples/web_dashboard.py` (dashboard aiohttp)
+- **`pyproject.toml`** — metadata completa para PyPI (classifiers, project URLs, optional deps, ruff config)
+
 ### Corrigido
 - **`events.py`** — `_clans`, `_players`, `_wars` agora têm max de 500 entradas com evicção, impedindo crescimento indefinido de objetos do jogo em memória
 - **`events.py`** — `close()` agora cancela os 7 updater tasks (`_clan_updater`, `_player_updater`, `_war_updater`, `_maintenance_poller`, `_end_of_season_poller`, `_raid_poller`, `_clan_games_poller`) e limpa todos os caches e locks
@@ -27,6 +34,8 @@ Todas as mudanças notáveis neste projeto.
 - **`utils.py`** — `get_mixed_average()` otimizado para não criar lista flatten temporária, reduzindo pico de memória
 
 ### Alterado
+- **`pyproject.toml`** — `include-package-data` alterado para `false`, assets excluídos do pacote PyPI (mantidos apenas no GitHub)
+- **`README.md`** — reescrito com badges, tabela de comparação vs coc.py, quickstart, seção de features
 - **Versão:** `5.5.0`
 
 ---
