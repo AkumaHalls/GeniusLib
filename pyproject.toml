@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "geniuslib"
 authors = [{ name = "AkumaHalls", email = "akumahalls@proton.me" }]
 maintainers = [{ name = "AkumaHalls", email = "akumahalls@proton.me" }]
-version = "5.5.0"
-description = "Async Python wrapper for the Clash of Clans API — events, war analytics, raid analytics, middleware, CLI, and 3000+ bundled game assets."
+version = "5.5.1"
+description = "Async Python wrapper for the Clash of Clans API - events, war analytics, raid analytics, middleware, CLI, and 3000+ bundled game assets."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
