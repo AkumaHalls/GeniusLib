@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "geniuslib"
 authors = [{ name = "AkumaHalls", email = "akumahalls@proton.me" }]
 maintainers = [{ name = "AkumaHalls", email = "akumahalls@proton.me" }]
-version = "5.5.1"
+version = "5.5.2"
 description = "Async Python wrapper for the Clash of Clans API - events, war analytics, raid analytics, middleware, CLI, and 3000+ bundled game assets."
 readme = "README.md"
 license = { text = "MIT" }
@@ -72,7 +72,7 @@ packages = [
 include-package-data = false
 
 [tool.setuptools.package-data]
-geniuslib = ["events.pyi", "static/static_data.json"]
+geniuslib = ["events.pyi", "static/static_data.json", "static/translations.json", "static/assets/**/*"]
 
 [tool.ruff]
 target-version = "py310"
