@@ -12,6 +12,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 4,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -140,6 +141,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 4,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -1128,6 +1130,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "levels": [
         {
@@ -1306,6 +1309,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -1474,6 +1478,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "levels": [
         {
@@ -1652,6 +1657,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -1820,6 +1826,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -1988,6 +1995,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -2132,6 +2140,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -2496,6 +2505,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -2860,6 +2870,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 1,
+      "hitbox_width": null,
       "superchargeable": false,
       "levels": [
         {
@@ -3062,6 +3073,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -3286,6 +3298,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": false,
@@ -3499,6 +3512,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -3870,6 +3884,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -4026,6 +4041,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": true,
       "levels": [
         {
@@ -4125,7 +4141,7 @@
               },
               {
                 "level": 2,
-                "build_cost": 5000000,
+                "build_cost": 8000000,
                 "build_time": 518400,
                 "hitpoints_buff": 50,
                 "dps_buff": 0
@@ -4147,6 +4163,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -4371,6 +4388,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -4459,6 +4477,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -4709,6 +4728,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "levels": [
         {
@@ -4839,6 +4859,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -4959,6 +4980,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -5079,6 +5101,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -5313,6 +5336,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": false,
@@ -5410,6 +5434,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -5490,6 +5515,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 4,
+      "hitbox_width": 3,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -5592,6 +5618,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -5772,6 +5799,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 1,
+      "hitbox_width": null,
       "superchargeable": false,
       "levels": [
         {
@@ -5882,6 +5910,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 4,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -6408,6 +6437,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -6504,6 +6534,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -6600,6 +6631,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -6696,6 +6728,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -6792,6 +6825,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 4,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -6888,6 +6922,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -7000,6 +7035,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -7128,6 +7164,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": []
     },
@@ -7143,6 +7180,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -7271,6 +7309,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -7399,6 +7438,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -7537,6 +7577,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 4,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -7633,6 +7674,7 @@
       "upgrade_resource": "Gems",
       "village": "builderBase",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": false,
       "levels": []
     },
@@ -7648,6 +7690,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -7831,6 +7874,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": []
     },
@@ -7846,6 +7890,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 2,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": false,
@@ -7974,6 +8019,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": false,
       "levels": [
         {
@@ -8080,6 +8126,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -8208,6 +8255,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": []
     },
@@ -8223,6 +8271,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": false,
@@ -8351,6 +8400,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -8479,6 +8529,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -8607,6 +8658,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -8735,6 +8787,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -8831,6 +8884,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 4,
+      "hitbox_width": 4,
       "superchargeable": false,
       "levels": [
         {
@@ -8919,6 +8973,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -9057,6 +9112,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": false,
       "levels": []
     },
@@ -9072,6 +9128,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": false,
       "levels": [
         {
@@ -9128,6 +9185,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -9249,6 +9307,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -9361,6 +9420,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -9457,6 +9517,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 4,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -9569,6 +9630,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 2,
+      "hitbox_width": 1,
       "superchargeable": false,
       "levels": [
         {
@@ -9641,6 +9703,7 @@
       "upgrade_resource": "Dark Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -9704,14 +9767,14 @@
             "levels": [
               {
                 "level": 1,
-                "build_cost": 150000,
+                "build_cost": 220000,
                 "build_time": 432000,
                 "hitpoints_buff": 0,
                 "dps_buff": 10
               },
               {
                 "level": 2,
-                "build_cost": 130000,
+                "build_cost": 200000,
                 "build_time": 604800,
                 "hitpoints_buff": 202,
                 "dps_buff": 0
@@ -9733,6 +9796,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 4,
+      "hitbox_width": 3,
       "superchargeable": false,
       "levels": [
         {
@@ -9829,6 +9893,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -9933,6 +9998,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": []
     },
@@ -9948,6 +10014,7 @@
       "upgrade_resource": "Builder Gold",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -10051,6 +10118,7 @@
       "upgrade_resource": "Builder Elixir",
       "village": "builderBase",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": [
         {
@@ -10121,6 +10189,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": []
     },
@@ -10136,6 +10205,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -10231,6 +10301,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": false,
       "is_ground_targeting": true,
@@ -10326,6 +10397,7 @@
       "upgrade_resource": "Dark Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -10385,6 +10457,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -10457,6 +10530,7 @@
       "upgrade_resource": "Elixir",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "levels": []
     },
@@ -10472,55 +10546,59 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": false,
       "is_air_targeting": false,
       "is_ground_targeting": false,
       "levels": [],
       "seasonal_defenses": [
         {
-          "_id": 103000008,
-          "name": "Roaster",
-          "info": "Boils up and blasts hot plasma on ground and air enemies. Give your skin a healthy glow by standing at a safe distance.",
+          "_id": 103000011,
+          "name": "Hot Candle",
+          "info": "The flickering flame of the Hot Candle flings fire spurts at multiple surrounding enemies! Better make your wish quick, as this defense’s target capacity decreases as it melts.",
           "TID": {
-            "name": "TID_BUILDING_ROASTER",
-            "info": "TID_BUILDING_ROASTER_INFO"
+            "name": "TID_BUILDING_INFERNO_CANDLE",
+            "info": "TID_BUILDING_INFERNO_CANDLE_INFO"
           },
-          "required_townhall": 18,
           "modules": [
             {
-              "_id": 102000024,
-              "name": "Slowdown Tower HP Module",
+              "_id": 102000033,
+              "name": "Inferno Candle HP Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_ROASTER_MODULE_HP"
+                "name": "TID_SEASONAL_DEFENSE_INFERNO_CANDLE_MODULE_HP"
               },
               "upgrade_resource": "Elixir",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
                   "ability_data": {
-                    "HealthOverride": 960
+                    "HealthOverride": 1600
                   }
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 3500000,
                   "build_time": 21600,
                   "ability_data": {
-                    "HealthOverride": 1500
+                    "HealthOverride": 1800
                   }
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 4500000,
                   "build_time": 28800,
                   "ability_data": {
-                    "HealthOverride": 2000
+                    "HealthOverride": 2150
                   }
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 5500000,
                   "build_time": 36000,
                   "ability_data": {
@@ -10529,48 +10607,54 @@
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 6500000,
                   "build_time": 43200,
                   "ability_data": {
-                    "HealthOverride": 3000
+                    "HealthOverride": 2700
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 7500000,
-                  "build_time": 50400,
+                  "build_time": 64800,
                   "ability_data": {
-                    "HealthOverride": 3500
+                    "HealthOverride": 3150
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 8500000,
-                  "build_time": 93600,
+                  "build_time": 154800,
                   "ability_data": {
-                    "HealthOverride": 4000
+                    "HealthOverride": 3900
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 10000000,
-                  "build_time": 187200,
+                  "build_time": 288000,
                   "ability_data": {
                     "HealthOverride": 4500
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 11500000,
-                  "build_time": 367200,
+                  "build_time": 496800,
                   "ability_data": {
                     "HealthOverride": 5200
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 13000000,
-                  "build_time": 734400,
+                  "build_time": 820800,
                   "ability_data": {
                     "HealthOverride": 6000
                   }
@@ -10578,331 +10662,300 @@
               ]
             },
             {
-              "_id": 102000025,
-              "name": "Slowdown Tower Atk Module",
+              "_id": 102000034,
+              "name": "Inferno Candle Attack Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_ROASTER_MODULE_ATTACK"
+                "name": "TID_SEASONAL_DEFENSE_INFERNO_CANDLE_MODULE_ATTACK"
               },
               "upgrade_resource": "Gold",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 85,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit1-3",
-                    "Projectile": "Flamer_projectile1-3"
+                    "AttackSpeed": 500,
+                    "Damage": 40
                   }
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 4000000,
                   "build_time": 28800,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 90,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit1-3",
-                    "Projectile": "Flamer_projectile1-3"
+                    "AttackSpeed": 500,
+                    "Damage": 50
                   }
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 5000000,
                   "build_time": 36000,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 95,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit1-3",
-                    "Projectile": "Flamer_projectile1-3"
+                    "AttackSpeed": 500,
+                    "Damage": 60
                   }
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 6000000,
                   "build_time": 39600,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 100,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit4-6",
-                    "Projectile": "Flamer_projectile4-6"
+                    "AttackSpeed": 500,
+                    "Damage": 75
                   }
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 7500000,
                   "build_time": 46800,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 105,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit4-6",
-                    "Projectile": "Flamer_projectile4-6"
+                    "AttackSpeed": 500,
+                    "Damage": 80
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 9000000,
-                  "build_time": 54000,
+                  "build_time": 68400,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 110,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit4-6",
-                    "Projectile": "Flamer_projectile4-6"
+                    "AttackSpeed": 500,
+                    "Damage": 90
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 10500000,
-                  "build_time": 97200,
+                  "build_time": 165600,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 115,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit7-8",
-                    "Projectile": "Flamer_projectile7-8"
+                    "AttackSpeed": 500,
+                    "Damage": 95
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 12000000,
-                  "build_time": 194400,
+                  "build_time": 298800,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 120,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit7-8",
-                    "Projectile": "Flamer_projectile7-8"
+                    "AttackSpeed": 500,
+                    "Damage": 105
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 13500000,
-                  "build_time": 388800,
+                  "build_time": 532800,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 125,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit7-8",
-                    "Projectile": "Flamer_projectile7-8"
+                    "AttackSpeed": 500,
+                    "Damage": 115
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 15000000,
-                  "build_time": 777600,
+                  "build_time": 864000,
                   "ability_data": {
-                    "AttackSpeed": 1500,
-                    "Damage": 135,
-                    "AttackEffect": "Flamer_attack",
-                    "HitEffect": "Flamer_hit7-8",
-                    "Projectile": "Flamer_projectile7-8"
+                    "AttackSpeed": 500,
+                    "Damage": 125
                   }
                 }
               ]
             },
             {
-              "_id": 102000026,
-              "name": "Slowdown Tower Effect Module",
+              "_id": 102000035,
+              "name": "Inferno Candle Effect Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_ROASTER_MODULE_EFFECT"
+                "name": "TID_SEASONAL_DEFENSE_INFERNO_CANDLE_MODULE_EFFECT"
               },
               "upgrade_resource": "Dark Elixir",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
-                  "ability_data": {
-                    "BurstCount": 8,
-                    "BurstDelay": 256
-                  }
+                  "ability_data": {}
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 30000,
                   "build_time": 14400,
-                  "ability_data": {
-                    "BurstCount": 9,
-                    "BurstDelay": 256
-                  }
+                  "ability_data": {}
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 40000,
                   "build_time": 21600,
-                  "ability_data": {
-                    "BurstCount": 10,
-                    "BurstDelay": 256
-                  }
+                  "ability_data": {}
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 50000,
                   "build_time": 28800,
-                  "ability_data": {
-                    "BurstCount": 11,
-                    "BurstDelay": 256
-                  }
+                  "ability_data": {}
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 60000,
                   "build_time": 36000,
-                  "ability_data": {
-                    "BurstCount": 12,
-                    "BurstDelay": 256
-                  }
+                  "ability_data": {}
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 70000,
-                  "build_time": 43200,
-                  "ability_data": {
-                    "BurstCount": 13,
-                    "BurstDelay": 256
-                  }
+                  "build_time": 57600,
+                  "ability_data": {}
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 80000,
-                  "build_time": 86400,
-                  "ability_data": {
-                    "BurstCount": 14,
-                    "BurstDelay": 256
-                  }
+                  "build_time": 144000,
+                  "ability_data": {}
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 90000,
-                  "build_time": 172800,
-                  "ability_data": {
-                    "BurstCount": 15,
-                    "BurstDelay": 256
-                  }
+                  "build_time": 266400,
+                  "ability_data": {}
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 100000,
-                  "build_time": 345600,
-                  "ability_data": {
-                    "BurstCount": 16,
-                    "BurstDelay": 256
-                  }
+                  "build_time": 453600,
+                  "ability_data": {}
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 110000,
-                  "build_time": 691200,
-                  "ability_data": {
-                    "BurstCount": 17,
-                    "BurstDelay": 256
-                  }
+                  "build_time": 777600,
+                  "ability_data": {}
                 }
               ]
             }
           ]
         },
         {
-          "_id": 103000009,
-          "name": "Air Bombs",
-          "info": "Barrel after barrel, Air Bombs blast even the mightiest flying enemies out of the sky. Your village airspace isn’t safe with this Builder Base classic around!",
+          "_id": 103000012,
+          "name": "Hero Hunter",
+          "info": "Headhunter wants to play a game!\\n\\nThis destructive deck dealer targets all troops but serves extra damage to Heroes! Card projectiles cause slowdown and result in poisoned paper cuts.",
           "TID": {
-            "name": "TID_BUILDING_SD_AIR_BOMBS",
-            "info": "TID_BUILDING_SD_AIR_BOMBS_INFO"
+            "name": "TID_BUILDING_HEADHUNTER_TOWER",
+            "info": "TID_BUILDING_HEADHUNTER_TOWER_INFO"
           },
-          "required_townhall": 18,
           "modules": [
             {
-              "_id": 102000027,
-              "name": "Air Bombs HP Module",
+              "_id": 102000036,
+              "name": "Headhunter Tower HP Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_AIR_BOMBS_MODULE_HP"
+                "name": "TID_SEASONAL_DEFENSE_HEADHUNTER_TOWER_MODULE_HP"
               },
               "upgrade_resource": "Dark Elixir",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
                   "ability_data": {
-                    "HealthOverride": 600
+                    "HealthOverride": 1600
                   }
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 40000,
                   "build_time": 28800,
                   "ability_data": {
-                    "HealthOverride": 1000
+                    "HealthOverride": 1800
                   }
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 50000,
                   "build_time": 36000,
                   "ability_data": {
-                    "HealthOverride": 1500
+                    "HealthOverride": 2150
                   }
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 60000,
                   "build_time": 39600,
                   "ability_data": {
-                    "HealthOverride": 2000
+                    "HealthOverride": 2500
                   }
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 70000,
                   "build_time": 46800,
                   "ability_data": {
-                    "HealthOverride": 2600
+                    "HealthOverride": 2700
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 80000,
-                  "build_time": 54000,
+                  "build_time": 68400,
                   "ability_data": {
-                    "HealthOverride": 3200
+                    "HealthOverride": 3150
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 90000,
-                  "build_time": 97200,
+                  "build_time": 165600,
                   "ability_data": {
-                    "HealthOverride": 3800
+                    "HealthOverride": 3900
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 100000,
-                  "build_time": 194400,
+                  "build_time": 298800,
                   "ability_data": {
                     "HealthOverride": 4400
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 110000,
-                  "build_time": 388800,
+                  "build_time": 532800,
                   "ability_data": {
                     "HealthOverride": 5200
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 120000,
-                  "build_time": 777600,
+                  "build_time": 864000,
                   "ability_data": {
                     "HealthOverride": 6000
                   }
@@ -10910,191 +10963,211 @@
               ]
             },
             {
-              "_id": 102000028,
-              "name": "Air Bombs Atk Module",
+              "_id": 102000037,
+              "name": "Headhunter Tower Attack Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_AIR_BOMBS_MODULE_ATTACK"
+                "name": "TID_SEASONAL_DEFENSE_HEADHUNTER_TOWER_MODULE_ATTACK"
               },
               "upgrade_resource": "Elixir",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
                   "ability_data": {
-                    "Damage": 590
+                    "AttackSpeed": 600,
+                    "DPS": 145
                   }
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 3000000,
                   "build_time": 14400,
                   "ability_data": {
-                    "Damage": 620
+                    "AttackSpeed": 600,
+                    "DPS": 155
                   }
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 4000000,
                   "build_time": 21600,
                   "ability_data": {
-                    "Damage": 650
+                    "AttackSpeed": 600,
+                    "DPS": 170
                   }
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 5000000,
                   "build_time": 28800,
                   "ability_data": {
-                    "Damage": 680
+                    "AttackSpeed": 600,
+                    "DPS": 185
                   }
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 6000000,
                   "build_time": 36000,
                   "ability_data": {
-                    "Damage": 710
+                    "AttackSpeed": 600,
+                    "DPS": 195
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 7000000,
-                  "build_time": 43200,
+                  "build_time": 57600,
                   "ability_data": {
-                    "Damage": 740
+                    "AttackSpeed": 600,
+                    "DPS": 210
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 8000000,
-                  "build_time": 86400,
+                  "build_time": 144000,
                   "ability_data": {
-                    "Damage": 775
+                    "AttackSpeed": 600,
+                    "DPS": 260
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 9000000,
-                  "build_time": 172800,
+                  "build_time": 266400,
                   "ability_data": {
-                    "Damage": 820
+                    "AttackSpeed": 600,
+                    "DPS": 325
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 10000000,
-                  "build_time": 345600,
+                  "build_time": 453600,
                   "ability_data": {
-                    "Damage": 880
+                    "AttackSpeed": 600,
+                    "DPS": 350
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 11000000,
-                  "build_time": 691200,
+                  "build_time": 777600,
                   "ability_data": {
-                    "Damage": 950
+                    "AttackSpeed": 600,
+                    "DPS": 385
                   }
                 }
               ]
             },
             {
-              "_id": 102000029,
-              "name": "Air Bombs Effect Module",
+              "_id": 102000038,
+              "name": "Headhunter Tower Effect Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_AIR_BOMBS_MODULE_EFFECT"
+                "name": "TID_SEASONAL_DEFENSE_HEADHUNTER_TOWER_MODULE_EFFECT"
               },
               "upgrade_resource": "Gold",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
                   "ability_data": {
-                    "AttackSpeed": 3400,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 3
                   }
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 3500000,
                   "build_time": 21600,
                   "ability_data": {
-                    "AttackSpeed": 3200,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 4
                   }
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 4500000,
                   "build_time": 28800,
                   "ability_data": {
-                    "AttackSpeed": 3000,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 5
                   }
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 5500000,
                   "build_time": 36000,
                   "ability_data": {
-                    "AttackSpeed": 2800,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 6
                   }
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 6500000,
                   "build_time": 43200,
                   "ability_data": {
-                    "AttackSpeed": 2600,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 7
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 7500000,
-                  "build_time": 50400,
+                  "build_time": 64800,
                   "ability_data": {
-                    "AttackSpeed": 2400,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 8
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 8500000,
-                  "build_time": 93600,
+                  "build_time": 154800,
                   "ability_data": {
-                    "AttackSpeed": 2200,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 9
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 10000000,
-                  "build_time": 187200,
+                  "build_time": 288000,
                   "ability_data": {
-                    "AttackSpeed": 2000,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 10
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 11500000,
-                  "build_time": 367200,
+                  "build_time": 496800,
                   "ability_data": {
-                    "AttackSpeed": 1800,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 11
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 13000000,
-                  "build_time": 734400,
+                  "build_time": 820800,
                   "ability_data": {
-                    "AttackSpeed": 1600,
-                    "Damage": 1
+                    "PoisonOnHitSpellLevel": 12
                   }
                 }
               ]
@@ -11102,301 +11175,320 @@
           ]
         },
         {
-          "_id": 103000010,
-          "name": "Lava Launcher",
-          "info": "A hot delivery from Builder Base. Lava Launcher spits straight fire at a single target from afar! Its piping hot projectiles play a dangerous game of The Floor is Lava where ground troops always lose.",
+          "_id": 103000013,
+          "name": "Cake-A-Pult",
+          "info": "One splash-damage serving at a time!\\n\\n Cake surrounding enemies in destructive and delectable... cake. When this dessert drops, it leaves an explosive surprise, ensuring no one is around for seconds.",
           "TID": {
-            "name": "TID_BUILDING_SD_LAVA_LAUNCHER",
-            "info": "TID_BUILDING_SD_LAVA_LAUNCHER_INFO"
+            "name": "TID_BUILDING_CAKE_THROWER",
+            "info": "TID_BUILDING_CAKE_THROWER_INFO"
           },
-          "required_townhall": 18,
           "modules": [
             {
-              "_id": 102000030,
-              "name": "Lava Launcher HP Module",
+              "_id": 102000039,
+              "name": "Snow Mortar HP Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_LAVA_LAUNCHER_MODULE_HP"
+                "name": "TID_SEASONAL_DEFENSE_SNOW_MORTAR_MODULE_HP"
               },
               "upgrade_resource": "Gold",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
-                  "ability_data": {
-                    "HealthOverride": 450
-                  }
-                },
-                {
-                  "level": 2,
-                  "build_cost": 3000000,
-                  "build_time": 14400,
-                  "ability_data": {
-                    "HealthOverride": 800
-                  }
-                },
-                {
-                  "level": 3,
-                  "build_cost": 4000000,
-                  "build_time": 21600,
-                  "ability_data": {
-                    "HealthOverride": 1200
-                  }
-                },
-                {
-                  "level": 4,
-                  "build_cost": 5000000,
-                  "build_time": 28800,
                   "ability_data": {
                     "HealthOverride": 1600
                   }
                 },
                 {
+                  "level": 2,
+                  "required_townhall": 12,
+                  "build_cost": 3000000,
+                  "build_time": 14400,
+                  "ability_data": {
+                    "HealthOverride": 1800
+                  }
+                },
+                {
+                  "level": 3,
+                  "required_townhall": 13,
+                  "build_cost": 4000000,
+                  "build_time": 21600,
+                  "ability_data": {
+                    "HealthOverride": 2150
+                  }
+                },
+                {
+                  "level": 4,
+                  "required_townhall": 14,
+                  "build_cost": 5000000,
+                  "build_time": 28800,
+                  "ability_data": {
+                    "HealthOverride": 2500
+                  }
+                },
+                {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 6000000,
                   "build_time": 36000,
                   "ability_data": {
-                    "HealthOverride": 2100
+                    "HealthOverride": 2700
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 7000000,
-                  "build_time": 43200,
+                  "build_time": 57600,
                   "ability_data": {
-                    "HealthOverride": 2600
+                    "HealthOverride": 3150
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 8000000,
-                  "build_time": 86400,
+                  "build_time": 144000,
                   "ability_data": {
-                    "HealthOverride": 3100
+                    "HealthOverride": 3800
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 9000000,
-                  "build_time": 172800,
+                  "build_time": 266400,
                   "ability_data": {
-                    "HealthOverride": 3600
+                    "HealthOverride": 4300
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 10000000,
-                  "build_time": 345600,
+                  "build_time": 453600,
                   "ability_data": {
-                    "HealthOverride": 4200
+                    "HealthOverride": 4950
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 11000000,
-                  "build_time": 691200,
+                  "build_time": 777600,
                   "ability_data": {
-                    "HealthOverride": 4900
+                    "HealthOverride": 5800
                   }
                 }
               ]
             },
             {
-              "_id": 102000031,
-              "name": "Lava Launcher Atk Module",
+              "_id": 102000040,
+              "name": "Snow Mortar Attack Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_LAVA_LAUNCHER_MODULE_ATTACK"
+                "name": "TID_SEASONAL_DEFENSE_SNOW_MORTAR_MODULE_ATTACK"
               },
               "upgrade_resource": "Dark Elixir",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 72,
-                    "Projectile": "Lava Ammo1_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 65
                   }
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 35000,
                   "build_time": 21600,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 75,
-                    "Projectile": "Lava Ammo2_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 70
                   }
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 45000,
                   "build_time": 28800,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 80,
-                    "Projectile": "Lava Ammo3_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 75
                   }
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 55000,
                   "build_time": 36000,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 85,
-                    "Projectile": "Lava Ammo4_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 82
                   }
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 65000,
                   "build_time": 43200,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 90,
-                    "Projectile": "Lava Ammo5_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 88
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 75000,
-                  "build_time": 50400,
+                  "build_time": 64800,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 95,
-                    "Projectile": "Lava Ammo6_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 95
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 85000,
-                  "build_time": 93600,
+                  "build_time": 154800,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 100,
-                    "Projectile": "Lava Ammo7_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 105
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 95000,
-                  "build_time": 187200,
+                  "build_time": 288000,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 105,
-                    "Projectile": "Lava Ammo8_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 111
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 105000,
-                  "build_time": 367200,
+                  "build_time": 496800,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 110,
-                    "Projectile": "Lava Ammo9_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 118
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 115000,
-                  "build_time": 734400,
+                  "build_time": 820800,
                   "ability_data": {
-                    "AttackSpeed": 7000,
-                    "DPS": 115,
-                    "Projectile": "Lava Ammo10_Seasonal_Defense"
+                    "AttackSpeed": 3000,
+                    "DPS": 125
                   }
                 }
               ]
             },
             {
-              "_id": 102000032,
-              "name": "Lava Launcher Effect Module",
+              "_id": 102000041,
+              "name": "Snow Mortar Effect Module",
               "TID": {
-                "name": "TID_SEASONAL_DEFENSE_LAVA_LAUNCHER_MODULE_EFFECT"
+                "name": "TID_SEASONAL_DEFENSE_SNOW_MORTAR_MODULE_EFFECT"
               },
               "upgrade_resource": "Elixir",
               "levels": [
                 {
                   "level": 1,
+                  "required_townhall": 11,
                   "build_cost": 0,
                   "build_time": 0,
                   "ability_data": {
-                    "AttackRange": 1100
+                    "HitSpellLevelOverride": 1
                   }
                 },
                 {
                   "level": 2,
+                  "required_townhall": 12,
                   "build_cost": 4000000,
                   "build_time": 28800,
                   "ability_data": {
-                    "AttackRange": 1150
+                    "HitSpellLevelOverride": 2
                   }
                 },
                 {
                   "level": 3,
+                  "required_townhall": 13,
                   "build_cost": 5000000,
                   "build_time": 36000,
                   "ability_data": {
-                    "AttackRange": 1200
+                    "HitSpellLevelOverride": 3
                   }
                 },
                 {
                   "level": 4,
+                  "required_townhall": 14,
                   "build_cost": 6000000,
                   "build_time": 39600,
                   "ability_data": {
-                    "AttackRange": 1250
+                    "HitSpellLevelOverride": 4
                   }
                 },
                 {
                   "level": 5,
+                  "required_townhall": 15,
                   "build_cost": 7500000,
                   "build_time": 46800,
                   "ability_data": {
-                    "AttackRange": 1300
+                    "HitSpellLevelOverride": 5
                   }
                 },
                 {
                   "level": 6,
+                  "required_townhall": 16,
                   "build_cost": 9000000,
-                  "build_time": 54000,
+                  "build_time": 68400,
                   "ability_data": {
-                    "AttackRange": 1350
+                    "HitSpellLevelOverride": 6
                   }
                 },
                 {
                   "level": 7,
+                  "required_townhall": 17,
                   "build_cost": 10500000,
-                  "build_time": 97200,
+                  "build_time": 165600,
                   "ability_data": {
-                    "AttackRange": 1400
+                    "HitSpellLevelOverride": 7
                   }
                 },
                 {
                   "level": 8,
+                  "required_townhall": 18,
                   "build_cost": 12000000,
-                  "build_time": 194400,
+                  "build_time": 298800,
                   "ability_data": {
-                    "AttackRange": 1450
+                    "HitSpellLevelOverride": 8
                   }
                 },
                 {
                   "level": 9,
+                  "required_townhall": 18,
                   "build_cost": 13500000,
-                  "build_time": 388800,
+                  "build_time": 532800,
                   "ability_data": {
-                    "AttackRange": 1500
+                    "HitSpellLevelOverride": 9
                   }
                 },
                 {
                   "level": 10,
+                  "required_townhall": 18,
                   "build_cost": 15000000,
-                  "build_time": 777600,
+                  "build_time": 864000,
                   "ability_data": {
-                    "AttackRange": 1600
+                    "HitSpellLevelOverride": 10
                   }
                 }
               ]
@@ -11417,6 +11509,7 @@
       "upgrade_resource": "Gold",
       "village": "home",
       "width": 3,
+      "hitbox_width": 2,
       "superchargeable": true,
       "is_air_targeting": true,
       "is_ground_targeting": true,
@@ -12573,6 +12666,7 @@
       "attack_range": 40,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 0.5,
       "levels": [
         {
           "level": 1,
@@ -12725,6 +12819,7 @@
       "attack_range": 350,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 0.5,
       "levels": [
         {
           "level": 1,
@@ -12887,6 +12982,7 @@
       "attack_range": 40,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 0.5,
       "levels": [
         {
           "level": 1,
@@ -13009,6 +13105,7 @@
       "attack_range": 100,
       "housing_space": 5,
       "village": "home",
+      "warden_weight": 6,
       "levels": [
         {
           "level": 1,
@@ -13171,6 +13268,8 @@
       "attack_range": 50,
       "housing_space": 2,
       "village": "home",
+      "warden_weight": 0.5,
+      "healer_weight": 0,
       "levels": [
         {
           "level": 1,
@@ -13333,6 +13432,7 @@
       "attack_range": 0,
       "housing_space": 5,
       "village": "home",
+      "warden_weight": 6,
       "levels": [
         {
           "level": 1,
@@ -13485,6 +13585,7 @@
       "attack_range": 300,
       "housing_space": 4,
       "village": "home",
+      "warden_weight": 6,
       "levels": [
         {
           "level": 1,
@@ -13647,6 +13748,7 @@
       "attack_range": 450,
       "housing_space": 14,
       "village": "home",
+      "warden_weight": 2,
       "levels": [
         {
           "level": 1,
@@ -13779,6 +13881,7 @@
       "attack_range": 250,
       "housing_space": 20,
       "village": "home",
+      "warden_weight": 20,
       "levels": [
         {
           "level": 1,
@@ -13931,6 +14034,7 @@
       "attack_range": 80,
       "housing_space": 25,
       "village": "home",
+      "warden_weight": 25,
       "levels": [
         {
           "level": 1,
@@ -14083,6 +14187,7 @@
       "attack_range": 225,
       "housing_space": 2,
       "village": "home",
+      "warden_weight": 1.5,
       "levels": [
         {
           "level": 1,
@@ -14245,6 +14350,7 @@
       "attack_range": 60,
       "housing_space": 5,
       "village": "home",
+      "warden_weight": 6,
       "levels": [
         {
           "level": 1,
@@ -14417,6 +14523,7 @@
       "attack_range": 50,
       "housing_space": 8,
       "village": "home",
+      "warden_weight": 6,
       "levels": [
         {
           "level": 1,
@@ -14559,6 +14666,8 @@
       "attack_range": 100,
       "housing_space": 30,
       "village": "home",
+      "warden_weight": 10,
+      "healer_weight": 5,
       "levels": [
         {
           "level": 1,
@@ -14731,6 +14840,7 @@
       "attack_range": 400,
       "housing_space": 12,
       "village": "home",
+      "warden_weight": 12,
       "levels": [
         {
           "level": 1,
@@ -14833,6 +14943,7 @@
       "attack_range": 25,
       "housing_space": 30,
       "village": "home",
+      "warden_weight": 9.5,
       "levels": [
         {
           "level": 1,
@@ -14935,6 +15046,7 @@
       "attack_range": 300,
       "housing_space": 6,
       "village": "home",
+      "warden_weight": 6,
       "levels": [
         {
           "level": 1,
@@ -15057,6 +15169,7 @@
       "attack_range": 225,
       "housing_space": 10,
       "village": "home",
+      "warden_weight": 10,
       "levels": [
         {
           "level": 1,
@@ -15199,6 +15312,7 @@
       "attack_range": 60,
       "housing_space": 6,
       "village": "home",
+      "warden_weight": 6,
       "levels": [
         {
           "level": 1,
@@ -15341,6 +15455,7 @@
       "attack_range": 60,
       "housing_space": 5,
       "village": "home",
+      "warden_weight": 5,
       "super_troop": {
         "original_id": 4000000,
         "original_min_level": 7
@@ -15457,6 +15572,7 @@
       "attack_range": 600,
       "housing_space": 12,
       "village": "home",
+      "warden_weight": 12,
       "super_troop": {
         "original_id": 4000001,
         "original_min_level": 7
@@ -15583,6 +15699,8 @@
       "attack_range": 60,
       "housing_space": 8,
       "village": "home",
+      "warden_weight": 0.5,
+      "healer_weight": 0,
       "super_troop": {
         "original_id": 4000004,
         "original_min_level": 6
@@ -15709,6 +15827,7 @@
       "attack_range": 100,
       "housing_space": 10,
       "village": "home",
+      "warden_weight": 9,
       "super_troop": {
         "original_id": 4000003,
         "original_min_level": 8
@@ -15835,6 +15954,7 @@
       "attack_range": 300,
       "housing_space": 4,
       "village": "home",
+      "warden_weight": 6,
       "is_seasonal": true,
       "levels": [
         {
@@ -17728,6 +17848,8 @@
       "attack_range": 60,
       "housing_space": 4,
       "village": "home",
+      "warden_weight": 6,
+      "healer_weight": 0,
       "is_seasonal": true,
       "levels": [
         {
@@ -17881,6 +18003,7 @@
       "attack_range": 50,
       "housing_space": 8,
       "village": "home",
+      "warden_weight": 1,
       "is_seasonal": true,
       "levels": [
         {
@@ -18034,6 +18157,7 @@
       "attack_range": 40,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 1,
       "is_seasonal": true,
       "levels": [
         {
@@ -18187,6 +18311,7 @@
       "attack_range": 100,
       "housing_space": 20,
       "village": "home",
+      "warden_weight": 20,
       "is_seasonal": true,
       "levels": [
         {
@@ -18340,6 +18465,7 @@
       "attack_range": 150,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 1,
       "levels": [
         {
           "level": 1,
@@ -18422,6 +18548,7 @@
       "attack_range": 150,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 0,
       "levels": [
         {
           "level": 1,
@@ -18504,6 +18631,7 @@
       "attack_range": 80,
       "housing_space": 18,
       "village": "home",
+      "warden_weight": 18,
       "levels": [
         {
           "level": 1,
@@ -18606,6 +18734,7 @@
       "attack_range": 40,
       "housing_space": 3,
       "village": "home",
+      "warden_weight": 3,
       "super_troop": {
         "original_id": 4000002,
         "original_min_level": 6
@@ -18692,6 +18821,7 @@
       "attack_range": 60,
       "housing_space": 24,
       "village": "home",
+      "warden_weight": 24,
       "super_troop": {
         "original_id": 4000024,
         "original_min_level": 6
@@ -18838,6 +18968,7 @@
       "attack_range": 0,
       "housing_space": 8,
       "village": "home",
+      "warden_weight": 6,
       "super_troop": {
         "original_id": 4000005,
         "original_min_level": 7
@@ -18954,6 +19085,8 @@
       "attack_range": 100,
       "housing_space": 15,
       "village": "home",
+      "warden_weight": 6,
+      "healer_weight": 1,
       "levels": [
         {
           "level": 1,
@@ -19066,6 +19199,7 @@
       "attack_range": 250,
       "housing_space": 30,
       "village": "home",
+      "warden_weight": 30,
       "levels": [
         {
           "level": 1,
@@ -19139,8 +19273,8 @@
         },
         {
           "level": 8,
-          "hitpoints": 6200,
-          "dps": 460,
+          "hitpoints": 6400,
+          "dps": 475,
           "upgrade_time": 1382400,
           "upgrade_cost": 30000000,
           "required_lab_level": 15,
@@ -19149,8 +19283,8 @@
         },
         {
           "level": 9,
-          "hitpoints": 6700,
-          "dps": 500,
+          "hitpoints": 6900,
+          "dps": 510,
           "upgrade_time": 0,
           "upgrade_cost": 0,
           "required_lab_level": 16,
@@ -19178,6 +19312,8 @@
       "attack_range": 0,
       "housing_space": 5,
       "village": "home",
+      "warden_weight": 6,
+      "healer_weight": 0,
       "is_seasonal": true,
       "levels": [
         {
@@ -19331,6 +19467,7 @@
       "attack_range": 0,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 1,
       "levels": [
         {
           "level": 1,
@@ -19413,6 +19550,7 @@
       "attack_range": 350,
       "housing_space": 15,
       "village": "home",
+      "warden_weight": 15,
       "super_troop": {
         "original_id": 4000023,
         "original_min_level": 5
@@ -19559,6 +19697,7 @@
       "attack_range": 50,
       "housing_space": 20,
       "village": "home",
+      "warden_weight": 18,
       "super_troop": {
         "original_id": 4000012,
         "original_min_level": 6
@@ -19705,6 +19844,7 @@
       "attack_range": 350,
       "housing_space": 25,
       "village": "home",
+      "warden_weight": 25,
       "levels": [
         {
           "level": 1,
@@ -19758,8 +19898,8 @@
         },
         {
           "level": 6,
-          "hitpoints": 6000,
-          "dps": 510,
+          "hitpoints": 5900,
+          "dps": 490,
           "upgrade_time": 0,
           "upgrade_cost": 0,
           "required_lab_level": 16,
@@ -19787,6 +19927,7 @@
       "attack_range": 400,
       "housing_space": 40,
       "village": "home",
+      "warden_weight": 35,
       "super_troop": {
         "original_id": 4000015,
         "original_min_level": 4
@@ -19893,6 +20034,7 @@
       "attack_range": 60,
       "housing_space": 10,
       "village": "home",
+      "warden_weight": 10,
       "is_seasonal": true,
       "levels": [
         {
@@ -20128,6 +20270,7 @@
       "attack_range": 300,
       "housing_space": 4,
       "village": "home",
+      "warden_weight": 6,
       "is_seasonal": true,
       "levels": [
         {
@@ -20281,6 +20424,7 @@
       "attack_range": 0,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 0,
       "levels": [
         {
           "level": 1,
@@ -20363,6 +20507,7 @@
       "attack_range": 25,
       "housing_space": 40,
       "village": "home",
+      "warden_weight": 9.5,
       "super_troop": {
         "original_id": 4000017,
         "original_min_level": 4
@@ -20469,6 +20614,7 @@
       "attack_range": 300,
       "housing_space": 30,
       "village": "home",
+      "warden_weight": 25,
       "super_troop": {
         "original_id": 4000022,
         "original_min_level": 3
@@ -20595,6 +20741,7 @@
       "attack_range": 300,
       "housing_space": 40,
       "village": "home",
+      "warden_weight": 40,
       "super_troop": {
         "original_id": 4000008,
         "original_min_level": 6
@@ -20731,6 +20878,8 @@
       "attack_range": 300,
       "housing_space": 6,
       "village": "home",
+      "warden_weight": 1,
+      "healer_weight": 2,
       "levels": [
         {
           "level": 1,
@@ -20793,6 +20942,7 @@
       "attack_range": 350,
       "housing_space": 10,
       "village": "home",
+      "warden_weight": 10,
       "super_troop": {
         "original_id": 4000006,
         "original_min_level": 8
@@ -20919,6 +21069,7 @@
       "attack_range": 350,
       "housing_space": 12,
       "village": "home",
+      "warden_weight": 12,
       "super_troop": {
         "original_id": 4000010,
         "original_min_level": 7
@@ -21055,6 +21206,7 @@
       "attack_range": 100,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 0,
       "levels": [
         {
           "level": 1,
@@ -21137,6 +21289,7 @@
       "attack_range": 1005,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 1,
       "levels": [
         {
           "level": 1,
@@ -21209,6 +21362,7 @@
       "attack_range": 100,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 1,
       "levels": [
         {
           "level": 1,
@@ -21291,6 +21445,7 @@
       "attack_range": 350,
       "housing_space": 12,
       "village": "home",
+      "warden_weight": 12,
       "is_seasonal": true,
       "levels": [
         {
@@ -21444,6 +21599,7 @@
       "attack_range": 125,
       "housing_space": 32,
       "village": "home",
+      "warden_weight": 30,
       "levels": [
         {
           "level": 1,
@@ -21516,6 +21672,8 @@
       "attack_range": 500,
       "housing_space": 20,
       "village": "home",
+      "warden_weight": 0,
+      "healer_weight": 10,
       "levels": [
         {
           "level": 1,
@@ -21578,6 +21736,7 @@
       "attack_range": 60,
       "housing_space": 12,
       "village": "home",
+      "warden_weight": 12,
       "super_troop": {
         "original_id": 4000011,
         "original_min_level": 9
@@ -21724,6 +21883,7 @@
       "attack_range": 350,
       "housing_space": 3,
       "village": "home",
+      "warden_weight": 2,
       "is_seasonal": true,
       "levels": [
         {
@@ -21877,6 +22037,8 @@
       "attack_range": 100,
       "housing_space": 41,
       "village": "home",
+      "warden_weight": 20,
+      "healer_weight": 10,
       "is_seasonal": true,
       "levels": [
         {
@@ -22030,6 +22192,7 @@
       "attack_range": 250,
       "housing_space": 7,
       "village": "home",
+      "warden_weight": 7,
       "is_seasonal": true,
       "levels": [
         {
@@ -22183,6 +22346,7 @@
       "attack_range": 0,
       "housing_space": 21,
       "village": "home",
+      "warden_weight": 15,
       "is_seasonal": true,
       "levels": [
         {
@@ -22398,6 +22562,8 @@
       "attack_range": 80,
       "housing_space": 26,
       "village": "home",
+      "warden_weight": 1,
+      "healer_weight": 0,
       "levels": [
         {
           "level": 1,
@@ -22460,6 +22626,7 @@
       "attack_range": 100,
       "housing_space": 20,
       "village": "home",
+      "warden_weight": 20,
       "levels": [
         {
           "level": 1,
@@ -22522,6 +22689,7 @@
       "attack_range": 60,
       "housing_space": 10,
       "village": "home",
+      "warden_weight": 10,
       "is_seasonal": true,
       "levels": [
         {
@@ -22675,6 +22843,7 @@
       "attack_range": 600,
       "housing_space": 10,
       "village": "home",
+      "warden_weight": 8,
       "is_seasonal": true,
       "levels": [
         {
@@ -22828,6 +22997,7 @@
       "attack_range": 250,
       "housing_space": 40,
       "village": "home",
+      "warden_weight": 50,
       "is_seasonal": true,
       "levels": [
         {
@@ -22981,6 +23151,7 @@
       "attack_range": 60,
       "housing_space": 12,
       "village": "home",
+      "warden_weight": 4,
       "is_seasonal": true,
       "levels": [
         {
@@ -23134,6 +23305,7 @@
       "attack_range": 70,
       "housing_space": 15,
       "village": "home",
+      "warden_weight": 6,
       "is_seasonal": true,
       "levels": [
         {
@@ -23287,6 +23459,7 @@
       "attack_range": 500,
       "housing_space": 16,
       "village": "home",
+      "warden_weight": 2,
       "levels": [
         {
           "level": 1,
@@ -23331,7 +23504,7 @@
         {
           "level": 5,
           "hitpoints": 1700,
-          "dps": -100,
+          "dps": -105,
           "upgrade_time": 1339200,
           "upgrade_cost": 380000,
           "required_lab_level": 15,
@@ -23341,7 +23514,7 @@
         {
           "level": 6,
           "hitpoints": 1850,
-          "dps": -105,
+          "dps": -115,
           "upgrade_time": 0,
           "upgrade_cost": 0,
           "required_lab_level": 16,
@@ -23369,6 +23542,7 @@
       "attack_range": 350,
       "housing_space": 20,
       "village": "home",
+      "warden_weight": 9.5,
       "is_seasonal": true,
       "levels": [
         {
@@ -23522,6 +23696,7 @@
       "attack_range": 150,
       "housing_space": 4,
       "village": "home",
+      "warden_weight": 1.5,
       "is_seasonal": true,
       "levels": [
         {
@@ -23670,11 +23845,12 @@
       "is_flying": false,
       "is_air_targeting": true,
       "is_ground_targeting": true,
-      "movement_speed": 220,
+      "movement_speed": 200,
       "attack_speed": 2500,
       "attack_range": 600,
       "housing_space": 16,
       "village": "home",
+      "warden_weight": 14,
       "levels": [
         {
           "level": 1,
@@ -23698,8 +23874,8 @@
         },
         {
           "level": 3,
-          "hitpoints": 2600,
-          "dps": 230,
+          "hitpoints": 2500,
+          "dps": 220,
           "upgrade_time": 1296000,
           "upgrade_cost": 27000000,
           "required_lab_level": 15,
@@ -23708,8 +23884,8 @@
         },
         {
           "level": 4,
-          "hitpoints": 2800,
-          "dps": 240,
+          "hitpoints": 2650,
+          "dps": 230,
           "upgrade_time": 0,
           "upgrade_cost": 0,
           "required_lab_level": 16,
@@ -23737,6 +23913,7 @@
       "attack_range": 8000,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 1,
       "levels": [
         {
           "level": 1,
@@ -23799,6 +23976,7 @@
       "attack_range": 40,
       "housing_space": 4,
       "village": "home",
+      "warden_weight": 0.5,
       "is_seasonal": true,
       "levels": [
         {
@@ -23952,6 +24130,8 @@
       "attack_range": 0,
       "housing_space": 8,
       "village": "home",
+      "warden_weight": 6,
+      "healer_weight": 0,
       "is_seasonal": true,
       "levels": [
         {
@@ -24105,6 +24285,7 @@
       "attack_range": 80,
       "housing_space": 35,
       "village": "home",
+      "warden_weight": 30,
       "super_troop": {
         "original_id": 4000053,
         "original_min_level": 2
@@ -24211,6 +24392,8 @@
       "attack_range": 1,
       "housing_space": 18,
       "village": "home",
+      "warden_weight": 0,
+      "healer_weight": 0,
       "levels": [
         {
           "level": 1,
@@ -24273,6 +24456,8 @@
       "attack_range": 100,
       "housing_space": 50,
       "village": "home",
+      "warden_weight": 38.2,
+      "healer_weight": 20,
       "is_seasonal": true,
       "levels": [
         {
@@ -24456,6 +24641,8 @@
       "attack_range": 150,
       "housing_space": 75,
       "village": "home",
+      "warden_weight": 60,
+      "healer_weight": 20,
       "is_seasonal": true,
       "levels": [
         {
@@ -24639,6 +24826,8 @@
       "attack_range": 50,
       "housing_space": 60,
       "village": "home",
+      "warden_weight": 50,
+      "healer_weight": 20,
       "is_seasonal": true,
       "levels": [
         {
@@ -24792,6 +24981,8 @@
       "attack_range": 650,
       "housing_space": 45,
       "village": "home",
+      "warden_weight": 40,
+      "healer_weight": 20,
       "is_seasonal": true,
       "levels": [
         {
@@ -24957,342 +25148,6 @@
       ]
     },
     {
-      "_id": 4000164,
-      "name": "YEETer",
-      "info": "With huge range, YEETer hurls 4 loyal tribe members at the start of battle that attack everything, before going back to his trusty spears. Say it loud now, YEET!",
-      "TID": {
-        "name": "TID_CHARACTER_APRIL25RRBL",
-        "info": "TID_CHARACTER_INFO_APRIL25RRBL"
-      },
-      "production_building": "Barracks",
-      "production_building_level": 0,
-      "upgrade_resource": "Elixir",
-      "is_flying": false,
-      "is_air_targeting": true,
-      "is_ground_targeting": true,
-      "movement_speed": 400,
-      "attack_speed": 2000,
-      "attack_range": 650,
-      "housing_space": 45,
-      "village": "home",
-      "is_seasonal": true,
-      "levels": [
-        {
-          "level": 1,
-          "hitpoints": 800,
-          "dps": 30,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 3,
-          "strength_weight": 0
-        },
-        {
-          "level": 2,
-          "hitpoints": 1000,
-          "dps": 40,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 4,
-          "strength_weight": 0
-        },
-        {
-          "level": 3,
-          "hitpoints": 1200,
-          "dps": 50,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 5,
-          "strength_weight": 0
-        },
-        {
-          "level": 4,
-          "hitpoints": 1400,
-          "dps": 60,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 6,
-          "strength_weight": 0
-        },
-        {
-          "level": 5,
-          "hitpoints": 1600,
-          "dps": 70,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 7,
-          "strength_weight": 0
-        },
-        {
-          "level": 6,
-          "hitpoints": 2000,
-          "dps": 85,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 8,
-          "strength_weight": 0
-        },
-        {
-          "level": 7,
-          "hitpoints": 2400,
-          "dps": 100,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 9,
-          "strength_weight": 0
-        },
-        {
-          "level": 8,
-          "hitpoints": 2700,
-          "dps": 115,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 10,
-          "strength_weight": 0
-        },
-        {
-          "level": 9,
-          "hitpoints": 3000,
-          "dps": 130,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 11,
-          "strength_weight": 0
-        },
-        {
-          "level": 10,
-          "hitpoints": 3300,
-          "dps": 145,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 12,
-          "strength_weight": 0
-        },
-        {
-          "level": 11,
-          "hitpoints": 3700,
-          "dps": 160,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 13,
-          "strength_weight": 0
-        },
-        {
-          "level": 12,
-          "hitpoints": 4100,
-          "dps": 175,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 14,
-          "strength_weight": 0
-        },
-        {
-          "level": 13,
-          "hitpoints": 4500,
-          "dps": 190,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 15,
-          "strength_weight": 0
-        },
-        {
-          "level": 14,
-          "hitpoints": 5000,
-          "dps": 210,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 16,
-          "strength_weight": 0
-        },
-        {
-          "level": 15,
-          "hitpoints": 5500,
-          "dps": 230,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 17,
-          "strength_weight": 0
-        },
-        {
-          "level": 16,
-          "hitpoints": 6000,
-          "dps": 250,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 18,
-          "strength_weight": 0
-        }
-      ]
-    },
-    {
-      "_id": 4000165,
-      "name": "The Disarmer",
-      "info": "She is THE MAN! The Disarmer targets Defenses with spiteful blows of her bat and makes easy work of Walls by jumping right over them! She must be put down 3 times before she’s out. Talk about tough!",
-      "TID": {
-        "name": "TID_CHARACTER_APRIL25BLTM",
-        "info": "TID_CHARACTER_INFO_APRIL25BLTM"
-      },
-      "production_building": "Barracks",
-      "production_building_level": 0,
-      "upgrade_resource": "Elixir",
-      "is_flying": false,
-      "is_air_targeting": false,
-      "is_ground_targeting": true,
-      "movement_speed": 300,
-      "attack_speed": 2200,
-      "attack_range": 50,
-      "housing_space": 60,
-      "village": "home",
-      "is_seasonal": true,
-      "levels": [
-        {
-          "level": 1,
-          "hitpoints": 1300,
-          "dps": 100,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 6,
-          "strength_weight": 0
-        },
-        {
-          "level": 2,
-          "hitpoints": 1700,
-          "dps": 125,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 7,
-          "strength_weight": 0
-        },
-        {
-          "level": 3,
-          "hitpoints": 2200,
-          "dps": 150,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 8,
-          "strength_weight": 0
-        },
-        {
-          "level": 4,
-          "hitpoints": 2900,
-          "dps": 175,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 9,
-          "strength_weight": 0
-        },
-        {
-          "level": 5,
-          "hitpoints": 3500,
-          "dps": 200,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 10,
-          "strength_weight": 0
-        },
-        {
-          "level": 6,
-          "hitpoints": 4000,
-          "dps": 220,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 11,
-          "strength_weight": 0
-        },
-        {
-          "level": 7,
-          "hitpoints": 4500,
-          "dps": 240,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 12,
-          "strength_weight": 0
-        },
-        {
-          "level": 8,
-          "hitpoints": 5000,
-          "dps": 260,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 13,
-          "strength_weight": 0
-        },
-        {
-          "level": 9,
-          "hitpoints": 5500,
-          "dps": 280,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 14,
-          "strength_weight": 0
-        },
-        {
-          "level": 10,
-          "hitpoints": 6000,
-          "dps": 300,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 15,
-          "strength_weight": 0
-        },
-        {
-          "level": 11,
-          "hitpoints": 6500,
-          "dps": 320,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 16,
-          "strength_weight": 0
-        },
-        {
-          "level": 12,
-          "hitpoints": 7000,
-          "dps": 340,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 17,
-          "strength_weight": 0
-        },
-        {
-          "level": 13,
-          "hitpoints": 7500,
-          "dps": 360,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
-          "required_lab_level": null,
-          "required_townhall": 18,
-          "strength_weight": 0
-        }
-      ]
-    },
-    {
       "_id": 4000167,
       "name": "Meteor Golem",
       "info": "From the cosmos, to your army! This lob-loving duo will throw themselves at anything for up-close damage. When separated, Meteormites will attack nearby targets or find a friend to form a Meteor Golem!",
@@ -25311,6 +25166,7 @@
       "attack_range": 500,
       "housing_space": 40,
       "village": "home",
+      "warden_weight": 30,
       "is_seasonal": true,
       "levels": [
         {
@@ -25464,11 +25320,12 @@
       "attack_range": 500,
       "housing_space": 40,
       "village": "home",
+      "warden_weight": 30,
       "levels": [
         {
           "level": 1,
-          "hitpoints": 13000,
-          "dps": 450,
+          "hitpoints": 14500,
+          "dps": 480,
           "upgrade_time": 1209600,
           "upgrade_cost": 28000000,
           "required_lab_level": 1,
@@ -25477,8 +25334,8 @@
         },
         {
           "level": 2,
-          "hitpoints": 14500,
-          "dps": 500,
+          "hitpoints": 16000,
+          "dps": 530,
           "upgrade_time": 1382400,
           "upgrade_cost": 30000000,
           "required_lab_level": 15,
@@ -25487,13 +25344,217 @@
         },
         {
           "level": 3,
-          "hitpoints": 16000,
-          "dps": 550,
+          "hitpoints": 17500,
+          "dps": 580,
           "upgrade_time": 0,
           "upgrade_cost": 0,
           "required_lab_level": 16,
           "required_townhall": 18,
           "strength_weight": 12000
+        }
+      ]
+    },
+    {
+      "_id": 4000185,
+      "name": "Elephant Rider",
+      "info": "He crushed the Supercell Make competition, now he’s crushing villages!\\n\\n Walls that stand between Elephant Rider and the nearest defense get thrashed! The shock of defeat separates Elephant from his Rider — the little guy targets everything with a swirling mace, while the big guy continues to smash walls as he rushes more defenses!",
+      "TID": {
+        "name": "TID_CHARACTER_ELEPHANT_RIDER",
+        "info": "TID_CHARACTER_ELEPHANT_RIDER_INFO"
+      },
+      "production_building": "Barracks",
+      "production_building_level": 0,
+      "upgrade_resource": "Elixir",
+      "is_flying": false,
+      "is_air_targeting": false,
+      "is_ground_targeting": true,
+      "movement_speed": 250,
+      "attack_speed": 1400,
+      "attack_range": 80,
+      "housing_space": 24,
+      "village": "home",
+      "warden_weight": 12,
+      "is_seasonal": true,
+      "levels": [
+        {
+          "level": 1,
+          "hitpoints": 750,
+          "dps": 40,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 1,
+          "strength_weight": 0
+        },
+        {
+          "level": 2,
+          "hitpoints": 900,
+          "dps": 50,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 2,
+          "strength_weight": 0
+        },
+        {
+          "level": 3,
+          "hitpoints": 1050,
+          "dps": 60,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 3,
+          "strength_weight": 0
+        },
+        {
+          "level": 4,
+          "hitpoints": 1300,
+          "dps": 75,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 4,
+          "strength_weight": 0
+        },
+        {
+          "level": 5,
+          "hitpoints": 1550,
+          "dps": 85,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 5,
+          "strength_weight": 0
+        },
+        {
+          "level": 6,
+          "hitpoints": 1950,
+          "dps": 105,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 6,
+          "strength_weight": 0
+        },
+        {
+          "level": 7,
+          "hitpoints": 2300,
+          "dps": 125,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 7,
+          "strength_weight": 0
+        },
+        {
+          "level": 8,
+          "hitpoints": 2800,
+          "dps": 150,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 8,
+          "strength_weight": 0
+        },
+        {
+          "level": 9,
+          "hitpoints": 3300,
+          "dps": 175,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 9,
+          "strength_weight": 0
+        },
+        {
+          "level": 10,
+          "hitpoints": 3950,
+          "dps": 210,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 10,
+          "strength_weight": 0
+        },
+        {
+          "level": 11,
+          "hitpoints": 4450,
+          "dps": 235,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 11,
+          "strength_weight": 0
+        },
+        {
+          "level": 12,
+          "hitpoints": 5100,
+          "dps": 270,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 12,
+          "strength_weight": 0
+        },
+        {
+          "level": 13,
+          "hitpoints": 5700,
+          "dps": 305,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 13,
+          "strength_weight": 0
+        },
+        {
+          "level": 14,
+          "hitpoints": 6500,
+          "dps": 345,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 14,
+          "strength_weight": 0
+        },
+        {
+          "level": 15,
+          "hitpoints": 7300,
+          "dps": 385,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 15,
+          "strength_weight": 0
+        },
+        {
+          "level": 16,
+          "hitpoints": 8250,
+          "dps": 440,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 16,
+          "strength_weight": 0
+        },
+        {
+          "level": 17,
+          "hitpoints": 9300,
+          "dps": 495,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 17,
+          "strength_weight": 0
+        },
+        {
+          "level": 18,
+          "hitpoints": 10500,
+          "dps": 560,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 18,
+          "strength_weight": 0
         }
       ]
     },
@@ -25516,6 +25577,7 @@
       "attack_range": 550,
       "housing_space": 1,
       "village": "home",
+      "warden_weight": 1,
       "levels": [
         {
           "level": 1,
@@ -25556,6 +25618,211 @@
           "required_lab_level": 16,
           "required_townhall": 18,
           "strength_weight": 13000
+        }
+      ]
+    },
+    {
+      "_id": 4000190,
+      "name": "Yeti Undertaker",
+      "info": "The troop for whom the bell tolls.\\n\\nYeti Undertaker buries his knuckles into defenses and deals extra damage to walls. He grows stronger throughout battle by absorbing the spirits of fallen allies. Defeating him is a grave mistake, as he will rise twice from beyond the tombstone, inviting his Skeletons of Darkness on each return to the mortal realm.",
+      "TID": {
+        "name": "TID_CHARACTER_UNDEAD_WRESTLER",
+        "info": "TID_CHARACTER_INFO_UNDEAD_WRESTLER"
+      },
+      "production_building": "Barracks",
+      "production_building_level": 0,
+      "upgrade_resource": "Elixir",
+      "is_flying": false,
+      "is_air_targeting": false,
+      "is_ground_targeting": true,
+      "movement_speed": 300,
+      "attack_speed": 1000,
+      "attack_range": 80,
+      "housing_space": 80,
+      "village": "home",
+      "warden_weight": 50,
+      "healer_weight": 20,
+      "is_seasonal": true,
+      "levels": [
+        {
+          "level": 1,
+          "hitpoints": 500,
+          "dps": 150,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 1,
+          "strength_weight": 0
+        },
+        {
+          "level": 2,
+          "hitpoints": 600,
+          "dps": 175,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 2,
+          "strength_weight": 0
+        },
+        {
+          "level": 3,
+          "hitpoints": 750,
+          "dps": 200,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 3,
+          "strength_weight": 0
+        },
+        {
+          "level": 4,
+          "hitpoints": 950,
+          "dps": 240,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 4,
+          "strength_weight": 0
+        },
+        {
+          "level": 5,
+          "hitpoints": 1200,
+          "dps": 270,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 5,
+          "strength_weight": 0
+        },
+        {
+          "level": 6,
+          "hitpoints": 1500,
+          "dps": 300,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 6,
+          "strength_weight": 0
+        },
+        {
+          "level": 7,
+          "hitpoints": 1800,
+          "dps": 330,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 7,
+          "strength_weight": 0
+        },
+        {
+          "level": 8,
+          "hitpoints": 2000,
+          "dps": 360,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 8,
+          "strength_weight": 0
+        },
+        {
+          "level": 9,
+          "hitpoints": 2200,
+          "dps": 395,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 9,
+          "strength_weight": 0
+        },
+        {
+          "level": 10,
+          "hitpoints": 3000,
+          "dps": 435,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 10,
+          "strength_weight": 0
+        },
+        {
+          "level": 11,
+          "hitpoints": 3450,
+          "dps": 460,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 11,
+          "strength_weight": 0
+        },
+        {
+          "level": 12,
+          "hitpoints": 3750,
+          "dps": 500,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 12,
+          "strength_weight": 0
+        },
+        {
+          "level": 13,
+          "hitpoints": 4000,
+          "dps": 550,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 13,
+          "strength_weight": 0
+        },
+        {
+          "level": 14,
+          "hitpoints": 4500,
+          "dps": 620,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 14,
+          "strength_weight": 0
+        },
+        {
+          "level": 15,
+          "hitpoints": 5000,
+          "dps": 690,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 15,
+          "strength_weight": 0
+        },
+        {
+          "level": 16,
+          "hitpoints": 5600,
+          "dps": 760,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 16,
+          "strength_weight": 0
+        },
+        {
+          "level": 17,
+          "hitpoints": 6400,
+          "dps": 820,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 17,
+          "strength_weight": 0
+        },
+        {
+          "level": 18,
+          "hitpoints": 7300,
+          "dps": 880,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_lab_level": null,
+          "required_townhall": 18,
+          "strength_weight": 0
         }
       ]
     }
@@ -27738,8 +28005,8 @@
           "damage": 0,
           "upgrade_time": 806400,
           "upgrade_cost": 150000,
-          "required_lab_level": 13,
-          "required_townhall": 15,
+          "required_lab_level": 1,
+          "required_townhall": 3,
           "strength_weight": 2000
         },
         {
@@ -27797,6 +28064,8 @@
       "attack_speed": 1200,
       "attack_range": 100,
       "village": "home",
+      "warden_weight": 21,
+      "healer_weight": 21,
       "levels": [
         {
           "level": 1,
@@ -28918,6 +29187,8 @@
       "attack_speed": 750,
       "attack_range": 500,
       "village": "home",
+      "warden_weight": 21,
+      "healer_weight": 25,
       "levels": [
         {
           "level": 1,
@@ -30039,6 +30310,8 @@
       "attack_speed": 1800,
       "attack_range": 700,
       "village": "home",
+      "warden_weight": 0,
+      "healer_weight": 15,
       "levels": [
         {
           "level": 1,
@@ -31281,6 +31554,8 @@
       "attack_speed": 1200,
       "attack_range": 300,
       "village": "home",
+      "warden_weight": 21,
+      "healer_weight": 23,
       "levels": [
         {
           "level": 1,
@@ -32083,6 +32358,8 @@
       "attack_speed": 850,
       "attack_range": 450,
       "village": "home",
+      "warden_weight": 21,
+      "healer_weight": 21,
       "levels": [
         {
           "level": 1,
@@ -33054,6 +33331,8 @@
       "attack_speed": 1200,
       "attack_range": 125,
       "village": "home",
+      "warden_weight": 21,
+      "healer_weight": 21,
       "levels": [
         {
           "level": 1,
@@ -33326,6 +33605,7 @@
       "movement_speed": 400,
       "attack_speed": 900,
       "attack_range": 60,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -33496,6 +33776,7 @@
       "movement_speed": 300,
       "attack_speed": 2100,
       "attack_range": 120,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -33666,6 +33947,7 @@
       "movement_speed": 250,
       "attack_speed": 1400,
       "attack_range": 550,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -33836,6 +34118,7 @@
       "movement_speed": 200,
       "attack_speed": 1000,
       "attack_range": 250,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34006,6 +34289,7 @@
       "movement_speed": 200,
       "attack_speed": 1000,
       "attack_range": 250,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34126,6 +34410,7 @@
       "movement_speed": 450,
       "attack_speed": 350,
       "attack_range": 450,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34296,6 +34581,7 @@
       "movement_speed": 400,
       "attack_speed": 1100,
       "attack_range": 80,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34355,7 +34641,7 @@
           "upgrade_cost": 150000,
           "required_pet_house_level": 6,
           "required_townhall": 15,
-          "strength_weight": 20000
+          "strength_weight": 19500
         },
         {
           "level": 7,
@@ -34365,7 +34651,7 @@
           "upgrade_cost": 160000,
           "required_pet_house_level": 6,
           "required_townhall": 15,
-          "strength_weight": 21000
+          "strength_weight": 20000
         },
         {
           "level": 8,
@@ -34375,7 +34661,7 @@
           "upgrade_cost": 170000,
           "required_pet_house_level": 6,
           "required_townhall": 15,
-          "strength_weight": 22000
+          "strength_weight": 20500
         },
         {
           "level": 9,
@@ -34385,16 +34671,66 @@
           "upgrade_cost": 180000,
           "required_pet_house_level": 6,
           "required_townhall": 15,
-          "strength_weight": 23000
+          "strength_weight": 21000
         },
         {
           "level": 10,
           "hitpoints": 5000,
           "dps": 150,
-          "upgrade_time": 0,
-          "upgrade_cost": 0,
+          "upgrade_time": 604800,
+          "upgrade_cost": 220000,
           "required_pet_house_level": 6,
           "required_townhall": 15,
+          "strength_weight": 21500
+        },
+        {
+          "level": 11,
+          "hitpoints": 5150,
+          "dps": 155,
+          "upgrade_time": 648000,
+          "upgrade_cost": 250000,
+          "required_pet_house_level": 12,
+          "required_townhall": 18,
+          "strength_weight": 22000
+        },
+        {
+          "level": 12,
+          "hitpoints": 5300,
+          "dps": 160,
+          "upgrade_time": 691200,
+          "upgrade_cost": 280000,
+          "required_pet_house_level": 12,
+          "required_townhall": 18,
+          "strength_weight": 22500
+        },
+        {
+          "level": 13,
+          "hitpoints": 5450,
+          "dps": 165,
+          "upgrade_time": 691200,
+          "upgrade_cost": 310000,
+          "required_pet_house_level": 12,
+          "required_townhall": 18,
+          "strength_weight": 23000
+        },
+        {
+          "level": 14,
+          "hitpoints": 5600,
+          "dps": 170,
+          "upgrade_time": 691200,
+          "upgrade_cost": 350000,
+          "required_pet_house_level": 12,
+          "required_townhall": 18,
+          "strength_weight": 23500
+        },
+        {
+          "level": 15,
+          "hitpoints": 5750,
+          "dps": 175,
+          "upgrade_time": 0,
+          "upgrade_cost": 0,
+          "required_pet_house_level": 12,
+          "required_townhall": 18,
           "strength_weight": 24000
         }
       ]
@@ -34416,6 +34752,7 @@
       "movement_speed": 300,
       "attack_speed": 1200,
       "attack_range": 350,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34586,6 +34923,7 @@
       "movement_speed": 300,
       "attack_speed": 1600,
       "attack_range": 250,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34706,6 +35044,7 @@
       "movement_speed": 200,
       "attack_speed": 750,
       "attack_range": 500,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34826,6 +35165,7 @@
       "movement_speed": 300,
       "attack_speed": 800,
       "attack_range": 250,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -34946,6 +35286,7 @@
       "movement_speed": 350,
       "attack_speed": 420,
       "attack_range": 800,
+      "warden_weight": 3,
       "levels": [
         {
           "level": 1,
@@ -57468,6 +57809,805 @@
           ]
         }
       ]
+    },
+    {
+      "_id": 90000060,
+      "name": "Revenge Deck",
+      "info": "Defenders who strike Dragon Duke are dealt a painful hand",
+      "TID": {
+        "name": "TID_GEAR_DRAGON_REFLECTOR",
+        "info": "TID_GEAR_INFO_DRAGON_SCALE",
+        "production_building": "TID_SMITHY"
+      },
+      "production_building": "Blacksmith",
+      "production_building_level": 1,
+      "rarity": "Epic",
+      "hero": "Dragon Duke",
+      "levels": [
+        {
+          "level": 1,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 100,
+          "upgrade_cost": {
+            "shiny_ore": 120,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 1,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 150,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 30,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 200,
+          "upgrade_cost": {
+            "shiny_ore": 240,
+            "glowy_ore": 20,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 1,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 150,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 30,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 300,
+          "upgrade_cost": {
+            "shiny_ore": 400,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 2,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 155,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 32,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 400,
+          "upgrade_cost": {
+            "shiny_ore": 600,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 2,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 155,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 32,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 500,
+          "upgrade_cost": {
+            "shiny_ore": 840,
+            "glowy_ore": 100,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 2,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 155,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 32,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 600,
+          "upgrade_cost": {
+            "shiny_ore": 1120,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 3,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 160,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 35,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 700,
+          "upgrade_cost": {
+            "shiny_ore": 1440,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 3,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 160,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 35,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 800,
+          "upgrade_cost": {
+            "shiny_ore": 1800,
+            "glowy_ore": 200,
+            "starry_ore": 10
+          },
+          "abilities": [
+            {
+              "Level": 3,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 160,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 35,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 900,
+          "upgrade_cost": {
+            "shiny_ore": 1900,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 4,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 165,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 39,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 1000,
+          "upgrade_cost": {
+            "shiny_ore": 2000,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 4,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 165,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 39,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 1100,
+          "upgrade_cost": {
+            "shiny_ore": 2100,
+            "glowy_ore": 400,
+            "starry_ore": 20
+          },
+          "abilities": [
+            {
+              "Level": 4,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 165,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 39,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 1,
+          "required_townhall": 8,
+          "strength_weight": 1200,
+          "upgrade_cost": {
+            "shiny_ore": 2200,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 5,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 175,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 43,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 3,
+          "required_townhall": 10,
+          "strength_weight": 1300,
+          "upgrade_cost": {
+            "shiny_ore": 2300,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 5,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 175,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 43,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 14,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 3,
+          "required_townhall": 10,
+          "strength_weight": 1400,
+          "upgrade_cost": {
+            "shiny_ore": 2400,
+            "glowy_ore": 600,
+            "starry_ore": 30
+          },
+          "abilities": [
+            {
+              "Level": 5,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 175,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 43,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 15,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 3,
+          "required_townhall": 10,
+          "strength_weight": 1900,
+          "upgrade_cost": {
+            "shiny_ore": 2500,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 6,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 185,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 46,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 16,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 5,
+          "required_townhall": 12,
+          "strength_weight": 2000,
+          "upgrade_cost": {
+            "shiny_ore": 2600,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 6,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 185,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 46,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 17,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 5,
+          "required_townhall": 12,
+          "strength_weight": 2100,
+          "upgrade_cost": {
+            "shiny_ore": 2700,
+            "glowy_ore": 600,
+            "starry_ore": 50
+          },
+          "abilities": [
+            {
+              "Level": 6,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 185,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 46,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 18,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 5,
+          "required_townhall": 12,
+          "strength_weight": 2600,
+          "upgrade_cost": {
+            "shiny_ore": 2800,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 7,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 195,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 49,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 19,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 7,
+          "required_townhall": 14,
+          "strength_weight": 2700,
+          "upgrade_cost": {
+            "shiny_ore": 2900,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 7,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 195,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 49,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 20,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 7,
+          "required_townhall": 14,
+          "strength_weight": 2800,
+          "upgrade_cost": {
+            "shiny_ore": 3000,
+            "glowy_ore": 600,
+            "starry_ore": 100
+          },
+          "abilities": [
+            {
+              "Level": 7,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 195,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 49,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 21,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 7,
+          "required_townhall": 14,
+          "strength_weight": 3300,
+          "upgrade_cost": {
+            "shiny_ore": 3100,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 8,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 205,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 52,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 22,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 8,
+          "required_townhall": 15,
+          "strength_weight": 3400,
+          "upgrade_cost": {
+            "shiny_ore": 3200,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 8,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 205,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 52,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 23,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 8,
+          "required_townhall": 15,
+          "strength_weight": 3500,
+          "upgrade_cost": {
+            "shiny_ore": 3300,
+            "glowy_ore": 600,
+            "starry_ore": 120
+          },
+          "abilities": [
+            {
+              "Level": 8,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 205,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 52,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 24,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 8,
+          "required_townhall": 15,
+          "strength_weight": 4000,
+          "upgrade_cost": {
+            "shiny_ore": 3400,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 9,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 215,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 55,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 25,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 9,
+          "required_townhall": 16,
+          "strength_weight": 4100,
+          "upgrade_cost": {
+            "shiny_ore": 3500,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 9,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 215,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 55,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 26,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 9,
+          "required_townhall": 16,
+          "strength_weight": 4200,
+          "upgrade_cost": {
+            "shiny_ore": 3600,
+            "glowy_ore": 600,
+            "starry_ore": 150
+          },
+          "abilities": [
+            {
+              "Level": 9,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 215,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 55,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        },
+        {
+          "level": 27,
+          "hitpoints": 0,
+          "dps": 0,
+          "heal_on_activation": 0,
+          "required_blacksmith_level": 9,
+          "required_townhall": 16,
+          "strength_weight": 4700,
+          "upgrade_cost": {
+            "shiny_ore": 0,
+            "glowy_ore": 0,
+            "starry_ore": 0
+          },
+          "abilities": [
+            {
+              "Level": 10,
+              "AbilityEffect": "dd_reversalcard_idle",
+              "ReflectsDamage": true,
+              "ReflectBehavior": "MovableCharacterDamageOverrides",
+              "ReflectedDamage": 225,
+              "ReflectedRange": 100000,
+              "ReflectCooldownMS": 800,
+              "HealOnReflect": 60,
+              "ReflectProjectile": "ddreversalcardprojectile",
+              "name": "Draconic Counter",
+              "info": "Defenders who strike Dragon Duke are dealt a painful hand"
+            }
+          ]
+        }
+      ]
     }
   ],
   "decorations": [
@@ -58270,90 +59410,6 @@
       "village": "home"
     },
     {
-      "_id": 18000083,
-      "name": "Torch",
-      "TID": {
-        "name": "TID_DECORATION_TORCH"
-      },
-      "width": 2,
-      "not_in_shop": true,
-      "pass_reward": false,
-      "max_count": 0,
-      "build_resource": "Elixir",
-      "build_cost": 500,
-      "village": "home"
-    },
-    {
-      "_id": 18000084,
-      "name": "Torch",
-      "TID": {
-        "name": "TID_DECORATION_TORCH"
-      },
-      "width": 2,
-      "not_in_shop": true,
-      "pass_reward": false,
-      "max_count": 0,
-      "build_resource": "Elixir",
-      "build_cost": 500,
-      "village": "home"
-    },
-    {
-      "_id": 18000085,
-      "name": "Torch",
-      "TID": {
-        "name": "TID_DECORATION_TORCH"
-      },
-      "width": 2,
-      "not_in_shop": true,
-      "pass_reward": false,
-      "max_count": 0,
-      "build_resource": "Elixir",
-      "build_cost": 500,
-      "village": "home"
-    },
-    {
-      "_id": 18000086,
-      "name": "Torch",
-      "TID": {
-        "name": "TID_DECORATION_TORCH"
-      },
-      "width": 2,
-      "not_in_shop": true,
-      "pass_reward": false,
-      "max_count": 0,
-      "build_resource": "Elixir",
-      "build_cost": 500,
-      "village": "home"
-    },
-    {
-      "_id": 18000087,
-      "name": "Torch",
-      "TID": {
-        "name": "TID_DECORATION_TORCH"
-      },
-      "width": 2,
-      "not_in_shop": true,
-      "pass_reward": false,
-      "max_count": 0,
-      "build_resource": "Elixir",
-      "build_cost": 500,
-      "village": "home"
-    },
-    {
-      "_id": 18000088,
-      "name": "Torch",
-      "TID": {
-        "name": "TID_DECORATION_TORCH"
-      },
-      "width": 2,
-      "not_in_shop": true,
-      "pass_reward": false,
-      "max_count": 0,
-      "build_resource": "Elixir",
-      "build_cost": 500,
-      "village": "home"
-    },
-    {
       "_id": 18000089,
       "name": "Goblin Cellar",
       "TID": {
@@ -59082,20 +60138,6 @@
       "village": "home"
     },
     {
-      "_id": 18000142,
-      "name": "Torch",
-      "TID": {
-        "name": "TID_DECORATION_TORCH"
-      },
-      "width": 2,
-      "not_in_shop": true,
-      "pass_reward": true,
-      "max_count": 0,
-      "build_resource": "Gems",
-      "build_cost": 500,
-      "village": "home"
-    },
-    {
       "_id": 18000143,
       "name": "Cherry Bonsai",
       "TID": {
@@ -59796,6 +60838,20 @@
       "village": "home"
     },
     {
+      "_id": 18000193,
+      "name": "Card Collector",
+      "TID": {
+        "name": "TID_DECO_QUEST_COLLECTOR"
+      },
+      "width": 2,
+      "not_in_shop": true,
+      "pass_reward": true,
+      "max_count": 1,
+      "build_resource": "Gems",
+      "build_cost": 500,
+      "village": "home"
+    },
+    {
       "_id": 18000194,
       "name": "The Master Statue",
       "TID": {
@@ -60320,9 +61376,9 @@
         "name": "TID_ARCH_DECO_VILLAGE_CHIEF"
       },
       "width": 2,
-      "not_in_shop": false,
+      "not_in_shop": true,
       "pass_reward": false,
-      "max_count": 1,
+      "max_count": 2,
       "build_resource": "Gems",
       "build_cost": 500,
       "village": "home"
@@ -60336,6 +61392,20 @@
       "width": 2,
       "not_in_shop": true,
       "pass_reward": false,
+      "max_count": 1,
+      "build_resource": "Gems",
+      "build_cost": 500,
+      "village": "home"
+    },
+    {
+      "_id": 18000233,
+      "name": "Card Flipper",
+      "TID": {
+        "name": "TID_SUPERDECO_CARD_CONJUROR"
+      },
+      "width": 3,
+      "not_in_shop": true,
+      "pass_reward": true,
       "max_count": 1,
       "build_resource": "Gems",
       "build_cost": 500,
@@ -60365,6 +61435,62 @@
       "not_in_shop": true,
       "pass_reward": true,
       "max_count": 1,
+      "build_resource": "Gems",
+      "build_cost": 500,
+      "village": "home"
+    },
+    {
+      "_id": 18000236,
+      "name": "Cody’s Callout",
+      "TID": {
+        "name": "TID_DECO_CODY_CALLOUT"
+      },
+      "width": 2,
+      "not_in_shop": true,
+      "pass_reward": true,
+      "max_count": 1,
+      "build_resource": "Gems",
+      "build_cost": 500,
+      "village": "home"
+    },
+    {
+      "_id": 18000237,
+      "name": "Money in the Bank Title",
+      "TID": {
+        "name": "TID_DECO_MITB_BELT"
+      },
+      "width": 2,
+      "not_in_shop": true,
+      "pass_reward": true,
+      "max_count": 1,
+      "build_resource": "Gems",
+      "build_cost": 500,
+      "village": "home"
+    },
+    {
+      "_id": 18000238,
+      "name": "Superstar Trophy",
+      "TID": {
+        "name": "TID_DECO_WORLD_CUP"
+      },
+      "width": 2,
+      "not_in_shop": true,
+      "pass_reward": true,
+      "max_count": 1,
+      "build_resource": "Gems",
+      "build_cost": 500,
+      "village": "home"
+    },
+    {
+      "_id": 18000239,
+      "name": "Bro Force",
+      "TID": {
+        "name": "TID_DECO_FISTBUMP"
+      },
+      "width": 2,
+      "not_in_shop": true,
+      "pass_reward": true,
+      "max_count": 4,
       "build_resource": "Gems",
       "build_cost": 500,
       "village": "home"
@@ -62188,7 +63314,9 @@
       },
       "type": "home",
       "music": null,
-      "thumbnail": "sceneries/classic_scenery/thumbnail.webp"
+      "thumbnail": "sceneries/classic_scenery/thumbnail.webp",
+      "free": true,
+      "default": true
     },
     {
       "_id": 60000001,
@@ -62198,7 +63326,9 @@
       },
       "type": "builderBase",
       "music": null,
-      "thumbnail": "sceneries/classic_scenery/thumbnail.webp"
+      "thumbnail": "sceneries/classic_scenery/thumbnail.webp",
+      "free": true,
+      "default": true
     },
     {
       "_id": 60000002,
@@ -62208,7 +63338,9 @@
       },
       "type": "war",
       "music": null,
-      "thumbnail": "sceneries/classic_scenery/thumbnail.webp"
+      "thumbnail": "sceneries/classic_scenery/thumbnail.webp",
+      "free": true,
+      "default": true
     },
     {
       "_id": 60000004,
@@ -62237,7 +63369,7 @@
         "name": "TID_SCENERY_EPIC_WINTER"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/epic_winter_scenery/music.ogg",
       "thumbnail": "sceneries/epic_winter_scenery/thumbnail.webp"
     },
     {
@@ -62247,7 +63379,7 @@
         "name": "TID_SCENERY_HOG_MOUNTAIN"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/hog_mountain_scenery/music.ogg",
       "thumbnail": "sceneries/hog_mountain_scenery/thumbnail.webp"
     },
     {
@@ -62257,8 +63389,9 @@
         "name": "TID_SCENERY_JUNGLE"
       },
       "type": "home",
-      "music": null,
-      "thumbnail": "sceneries/jungle_scenery/thumbnail.webp"
+      "music": "sceneries/jungle_scenery/music.ogg",
+      "thumbnail": "sceneries/jungle_scenery/thumbnail.webp",
+      "free": true
     },
     {
       "_id": 60000009,
@@ -62267,7 +63400,7 @@
         "name": "TID_SCENERY_EPIC_JUNGLE"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/epic_jungle_scenery/music.ogg",
       "thumbnail": "sceneries/epic_jungle_scenery/thumbnail.webp"
     },
     {
@@ -62277,7 +63410,7 @@
         "name": "TID_INFERNO_TOWN_SCENERY"
       },
       "type": "war",
-      "music": null,
+      "music": "sceneries/inferno_war_base_scenery/music.ogg",
       "thumbnail": "sceneries/inferno_war_base_scenery/thumbnail.webp"
     },
     {
@@ -62287,7 +63420,7 @@
         "name": "TID_9TH_CLASHIVERSARY_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/9th_clashiversary_scenery/music.ogg",
       "thumbnail": "sceneries/9th_clashiversary_scenery/thumbnail.webp"
     },
     {
@@ -62297,7 +63430,7 @@
         "name": "TID_PUMPKIN_GRAVEYARD_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/pumpkin_graveyard/music.ogg",
       "thumbnail": "sceneries/pumpkin_graveyard/thumbnail.webp"
     },
     {
@@ -62307,7 +63440,7 @@
         "name": "TID_SNOWED_IN_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/snow_day/music.ogg",
       "thumbnail": "sceneries/snow_day/thumbnail.webp"
     },
     {
@@ -62317,7 +63450,7 @@
         "name": "TID_TIGER_MOUNTAIN_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/tiger_mountain/music.ogg",
       "thumbnail": "sceneries/tiger_mountain/thumbnail.webp"
     },
     {
@@ -62327,7 +63460,7 @@
         "name": "TID_PIXEL_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/pixel_scenery/music.ogg",
       "thumbnail": "sceneries/pixel_scenery/thumbnail.webp"
     },
     {
@@ -62347,7 +63480,7 @@
         "name": "TID_SHADOW_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/shadow_scenery/music.ogg",
       "thumbnail": "sceneries/shadow_scenery/thumbnail.webp"
     },
     {
@@ -62357,7 +63490,7 @@
         "name": "TID_ROYALE_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/royale_scenery/music.ogg",
       "thumbnail": "sceneries/royale_scenery/thumbnail.webp"
     },
     {
@@ -62377,7 +63510,7 @@
         "name": "TID_10TH_CLASHIVERSARY_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/10th_clashiversary_scenery/music.ogg",
       "thumbnail": "sceneries/10th_clashiversary_scenery/thumbnail.webp"
     },
     {
@@ -62387,7 +63520,7 @@
         "name": "TID_CLASHFEST_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/clash_fest_scenery/music.ogg",
       "thumbnail": "sceneries/clash_fest_scenery/thumbnail.webp"
     },
     {
@@ -62397,8 +63530,9 @@
         "name": "TID_MAGIC_SCENERY"
       },
       "type": "home",
-      "music": null,
-      "thumbnail": "sceneries/magic_scenery/thumbnail.webp"
+      "music": "sceneries/magic_scenery/music.ogg",
+      "thumbnail": "sceneries/magic_scenery/thumbnail.webp",
+      "free": true
     },
     {
       "_id": 60000023,
@@ -62407,7 +63541,7 @@
         "name": "TID_EPIC_MAGIC_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/epic_magic_scenery/music.ogg",
       "thumbnail": "sceneries/epic_magic_scenery/thumbnail.webp"
     },
     {
@@ -62417,7 +63551,7 @@
         "name": "TID_SPOOKY2022_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/spooky_scenery/music.ogg",
       "thumbnail": "sceneries/spooky_scenery/thumbnail.webp"
     },
     {
@@ -62427,7 +63561,7 @@
         "name": "TID_JOLLY_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/jolly_scenery/music.ogg",
       "thumbnail": "sceneries/jolly_scenery/thumbnail.webp"
     },
     {
@@ -62437,7 +63571,7 @@
         "name": "TID_MAGIC_THEATRE_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/magic_theatre_scenery/music.ogg",
       "thumbnail": "sceneries/magic_theatre_scenery/thumbnail.webp"
     },
     {
@@ -62447,7 +63581,7 @@
         "name": "TID_PAINTER_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/painter_scenery/music.ogg",
       "thumbnail": "sceneries/painter_scenery/thumbnail.webp"
     },
     {
@@ -62458,7 +63592,8 @@
       },
       "type": "builderBase",
       "music": null,
-      "thumbnail": "sceneries/classic_scenery/thumbnail.webp"
+      "thumbnail": "sceneries/classic_scenery/thumbnail.webp",
+      "free": true
     },
     {
       "_id": 60000040,
@@ -62467,7 +63602,7 @@
         "name": "TID_DARK_AGES_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/dark_ages_scenery/music.ogg",
       "thumbnail": "sceneries/dark_ages_scenery/thumbnail.webp"
     },
     {
@@ -62477,7 +63612,7 @@
         "name": "TID_SCENERY_BOOKS_OF_CLASH"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/books_of_clash_scenery/music.ogg",
       "thumbnail": "sceneries/books_of_clash_scenery/thumbnail.webp"
     },
     {
@@ -62487,7 +63622,7 @@
         "name": "TID_CWL23_SCENERY"
       },
       "type": "war",
-      "music": null,
+      "music": "sceneries/war_arena_scenery/music.ogg",
       "thumbnail": "sceneries/war_arena_scenery/thumbnail.webp"
     },
     {
@@ -62497,7 +63632,7 @@
         "name": "TID_SCENERY_GOBLIN_CAVES"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/goblin_caves_scenery/music.ogg",
       "thumbnail": "sceneries/goblin_caves_scenery/thumbnail.webp"
     },
     {
@@ -62507,7 +63642,7 @@
         "name": "TID_SCENERY_CHESS"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/chess_scenery/music.ogg",
       "thumbnail": "sceneries/chess_scenery/thumbnail.webp"
     },
     {
@@ -62527,7 +63662,7 @@
         "name": "TID_SCENERY_FUTURE"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/future_scenery/music.ogg",
       "thumbnail": "sceneries/future_scenery/thumbnail.webp"
     },
     {
@@ -62537,7 +63672,7 @@
         "name": "TID_SCENERY_GHOST"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/ghost_scenery/music.ogg",
       "thumbnail": "sceneries/ghost_scenery/thumbnail.webp"
     },
     {
@@ -62547,7 +63682,7 @@
         "name": "TID_SCENERY_CHAMPION"
       },
       "type": "war",
-      "music": null,
+      "music": "sceneries/champion_scenery/music.ogg",
       "thumbnail": "sceneries/champion_scenery/thumbnail.webp"
     },
     {
@@ -62557,7 +63692,7 @@
         "name": "TID_SCENERY_GINGERBREAD"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/gingerbread_scenery/music.ogg",
       "thumbnail": "sceneries/gingerbread_scenery/thumbnail.webp"
     },
     {
@@ -62577,7 +63712,7 @@
         "name": "TID_DRAGON_PALACE_SCENERY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/dragon_palace_scenery/music.ogg",
       "thumbnail": "sceneries/dragon_palace_scenery/thumbnail.webp"
     },
     {
@@ -62587,7 +63722,7 @@
         "name": "TID_SCENERY_SPACE"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/space_scenery/music.ogg",
       "thumbnail": "sceneries/space_scenery/thumbnail.webp"
     },
     {
@@ -62597,7 +63732,7 @@
         "name": "TID_SCENERY_EGYPT"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/egypt_scenery/music.ogg",
       "thumbnail": "sceneries/egypt_scenery/thumbnail.webp"
     },
     {
@@ -62607,7 +63742,7 @@
         "name": "TID_SCENERY_CLASHBALL"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/football_scenery/music.ogg",
       "thumbnail": "sceneries/football_scenery/thumbnail.webp"
     },
     {
@@ -62617,7 +63752,7 @@
         "name": "TID_SCENERY_WILDWEST"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/wild_west_scenery/music.ogg",
       "thumbnail": "sceneries/wild_west_scenery/thumbnail.webp"
     },
     {
@@ -62627,7 +63762,7 @@
         "name": "TID_SCENERY_CLASHGAMES"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/clash_games_stadium/music.ogg",
       "thumbnail": "sceneries/clash_games_stadium/thumbnail.webp"
     },
     {
@@ -62637,7 +63772,7 @@
         "name": "TID_SCENERY_ANIME"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/anime_scenery/music.ogg",
       "thumbnail": "sceneries/anime_scenery/thumbnail.webp"
     },
     {
@@ -62647,7 +63782,7 @@
         "name": "TID_SCENERY_MASHUP"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/crossover_scenery/music.ogg",
       "thumbnail": "sceneries/crossover_scenery/thumbnail.webp"
     },
     {
@@ -62657,7 +63792,7 @@
         "name": "TID_SCENERY_TTRPG"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/clash_of_dragons/music.ogg",
       "thumbnail": "sceneries/clash_of_dragons/thumbnail.webp"
     },
     {
@@ -62667,7 +63802,7 @@
         "name": "TID_SCENERY_CLASHOWEEN2024"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/doomed_scenery/music.ogg",
       "thumbnail": "sceneries/doomed_scenery/thumbnail.webp"
     },
     {
@@ -62677,7 +63812,7 @@
         "name": "TID_SCENERY_TH17"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/justice_scenery/music.ogg",
       "thumbnail": "sceneries/justice_scenery/thumbnail.webp"
     },
     {
@@ -62687,7 +63822,7 @@
         "name": "TID_SCENERY_WAR_MACHINE"
       },
       "type": "war",
-      "music": null,
+      "music": "sceneries/war_machine_scenery/music.ogg",
       "thumbnail": "sceneries/war_machine_scenery/thumbnail.webp"
     },
     {
@@ -62697,7 +63832,7 @@
         "name": "TID_SCENERY_CLASHMAS2024"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/toy_workshop_scenery/music.ogg",
       "thumbnail": "sceneries/toy_workshop_scenery/thumbnail.webp"
     },
     {
@@ -62707,7 +63842,7 @@
         "name": "TID_SCENERY_FIRE_ICE"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/fire_and_ice_scenery/music.ogg",
       "thumbnail": "sceneries/fire_and_ice_scenery/thumbnail.webp"
     },
     {
@@ -62727,7 +63862,7 @@
         "name": "TID_SCENERY_LNY2025"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/year_of_the_snake/music.ogg",
       "thumbnail": "sceneries/year_of_the_snake/thumbnail.webp"
     },
     {
@@ -62737,7 +63872,7 @@
         "name": "TID_SCENERY_ACTION_HEROES"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/military_scenery/music.ogg",
       "thumbnail": "sceneries/military_scenery/thumbnail.webp"
     },
     {
@@ -62747,7 +63882,7 @@
         "name": "TID_SCENERY_APRIL25"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/clashamania_scenery/music.ogg",
       "thumbnail": "sceneries/clashamania_scenery/thumbnail.webp"
     },
     {
@@ -62757,7 +63892,7 @@
         "name": "TID_SCENERY_JAPAN25"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/high_seas_scenery/music.ogg",
       "thumbnail": "sceneries/high_seas_scenery/thumbnail.webp"
     },
     {
@@ -62767,7 +63902,7 @@
         "name": "TID_SCENERY_DARK_DAYS"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/dark_days_scenery/music.ogg",
       "thumbnail": "sceneries/dark_days_scenery/thumbnail.webp"
     },
     {
@@ -62787,7 +63922,7 @@
         "name": "TID_SCENERY_CLASHAVERSARY2025"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/13th_clash-a-versary_scenery/music.ogg",
       "thumbnail": "sceneries/13th_clash-a-versary_scenery/thumbnail.webp"
     },
     {
@@ -62797,7 +63932,7 @@
         "name": "TID_SCENERY_MASHARAMA"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/mash-a-rama_scenery/music.ogg",
       "thumbnail": "sceneries/mash-a-rama_scenery/thumbnail.webp"
     },
     {
@@ -62807,7 +63942,7 @@
         "name": "TID_SCENERY_COSMICCURSE"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/cosmic_scenery/music.ogg",
       "thumbnail": "sceneries/cosmic_scenery/thumbnail.webp"
     },
     {
@@ -62817,7 +63952,7 @@
         "name": "TID_SCENERY_WAR_RUINED"
       },
       "type": "war",
-      "music": null,
+      "music": "sceneries/ruined_kingdom_war_scenery/music.ogg",
       "thumbnail": "sceneries/ruined_kingdom_war_scenery/thumbnail.webp"
     },
     {
@@ -62827,7 +63962,7 @@
         "name": "TID_SCENERY_WASTELANDS"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/wasteland_scenery/music.ogg",
       "thumbnail": "sceneries/wasteland_scenery/thumbnail.webp"
     },
     {
@@ -62837,7 +63972,7 @@
         "name": "TID_SCENERY_FROSTAGE"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/frost_age_scenery/music.ogg",
       "thumbnail": "sceneries/frost_age_scenery/thumbnail.webp"
     },
     {
@@ -62857,7 +63992,7 @@
         "name": "TID_SCENERY_DESERT_NIGHTS"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/desert_nights_scenery/music.ogg",
       "thumbnail": "sceneries/desert_nights_scenery/thumbnail.webp"
     },
     {
@@ -62867,7 +64002,7 @@
         "name": "TID_SCENERY_LNY26"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/year_of_the_fire_horse/music.ogg",
       "thumbnail": "sceneries/year_of_the_fire_horse/thumbnail.webp"
     },
     {
@@ -62877,7 +64012,7 @@
         "name": "TID_SCENERY_DRAGON_ESCAPE"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/dragon_escape_scenery/music.ogg",
       "thumbnail": "sceneries/dragon_escape_scenery/thumbnail.webp"
     },
     {
@@ -62887,7 +64022,7 @@
         "name": "TID_SCENERY_SOUND_OF_CLASH"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/sound_of_clash_scenery/music.ogg",
       "thumbnail": "sceneries/sound_of_clash_scenery/thumbnail.webp"
     },
     {
@@ -62897,7 +64032,7 @@
         "name": "TID_SCENERY_SKELETON_KINGDOM"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/skeleton_kingdom_scenery/music.ogg",
       "thumbnail": "sceneries/skeleton_kingdom_scenery/thumbnail.webp"
     },
     {
@@ -62911,14 +64046,44 @@
       "thumbnail": "sceneries/classic_skeleton_scenery/thumbnail.webp"
     },
     {
+      "_id": 60000089,
+      "name": "Glory Arena Scenery",
+      "TID": {
+        "name": "TID_SCENERY_WORLDCUP2024_K2"
+      },
+      "type": "home",
+      "music": "sceneries/glory_arena_scenery/music.ogg",
+      "thumbnail": "sceneries/glory_arena_scenery/thumbnail.webp"
+    },
+    {
       "_id": 60000090,
       "name": "Anime Fury Scenery",
       "TID": {
         "name": "TID_SCENERY_ANIME_FURY"
       },
       "type": "home",
-      "music": null,
+      "music": "sceneries/anime_fury_scenery/music.ogg",
       "thumbnail": "sceneries/anime_fury_scenery/thumbnail.webp"
+    },
+    {
+      "_id": 60000091,
+      "name": "Barbarian's Odyssey Scenery",
+      "TID": {
+        "name": "TID_SCENERY_BARBARIAN_ODYSSEY"
+      },
+      "type": "home",
+      "music": "sceneries/barbarian's_odyssey_scenery/music.ogg",
+      "thumbnail": "sceneries/barbarian's_odyssey_scenery/thumbnail.webp"
+    },
+    {
+      "_id": 60000093,
+      "name": "The Awesome Quest Scenery",
+      "TID": {
+        "name": "TID_SCENERY_QUEST"
+      },
+      "type": "home",
+      "music": "sceneries/the_awesome_quest_scenery/music.ogg",
+      "thumbnail": "sceneries/the_awesome_quest_scenery/thumbnail.webp"
     }
   ],
   "skins": [
@@ -64201,15 +65366,6 @@
       "character": "BB Battle Machine"
     },
     {
-      "_id": 52000154,
-      "name": "Goblin Machine",
-      "TID": {
-        "name": "TID_GOBLINMACHINE"
-      },
-      "tier": "Basic",
-      "character": "BB Battle Machine"
-    },
-    {
       "_id": 52000155,
       "name": "Steampunk Machine",
       "TID": {
@@ -64243,15 +65399,6 @@
         "name": "TID_STEAMPUNK_BATTLE_COPTER"
       },
       "tier": "Basic",
-      "character": "BB Battle Copter"
-    },
-    {
-      "_id": 52000165,
-      "name": "Hotrod Copter",
-      "TID": {
-        "name": "TID_HOTROD_BATTLE_COPTER"
-      },
-      "tier": "Legendary",
       "character": "BB Battle Copter"
     },
     {
@@ -65074,6 +66221,15 @@
       "character": "Minion Prince"
     },
     {
+      "_id": 52000269,
+      "name": "Midas Prince",
+      "TID": {
+        "name": "TID_ODYSSEY_MINION_PRINCE"
+      },
+      "tier": "Legendary",
+      "character": "Minion Prince"
+    },
+    {
       "_id": 52000270,
       "name": "Majestic Minion Prince",
       "TID": {
@@ -65128,10 +66284,37 @@
       "character": "Barbarian King"
     },
     {
+      "_id": 52000291,
+      "name": "Zeus King",
+      "TID": {
+        "name": "TID_ODYSSEY_KING"
+      },
+      "tier": "Gold",
+      "character": "Barbarian King"
+    },
+    {
       "_id": 52000292,
       "name": "Majestic Barbarian King",
       "TID": {
         "name": "TID_UPGRADED_KING"
+      },
+      "tier": "Legendary",
+      "character": "Barbarian King"
+    },
+    {
+      "_id": 52000293,
+      "name": "Sapphire Half-Time King",
+      "TID": {
+        "name": "TID_FOOTBALL26_KING"
+      },
+      "tier": "Legendary",
+      "character": "Barbarian King"
+    },
+    {
+      "_id": 52000294,
+      "name": "King Barbarian",
+      "TID": {
+        "name": "TID_TCG_KING"
       },
       "tier": "Legendary",
       "character": "Barbarian King"
@@ -65191,6 +66374,24 @@
       "character": "Royal Champion"
     },
     {
+      "_id": 52000301,
+      "name": "Royal Enchantress",
+      "TID": {
+        "name": "TID_NECRO_CHAMPION"
+      },
+      "tier": "Legendary",
+      "character": "Royal Champion"
+    },
+    {
+      "_id": 52000303,
+      "name": "Hades Champion",
+      "TID": {
+        "name": "TID_ODYSSEY_CHAMPION"
+      },
+      "tier": "Legendary",
+      "character": "Royal Champion"
+    },
+    {
       "_id": 52000304,
       "name": "Majestic Royal Champion",
       "TID": {
@@ -65198,6 +66399,15 @@
       },
       "tier": "Legendary",
       "character": "Royal Champion"
+    },
+    {
+      "_id": 52000319,
+      "name": "Medusa Queen",
+      "TID": {
+        "name": "TID_ODYSSEY_QUEEN"
+      },
+      "tier": "Legendary",
+      "character": "Archer Queen"
     },
     {
       "_id": 52000320,
@@ -65209,10 +66419,55 @@
       "character": "Archer Queen"
     },
     {
+      "_id": 52000321,
+      "name": "Rosy Half-Time Queen",
+      "TID": {
+        "name": "TID_FOOTBALL26_QUEEN"
+      },
+      "tier": "Legendary",
+      "character": "Archer Queen"
+    },
+    {
+      "_id": 52000322,
+      "name": "Elven Archer",
+      "TID": {
+        "name": "TID_TCG_QUEEN"
+      },
+      "tier": "Legendary",
+      "character": "Archer Queen"
+    },
+    {
+      "_id": 52000330,
+      "name": "Poseidon Warden",
+      "TID": {
+        "name": "TID_ODYSSEY_WARDEN"
+      },
+      "tier": "Legendary",
+      "character": "Grand Warden"
+    },
+    {
       "_id": 52000331,
       "name": "Majestic Grand Warden",
       "TID": {
         "name": "TID_UPGRADED_WARDEN"
+      },
+      "tier": "Legendary",
+      "character": "Grand Warden"
+    },
+    {
+      "_id": 52000333,
+      "name": "Violet Half-Time Warden",
+      "TID": {
+        "name": "TID_FOOTBALL26_WARDEN"
+      },
+      "tier": "Legendary",
+      "character": "Grand Warden"
+    },
+    {
+      "_id": 52000334,
+      "name": "Grand Mage",
+      "TID": {
+        "name": "TID_TCG_WARDEN"
       },
       "tier": "Legendary",
       "character": "Grand Warden"
@@ -65263,6 +66518,15 @@
       "character": "Dragon Duke"
     },
     {
+      "_id": 52000348,
+      "name": "Hydra Duke",
+      "TID": {
+        "name": "TID_ODYSSEY_DUKE"
+      },
+      "tier": "Legendary",
+      "character": "Dragon Duke"
+    },
+    {
       "_id": 52000349,
       "name": "Majestic Dragon Duke",
       "TID": {
@@ -65270,6 +66534,51 @@
       },
       "tier": "Legendary",
       "character": "Dragon Duke"
+    },
+    {
+      "_id": 52000350,
+      "name": "Drakan Duke",
+      "TID": {
+        "name": "TID_TCG_DUKE"
+      },
+      "tier": "Legendary",
+      "character": "Dragon Duke"
+    },
+    {
+      "_id": 52000353,
+      "name": "Lich Prince",
+      "TID": {
+        "name": "TID_TCG_MINION_PRINCE"
+      },
+      "tier": "Legendary",
+      "character": "Minion Prince"
+    },
+    {
+      "_id": 52000354,
+      "name": "League Prince",
+      "TID": {
+        "name": "TID_LEAGUE_MINION_PRINCE"
+      },
+      "tier": "Legendary",
+      "character": "Minion Prince"
+    },
+    {
+      "_id": 52000378,
+      "name": "Amber Half-Time Champion",
+      "TID": {
+        "name": "TID_FOOTBALL26_CHAMPION"
+      },
+      "tier": "Legendary",
+      "character": "Royal Champion"
+    },
+    {
+      "_id": 52000379,
+      "name": "Tempest Champion",
+      "TID": {
+        "name": "TID_TCG_CHAMPION"
+      },
+      "tier": "Gold",
+      "character": "Royal Champion"
     }
   ],
   "capital_house_parts": [
@@ -66226,6 +67535,30 @@
       "name": "Quest Roof",
       "slot_type": "roof",
       "pass_reward": true
+    },
+    {
+      "_id": 82000162,
+      "name": "Cosmic2 Deco",
+      "slot_type": "decoration",
+      "pass_reward": true
+    },
+    {
+      "_id": 82000163,
+      "name": "Wwe26 Foot",
+      "slot_type": "foot",
+      "pass_reward": true
+    },
+    {
+      "_id": 82000164,
+      "name": "Wwe26 Ground",
+      "slot_type": "ground",
+      "pass_reward": true
+    },
+    {
+      "_id": 82000165,
+      "name": "Cosmic2 Roof",
+      "slot_type": "roof",
+      "pass_reward": true
     }
   ],
   "helpers": [
@@ -66956,7 +68289,7 @@
       "promotions": 1,
       "demotions": 2,
       "15v15_only": true,
-      "battle_modifier": "Minus Two"
+      "battle_modifier": "Minus Three"
     },
     {
       "_id": 48000020,
@@ -66973,7 +68306,7 @@
       "promotions": 1,
       "demotions": 2,
       "15v15_only": true,
-      "battle_modifier": "Minus Two"
+      "battle_modifier": "Minus Three"
     },
     {
       "_id": 48000021,
@@ -66990,7 +68323,7 @@
       "promotions": 1,
       "demotions": 2,
       "15v15_only": true,
-      "battle_modifier": "Minus One"
+      "battle_modifier": "Minus Two"
     },
     {
       "_id": 48000022,
@@ -72231,7 +73564,7 @@
     },
     {
       "_id": 105000034,
-      "name": "Legend League",
+      "name": "Legend League III",
       "league_tier": 34,
       "TID": {
         "name": "TID_LEAGUE_LEGENDARY"
@@ -72441,7 +73774,7 @@
     },
     {
       "_id": 105000035,
-      "name": "Legend League",
+      "name": "Legend League II",
       "league_tier": 35,
       "TID": {
         "name": "TID_LEAGUE_LEGENDARY"
@@ -72651,7 +73984,7 @@
     },
     {
       "_id": 105000036,
-      "name": "Legend League",
+      "name": "Legend League I",
       "league_tier": 36,
       "TID": {
         "name": "TID_LEAGUE_LEGENDARY"
@@ -73554,7 +74887,7 @@
     {
       "_id": 900728545460161,
       "name": "Wall Ring",
-      "info": "Instantly upgrade a wall piece. Some higher level walls may require multiple rings to upgrade. Requires a free Builder. Works in both villages!",
+      "info": "Instantly upgrade a wall piece. Some higher level walls may require multiple rings to upgrade. Works in both villages!",
       "TID": {
         "name": "TID_BOOSTER_WALL_UPGRADE",
         "info": "TID_BOOSTER_WALL_UPGRADE_INFO"
@@ -74129,6 +75462,24 @@
       "TID": {
         "name": "TID_CHEST_EPIC_NAME",
         "info": "TID_CHEST_EPIC_INFO"
+      }
+    },
+    {
+      "_id": 53669156428277,
+      "name": "Card Pack",
+      "info": "Trade 2 duplicates of the same card type to get a random Card.",
+      "TID": {
+        "name": "TID_CHEST_COLLECTION_NAME",
+        "info": "TID_CHEST_COLLECTION_INFO"
+      }
+    },
+    {
+      "_id": 740568109607325,
+      "name": "WWE Chest",
+      "info": "A special Chest that contains random event rewards and Challenger Contracts!",
+      "TID": {
+        "name": "TID_CHEST_EVENT_NAME",
+        "info": "TID_CHEST_EVENT_INFO"
       }
     }
   ],
