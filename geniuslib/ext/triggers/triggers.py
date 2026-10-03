@@ -151,12 +151,13 @@ class BaseTrigger(ABC):
 
             # create a reference to the repeating task to prevent it from accidentally being garbage collected
             self.task = self.loop.create_task(inner())
-
+            # keep strong reference
+            self._task = self.task
         if self.autostart:  # immediately start the trigger
             if self.logger:
                 self.logger.info(f'{self.__class__.__name__} for {func.__name__} auto-started')
-            self.loop.create_task(wrapped())
-        else:  # add trigger to registry
+            t = self.loop.create_task(wrapped())
+            self._autostart_task = t        else:  # add trigger to registry
             trigger_registry.append(wrapped())
             if self.logger:
                 self.logger.info(f'{self.__class__.__name__} for {func.__name__} registered for manual start')

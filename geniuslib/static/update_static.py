@@ -10,7 +10,10 @@ import logging
 import csv
 import os
 import zipfile
-import zstandard
+try:
+    import zstandard
+except Exception:  # pragma: no cover
+    zstandard = None
 import lzma
 from pathlib import Path
 

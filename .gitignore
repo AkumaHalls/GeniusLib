@@ -11,3 +11,8 @@ build/
 docs/_build/
 site/
 *.pyo
+geniuslib-assets-*.tar.gz
+*.tar.gz
+!geniuslib-assets-*.tar.gz
+# avoid tracking large asset bundle in repo
+geniuslib-assets-5.5.4.tar.gz

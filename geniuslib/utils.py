@@ -10,7 +10,11 @@ import re
 import time as _time
 
 from collections import deque, UserDict
-from datetime import datetime, timedelta, timezone, UTC
+from datetime import datetime, timedelta, timezone
+try:
+    from datetime import UTC  # Python 3.11+
+except ImportError:  # pragma: no cover
+    UTC = timezone.utc  # Python 3.10
 from functools import wraps
 from operator import attrgetter
 from typing import Any, Callable, Generic, Iterable, List, Optional, Type, TypeVar, Union
