@@ -3,13 +3,12 @@
 Uso: python export_data.py <tag> [--format json|csv]
 """
 
-import asyncio
 import argparse
+import asyncio
 import os
-import sys
 
 from geniuslib import Client
-from geniuslib.exporter import to_json, to_csv
+from geniuslib.exporter import to_csv, to_json
 
 COC_EMAIL = os.environ.get("COC_EMAIL", "seu_email@exemplo.com")
 COC_PASSWORD = os.environ.get("COC_PASSWORD", "sua_senha")

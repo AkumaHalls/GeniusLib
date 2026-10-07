@@ -58,7 +58,10 @@ class Achievement:
             ("stars", self.stars),
             ("value", self.value),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __init__(self, *, data):
         self._from_data(data)
@@ -114,6 +117,7 @@ class LoadGameData:
         Never inject game metadata, and don't load it on startup.
 
     """
+
     always = False
     default = False
     startup_only = False
@@ -122,7 +126,7 @@ class LoadGameData:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             if not hasattr(self.__class__, key):
-                raise RuntimeError("%s was not a valid LoadGameData option.", key)
+                raise RuntimeError(f"{key} was not a valid LoadGameData option.")
             setattr(self, key, value)
 
 
@@ -156,6 +160,7 @@ class TimeDelta:
         The number of seconds in the timedelta. The same logic applies as with hours.
 
     """
+
     def __init__(self, days=0, hours=0, minutes=0, seconds=0):
         _days, _hours = divmod(hours, 24)
         _hours_left, _mins = divmod(minutes, 60)
@@ -174,10 +179,7 @@ class TimeDelta:
         -------
         int
             The number of seconds"""
-        return self.days * 24 * 60 * 60 + \
-               self.hours * 60 * 60 + \
-               self.minutes * 60 + \
-               self.seconds
+        return self.days * 24 * 60 * 60 + self.hours * 60 * 60 + self.minutes * 60 + self.seconds
 
 
 class Location:
@@ -207,7 +209,10 @@ class Location:
             ("id", self.id),
             ("name", self.name),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.id == other.id
@@ -234,11 +239,7 @@ class BaseLeague:
     id: :class:`int`: The league's unique ID
     name: :class:`str`: The league's name, as it appears in-game."""
 
-    __slots__ = (
-        "id",
-        "name",
-        "_client"
-    )
+    __slots__ = ("id", "name", "_client")
 
     def __init__(self, *, data, client=None):
         # pylint: disable=invalid-name
@@ -269,16 +270,17 @@ class League(BaseLeague):
         :class:`Icon`: The league's icon.
     """
 
-    __slots__ = (
-        "icon",
-    )
+    __slots__ = ("icon",)
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
         attrs = [("id", self.id), ("name", self.name)]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.id == other.id
@@ -313,7 +315,10 @@ class LeagueGroupClan:
 
     def __repr__(self):
         attrs = [("tag", self.tag), ("name", self.name), ("members", self.members)]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.tag == other.tag
@@ -347,7 +352,10 @@ class LeagueGroupInfo:
 
     def __repr__(self):
         attrs = [("state", self.state), ("season", self.season), ("clans", len(self.clans))]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.season == other.season
@@ -359,7 +367,9 @@ class LeagueGroupInfo:
     def _from_data(self, data: dict) -> None:
         self.state: str = data.get("state")
         self.season: str = data.get("season")
-        self.clans: List[LeagueGroupClan] = [LeagueGroupClan(data=c, client=self._client) for c in data.get("clans", [])]
+        self.clans: List[LeagueGroupClan] = [
+            LeagueGroupClan(data=c, client=self._client) for c in data.get("clans", [])
+        ]
 
 
 class Season:
@@ -402,14 +412,23 @@ class LegendStatistics:
         :class:`Season`: Legend statistics for the player's best builder base season.
     """
 
-    __slots__ = ("legend_trophies", "current_season", "previous_season", "best_season", "previous_builder_base_season",
-                 "best_builder_base_season")
+    __slots__ = (
+        "legend_trophies",
+        "current_season",
+        "previous_season",
+        "best_season",
+        "previous_builder_base_season",
+        "best_builder_base_season",
+    )
 
     def __repr__(self):
         attrs = [
             ("legend_trophies", self.legend_trophies),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return (
@@ -449,7 +468,10 @@ class Badge:
         attrs = [
             ("url", self.url),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __init__(self, *, data, client):
         self._client = client
@@ -518,7 +540,10 @@ class Icon:
         attrs = [
             ("url", self.url),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __init__(self, *, data, client):
         self._client = client
@@ -581,7 +606,10 @@ class Timestamp:
 
     def __repr__(self):
         attrs = [("time", self.time), ("seconds_until", self.seconds_until)]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.raw_time == other.raw_time
@@ -638,7 +666,10 @@ class Label:
 
     def __repr__(self):
         attrs = [("id", self.id), ("name", self.name)]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.id == other.id
@@ -672,12 +703,13 @@ class CapitalDistrict:
 
     def __repr__(self):
         attrs = [("id", self.id), ("name", self.name)]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and \
-               self.id == other.id and \
-               self.hall_level == other.hall_level
+        return isinstance(other, self.__class__) and self.id == other.id and self.hall_level == other.hall_level
 
     def __init__(self, *, data, client):
         # pylint: disable=invalid-name
@@ -695,11 +727,8 @@ class ChatLanguage:
     name: :class:`str`: The language's full name, for example ``English``.
     language_code: :class:`str` The language's abbreviated code, for example ``EN``.
     """
-    __slots__ = (
-        "id",
-        "name",
-        "language_code"
-    )
+
+    __slots__ = ("id", "name", "language_code")
 
     def __init__(self, *, data):
         # pylint: disable=invalid-name
@@ -729,6 +758,7 @@ class GoldPassSeason:
     duration:
         :class:`datetime.timedelta`: The duration of the gold pass season
     """
+
     __slots__ = ("start_time", "end_time", "duration")
 
     def __init__(self, *, data):
@@ -740,9 +770,11 @@ class GoldPassSeason:
             self.duration = None
 
     def __eq__(self, other):
-        return (isinstance(other, GoldPassSeason)
-                and self.start_time == other.start_time
-                and self.end_time == other.end_time)
+        return (
+            isinstance(other, GoldPassSeason)
+            and self.start_time == other.start_time
+            and self.end_time == other.end_time
+        )
 
 
 class PlayerHouseElement:
@@ -755,6 +787,7 @@ class PlayerHouseElement:
     type:
         :class:`PlayerHouseElementType`: The type of the house element
     """
+
     __slots__ = ("id", "type")
 
     def __init__(self, *, data):
@@ -762,14 +795,12 @@ class PlayerHouseElement:
         self.type = data.get("type") and PlayerHouseElementType(value=data["type"])
 
     def __eq__(self, other):
-        return (isinstance(other, PlayerHouseElement)
-                and self.id == other.id
-                and self.type == other.type)
+        return isinstance(other, PlayerHouseElement) and self.id == other.id and self.type == other.type
 
 
 class TID:
     """Represents a Translation ID (TID) for Clash of Clans game elements.
-    
+
     Attributes
     ----------
     name: :class:`str`
@@ -777,9 +808,9 @@ class TID:
     info: :class:`str`
         The translation ID for additional info/description of the game element.
     """
-    
+
     __slots__ = ("name", "info")
-    
+
     def __init__(self, data: dict):
         self.name = data["name"]
         self.info = data.get("info", "")
@@ -787,13 +818,13 @@ class TID:
 
 class Translation:
     """Represents translations for multiple languages.
-    
+
     Supports multiple access patterns:
-    
+
     * Attribute access: ``translation.russian``, ``translation.english``
     * Dictionary access (uppercase): ``translation["RU"]``, ``translation["EN"]``
     * Dictionary access (lowercase): ``translation["ru"]``, ``translation["en"]``
-    
+
     Attributes
     ----------
     english: :class:`str`
@@ -819,14 +850,32 @@ class Translation:
     turkish: :class:`str`
     vietnamese: :class:`str`
     """
-    
+
     __slots__ = (
-        "english", "arabic", "chinese", "chinese_traditional", "german",
-        "spanish", "persian", "finnish", "french", "indonesian", "italian",
-        "japanese", "korean", "malay", "dutch", "norwegian", "polish",
-        "portuguese", "russian", "thai", "turkish", "vietnamese"
+        "english",
+        "arabic",
+        "chinese",
+        "chinese_traditional",
+        "german",
+        "spanish",
+        "persian",
+        "finnish",
+        "french",
+        "indonesian",
+        "italian",
+        "japanese",
+        "korean",
+        "malay",
+        "dutch",
+        "norwegian",
+        "polish",
+        "portuguese",
+        "russian",
+        "thai",
+        "turkish",
+        "vietnamese",
     )
-    
+
     _LANGUAGE_MAP = {
         "EN": "english",
         "AR": "arabic",
@@ -849,12 +898,12 @@ class Translation:
         "RU": "russian",
         "TH": "thai",
         "TR": "turkish",
-        "VI": "vietnamese"
+        "VI": "vietnamese",
     }
-    
+
     def __init__(self, data: dict):
         """Initialize Translation from a dictionary with language codes as keys.
-        
+
         Parameters
         ----------
         data: :class:`dict`
@@ -882,20 +931,20 @@ class Translation:
         self.thai: str = data.get("TH", "")
         self.turkish: str = data.get("TR", "")
         self.vietnamese: str = data.get("VI", "")
-    
+
     def __getitem__(self, key: str) -> str:
         """Get translation by language code (case-insensitive).
-        
+
         Parameters
         ----------
         key: :class:`str`
             Language code (e.g., "EN", "en", "RU", "ru")
-        
+
         Returns
         -------
         :class:`str`
             The translation for the specified language.
-        
+
         Raises
         ------
         KeyError
@@ -905,14 +954,11 @@ class Translation:
         if key_upper in self._LANGUAGE_MAP:
             return getattr(self, self._LANGUAGE_MAP[key_upper])
         raise KeyError(f"Language code '{key}' not supported")
-    
+
     def __repr__(self):
         return f"<Translation english={self.english!r}>"
-    
+
     def __eq__(self, other):
         return isinstance(other, Translation) and all(
-            getattr(self, attr) == getattr(other, attr)
-            for attr in self.__slots__
+            getattr(self, attr) == getattr(other, attr) for attr in self.__slots__
         )
-
-

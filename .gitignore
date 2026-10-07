@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+*.pyo
 .env
 .vscode/
 .idea/
@@ -8,11 +9,10 @@ dist/
 build/
 .DS_Store
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+ruff.json
 docs/_build/
 site/
-*.pyo
 geniuslib-assets-*.tar.gz
-*.tar.gz
-!geniuslib-assets-*.tar.gz
-# avoid tracking large asset bundle in repo
-geniuslib-assets-5.5.4.tar.gz

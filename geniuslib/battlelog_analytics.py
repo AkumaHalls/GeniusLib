@@ -2,15 +2,14 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 import statistics
-from collections import Counter, defaultdict
-from datetime import date, datetime, timedelta
+from collections import Counter
+from datetime import date, datetime
 from typing import Dict, List, Optional, Tuple
 
 from .battlelog import (
     BattleLogEntry,
     LeagueHistoryEntry,
     LeagueTierGroup,
-    LeagueTierGroupMember,
 )
 from .utils import format_season_id
 
@@ -46,26 +45,53 @@ def decode_army_code(code: str, static_data: dict) -> dict:
     spell_items = []
     hero_items = []
 
-    sections = re.finditer(
-        r"h(?P<heroes>[^idus]+)"
-        r"|u(?P<units>[\d+x-]+)"
-        r"|s(?P<spells>[\d+x-]+)",
-        code,
-    )
+    try:
+        sections = re.finditer(
+            r"h(?P<heroes>[^idus]+)"
+            r"|u(?P<units>[\d+x-]+)"
+            r"|s(?P<spells>[\d+x-]+)",
+            code,
+        )
 
-    for m in sections:
-        if m.group("heroes"):
-            hero_entries = m.group("heroes").split("-")
-            hero_re = re.compile(
-                r"(?P<hero_id>\d+)"
-                r"(?:m\d+)?"
-                r"(?:p(?P<pet_id>\d+))?"
-                r"(?:e(?P<eq1>\d+)(?:_(?P<eq2>\d+))?)?"
-            )
-            for he in hero_entries:
-                hm = hero_re.fullmatch(he)
-                if not hm:
-                    continue
+        for m in sections:
+            if m.group("heroes"):
+                hero_entries = m.group("heroes").split("-")
+                hero_re = re.compile(
+                    r"(?P<hero_id>\d+)"
+                    r"(?:m\d+)?"
+                    r"(?:p(?P<pet_id>\d+))?"
+                    r"(?:e(?P<eq1>\d+)(?:_(?P<eq2>\d+))?)?"
+                )
+                for he in hero_entries:
+                    try:
+                        hm = hero_re.fullmatch(he)
+                        if not hm:
+                            continue
+                        hero_id = HERO_BASE + int(hm.group("hero_id"))
+                        hero_data = static_data.get(hero_id, {}) if static_data else {}
+                        hero_name = hero_data.get("name", f"Hero#{hm.group('hero_id')}")
+                        pet_name = None
+                        if hm.group("pet_id"):
+                            pet_id = PET_BASE + int(hm.group("pet_id"))
+                            pet_data = static_data.get(pet_id, {}) if static_data else {}
+                            pet_name = pet_data.get("name", f"Pet#{hm.group('pet_id')}")
+                        eq_names = []
+                        for eq_group in ("eq1", "eq2"):
+                            eq_val = hm.group(eq_group)
+                            if eq_val:
+                                try:
+                                    eq_id = EQUIP_BASE + int(eq_val)
+                                    eq_data = static_data.get(eq_id, {}) if static_data else {}
+                                    eq_names.append(eq_data.get("name", f"Eq#{eq_val}"))
+                                except ValueError:
+                                    continue
+                        hero_items.append({
+                            "name": hero_name,
+                            "pet": pet_name,
+                            "equipment": eq_names,
+                        })
+                    except (ValueError, AttributeError):
+                        continue
                 hero_id = HERO_BASE + int(hm.group("hero_id"))
                 hero_data = static_data.get(hero_id, {})
                 hero_name = hero_data.get("name", f"Hero#{hm.group('hero_id')}")
@@ -87,25 +113,34 @@ def decode_army_code(code: str, static_data: dict) -> dict:
                     "equipment": eq_names,
                 })
 
-        elif m.group("units"):
-            for part in m.group("units").split("-"):
-                if "x" not in part:
-                    continue
-                qty_str, id_str = part.split("x", 1)
-                item_id = TROOP_BASE + int(id_str)
-                data = static_data.get(item_id, {})
-                name = data.get("name", f"Troop#{id_str}")
-                troop_items.append({"name": name, "quantity": int(qty_str)})
+            elif m.group("units"):
+                for part in m.group("units").split("-"):
+                    if "x" not in part:
+                        continue
+                    try:
+                        qty_str, id_str = part.split("x", 1)
+                        item_id = TROOP_BASE + int(id_str)
+                        data = static_data.get(item_id, {}) if static_data else {}
+                        name = data.get("name", f"Troop#{id_str}")
+                        troop_items.append({"name": name, "quantity": int(qty_str)})
+                    except (ValueError, AttributeError):
+                        continue
 
-        elif m.group("spells"):
-            for part in m.group("spells").split("-"):
-                if "x" not in part:
-                    continue
-                qty_str, id_str = part.split("x", 1)
-                item_id = SPELL_BASE + int(id_str)
-                data = static_data.get(item_id, {})
-                name = data.get("name", f"Spell#{id_str}")
-                spell_items.append({"name": name, "quantity": int(qty_str)})
+            elif m.group("spells"):
+                for part in m.group("spells").split("-"):
+                    if "x" not in part:
+                        continue
+                    try:
+                        qty_str, id_str = part.split("x", 1)
+                        item_id = SPELL_BASE + int(id_str)
+                        data = static_data.get(item_id, {}) if static_data else {}
+                        name = data.get("name", f"Spell#{id_str}")
+                        spell_items.append({"name": name, "quantity": int(qty_str)})
+                    except (ValueError, AttributeError):
+                        continue
+
+    except Exception:
+        return {"troops": [], "spells": [], "heroes": []}
 
     return {"troops": troop_items, "spells": spell_items, "heroes": hero_items}
 
@@ -289,7 +324,7 @@ def battle_streak(entries: List[BattleLogEntry]) -> Tuple[int, int, str]:
     best_type = "win"
 
     for attack in attacks:
-        is_win = attack.stars > 0
+        is_win = getattr(attack, "stars", 0) > 0
 
         if current_type is None:
             current_type = "win" if is_win else "loss"
@@ -307,7 +342,7 @@ def battle_streak(entries: List[BattleLogEntry]) -> Tuple[int, int, str]:
         best_streak = current_streak
         best_type = current_type
 
-    return (current_streak, best_streak, current_type or "win")
+    return (current_streak, best_streak, best_type or "win")
 
 
 def battle_consistency_score(entries: List[BattleLogEntry]) -> float:
@@ -588,14 +623,14 @@ def tier_group_attack_analysis(group: LeagueTierGroup) -> dict:
             "zero_stars": 0,
         }
 
-    total_stars = sum(l.stars for l in logs)
-    star_dist = Counter(l.stars for l in logs)
+    total_stars = sum(log_entry.stars for log_entry in logs)
+    star_dist = Counter(log_entry.stars for log_entry in logs)
 
     return {
         "total_attacks": len(logs),
         "total_stars": total_stars,
         "avg_stars": round(total_stars / len(logs), 2),
-        "avg_destruction": round(sum(l.destruction_percentage for l in logs) / len(logs), 1),
+        "avg_destruction": round(sum(log_entry.destruction_percentage for log_entry in logs) / len(logs), 1),
         "three_stars": star_dist.get(3, 0),
         "two_stars": star_dist.get(2, 0),
         "one_star": star_dist.get(1, 0),
@@ -627,14 +662,14 @@ def tier_group_defense_analysis(group: LeagueTierGroup) -> dict:
             "three_star_losses": 0,
         }
 
-    total_stars = sum(l.stars for l in logs)
-    star_dist = Counter(l.stars for l in logs)
+    total_stars = sum(entry.stars for entry in logs)
+    star_dist = Counter(entry.stars for entry in logs)
 
     return {
         "total_defenses": len(logs),
         "total_stars_received": total_stars,
         "avg_stars_received": round(total_stars / len(logs), 2),
-        "avg_destruction_received": round(sum(l.destruction_percentage for l in logs) / len(logs), 1),
+        "avg_destruction_received": round(sum(entry.destruction_percentage for entry in logs) / len(logs), 1),
         "clean_sheets": star_dist.get(0, 0),
         "three_star_losses": star_dist.get(3, 0),
     }

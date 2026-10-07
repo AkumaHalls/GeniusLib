@@ -10,7 +10,7 @@ import asyncio
 import os
 import time
 
-from geniuslib import Client, ClanIterator, PlayerIterator
+from geniuslib import ClanIterator, Client, PlayerIterator
 
 COC_EMAIL = os.environ.get("COC_EMAIL", "seu_email@exemplo.com")
 COC_PASSWORD = os.environ.get("COC_PASSWORD", "sua_senha")

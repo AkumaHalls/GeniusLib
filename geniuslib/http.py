@@ -5,41 +5,74 @@
 import asyncio
 import logging
 import re
-
+from base64 import b64decode as base64_b64decode
 from collections import deque
 from datetime import datetime, timezone
 from itertools import cycle
+from json import loads as json_loads
 from time import monotonic, perf_counter
 from typing import Optional
-from urllib.parse import urlencode
-from base64 import b64decode as base64_b64decode
-from json import loads as json_loads
+from urllib.parse import urlencode, urlparse
 
 import aiohttp
 import orjson
 
 from .errors import (
+    ClashOfClansException,
+    Forbidden,
+    GatewayError,
     HTTPException,
+    InvalidArgument,
+    InvalidCredentials,
     Maintenance,
     NotFound,
-    InvalidArgument,
-    Forbidden,
-    InvalidCredentials,
-    GatewayError,
+    RateLimitError,
+    RequestAborted,
 )
+from .middleware import Middleware
+from .middleware import Request as MiddlewareRequest
+from .middleware import Response as MiddlewareResponse
 from .utils import FIFO, HTTPStats
-from .middleware import Middleware, Request as MiddlewareRequest, Response as MiddlewareResponse
 
 LOG = logging.getLogger(__name__)
 KEY_MINIMUM, KEY_MAXIMUM = 1, 10
+LOGIN_TIMEOUT_SECONDS = 15
 stats_url_matcher = re.compile(r"%23[\da-zA-Z]+|\d{8,}|global")
+
+# Hosts that ``get_data_from_url`` is allowed to fetch. Payload-supplied URLs are
+# attacker-controllable, so we only follow https URLs on Supercell/Clash domains.
+ALLOWED_ASSET_HOSTS = frozenset({"clashofclans.com", "supercell.com"})
+ALLOWED_ASSET_HOST_SUFFIXES = (".clashofclans.com", ".supercell.com")
+
+
+def _is_allowed_asset_host(host: str) -> bool:
+    """Return whether ``host`` is ``clashofclans.com``/``supercell.com`` or a subdomain of either."""
+    host = (host or "").lower().rstrip(".")
+    return host in ALLOWED_ASSET_HOSTS or host.endswith(ALLOWED_ASSET_HOST_SUFFIXES)
+
+
+def _parse_retry_after(value: Optional[str]) -> Optional[int]:
+    """Parse a ``Retry-After`` header.
+
+    Only integer-seconds values are honoured; HTTP-date forms are ignored (the
+    caller then falls back to its exponential-ish backoff).
+    """
+    if value is None:
+        return None
+    value = str(value).strip()
+    if value.isdigit():
+        return int(value)
+    return None
 
 
 async def json_or_text(response: aiohttp.ClientResponse):
     """Parses an aiohttp response into a the string or json response."""
     try:
         ret = await response.json(loads=orjson.loads)
-    except aiohttp.ContentTypeError:
+    except (aiohttp.ContentTypeError, ValueError, orjson.JSONDecodeError):
+        # Wrong content type (e.g. text/html) *or* a JSON body that is malformed:
+        # fall back to the raw text instead of letting the decode error escape
+        # the request retry loop.
         ret = await response.text(encoding="utf-8")
 
     return ret
@@ -127,7 +160,11 @@ class BatchThrottler:
 
 class Route:
     """Helper class to create endpoint URLs."""
-    ignored_kwargs = ['lookup_cache', 'update_cache', 'ignore_cached_errors']
+
+    # ``realtime`` comes from ``Client._defaults`` and is a client-level flag only:
+    # war endpoints append ``?realtime=true`` to the path themselves. It must never
+    # be serialized into the query string, or it would pollute the cache key.
+    ignored_kwargs = ['lookup_cache', 'update_cache', 'ignore_cached_errors', 'realtime']
 
     def __init__(self, method: str, base: str, path: str, **kwargs: dict):
         """
@@ -259,29 +296,69 @@ class HTTPClient:
         }
 
     def _cache_remove(self, key):
+        """Remove ``key`` from the response cache.
+
+        ``geniuslib.utils.FIFO`` (owned by another workstream - not edited here)
+        does not override ``__delitem__``, so this external ``del`` drops the value
+        from ``FIFO.data`` but leaves ``key`` in FIFO's private insertion-order
+        deque. Left alone, that deque drifts: it keeps growing, and a later
+        eviction can pop the stale key and raise ``KeyError`` (reads tolerate it,
+        but a write-triggered eviction would abort the write). The stale entry is
+        therefore purged here on a best-effort basis; a real ``FIFO.__delitem__``
+        in utils.py would be the permanent fix and would make this a no-op.
+        """
         try:
             del self.cache[key]
-            #  The following fixes a memory leak that is caused by python dicts not properly freeing disk space
-            self._cache_remove_count += 1
-            if self._cache_remove_count >= self.cache.max_size:
-                self.cache = self.cache.copy()
-                self._cache_remove_count = 0
-                LOG.debug("Cache copied to prevent a memory leak")
+            removed = True
         except KeyError:
-            pass
+            removed = False
+
+        order = getattr(self.cache, "_FIFO__keys", None)
+        if order is not None:
+            try:
+                order.remove(key)
+            except ValueError:
+                pass
+
+        if not removed:
+            return
+
+        #  The following fixes a memory leak that is caused by python dicts not properly freeing disk space
+        self._cache_remove_count += 1
+        if self._cache_remove_count >= self.cache.max_size:
+            self.cache = self.cache.copy()
+            self._cache_remove_count = 0
+            LOG.debug("Cache copied to prevent a memory leak")
 
     async def create_session(self, connector, timeout):
+        # Close any previous session first: replacing it without closing would leak
+        # the connector (and every keep-alive connection registered on it).
+        previous = self.__session
+        if previous is not None:
+            await previous.close()
         self.__session = aiohttp.ClientSession(connector=connector, timeout=aiohttp.ClientTimeout(total=timeout))
 
     async def close(self):
-        if self.__session:
-            await self.__session.close()
+        session = self.__session
+        # Null the reference so a later request raises a clear error instead of
+        # using a closed session, and so a second close() is a no-op.
+        self.__session = None
+        if session is not None:
+            await session.close()
 
     async def request(self, route, **kwargs):
         await self.initialising_keys.wait()
 
         method = route.method
         url = route.url
+
+        if self.keys is None:
+            # login() failed (its exception was raised to the caller) or was never
+            # called: fail with a meaningful error instead of a TypeError from
+            # ``next(None)``.
+            raise InvalidCredentials(
+                "API keys are not initialised; login() either failed or was never awaited."
+            )
 
         headers = {
             "Accept"       : "application/json",
@@ -294,8 +371,13 @@ class HTTPClient:
         mw_result = await self.middleware.run_request(mw_req)
         if mw_result is None:
             LOG.debug("Request aborted by middleware for %s %s", method, url)
-            raise RuntimeError("Request aborted by middleware")
+            raise RequestAborted("Request aborted by middleware for {} {}".format(method, url))
         kwargs = mw_result.kwargs
+
+        # ``timing_header`` stores a monotonic start time in kwargs. aiohttp must
+        # never see it (it is not a valid request kwarg), so consume it here and
+        # fold it into the response's elapsed_ms below.
+        middleware_start = kwargs.pop("_geniuslib_start", None)
 
         if "json" in kwargs:
             kwargs["headers"]["Content-Type"] = "application/json"
@@ -329,6 +411,10 @@ class HTTPClient:
             except KeyError:
                 pass
         request_kwargs = {k: v for k, v in kwargs.items() if k in self.aiohttp_request_kwargs}
+        # At most one re-authentication is attempted per request when the API says
+        # our IP is not whitelisted; a second 403 raises Forbidden instead of
+        # recursing forever.
+        reauth_attempted = False
         for tries in range(5):
             self.total_requests += 1
             if tries > 0:
@@ -345,39 +431,51 @@ class HTTPClient:
 
                         LOG.debug("API HTTP Request: %s", str(log_info))
                         data = (await json_or_text(response)) or {}
+                        # Cache metadata only exists on JSON objects: a 503/504 (or any
+                        # other error) can come back as an HTML *string*, and assigning
+                        # ``data["_response_retry"]`` on a str raised TypeError, which
+                        # escaped the retry loop before the status could be handled.
                         if isinstance(data, dict):
                             data["status_code"] = response.status
                             data["timestamp"] = datetime.now(tz=timezone.utc).timestamp()
-                        try:
-                            # set a callback to remove the item from cache once it's stale.
-                            cache_control = response.headers.get("Cache-Control", "")
-                            delta = 0
-                            for directive in cache_control.split(","):
-                                directive = directive.strip()
-                                if directive.startswith("max-age="):
-                                    delta = int(directive.split("=", 1)[1])
-                                    break
-                            # encounter for changed description in cache control header. for realtime it is always
-                            # 600 but that is not true. Correct is 0
-                            data["_response_retry"] = delta if 'realtime' not in url else 0
-                            if isinstance(cache, FIFO) and (update_cache or (update_cache is None and 'realtime' not in url)):
-                                self.cache[cache_control_key] = data
-                                LOG.debug("Cache-Control max age: %s seconds, key: %s", delta, cache_control_key)
-                                self.loop.call_later(delta, self._cache_remove, cache_control_key)
+                            try:
+                                # set a callback to remove the item from cache once it's stale.
+                                cache_control = response.headers.get("Cache-Control", "")
+                                delta = 0
+                                for directive in cache_control.split(","):
+                                    directive = directive.strip()
+                                    if directive.startswith("max-age="):
+                                        delta = int(directive.split("=", 1)[1])
+                                        break
+                                # encounter for changed description in cache control header. for realtime it is always
+                                # 600 but that is not true. Correct is 0
+                                data["_response_retry"] = delta if 'realtime' not in url else 0
+                                if isinstance(cache, FIFO) and (
+                                        update_cache or (update_cache is None and 'realtime' not in url)
+                                ):
+                                    self.cache[cache_control_key] = data
+                                    LOG.debug("Cache-Control max age: %s seconds, key: %s", delta, cache_control_key)
+                                    self.loop.call_later(delta, self._cache_remove, cache_control_key)
 
-                        except (KeyError, AttributeError, ValueError):
-                            # the request didn't contain cache control headers so skip any cache handling.
-                            # if the API returns a timeout error (504) it will return a string of HTML.
-                            if isinstance(data, dict):
+                            except (KeyError, AttributeError, ValueError):
+                                # the request didn't contain cache control headers so skip any cache handling.
                                 data["_response_retry"] = 0
 
                         if 200 <= response.status < 300:
                             LOG.debug("%s has received %s", url, data)
+                            elapsed_ms = perf
+                            if isinstance(middleware_start, (int, float)):
+                                # timing_header was registered: report the client-observed
+                                # latency (from middleware entry) instead of the bare
+                                # send-to-receive window.
+                                elapsed_ms = (monotonic() - middleware_start) * 1000
                             mw_resp = MiddlewareResponse(
                                 status=response.status,
                                 data=data,
                                 headers=dict(response.headers),
-                                elapsed_ms=perf,
+                                elapsed_ms=elapsed_ms,
+                                method=method,
+                                url=url,
                             )
                             mw_result = await self.middleware.run_response(mw_resp)
                             if mw_result is not None:
@@ -388,13 +486,35 @@ class HTTPClient:
                             raise InvalidArgument(response, data)
 
                         if response.status == 403:
-                            LOG.info("forbidden! resp: %s, msg: %s", str(response), str(data))
-                            if data.get("reason") == "accessDenied.invalidIp" and self.email and self.password:
+                            # ``data`` may be a str (HTML body), so reason extraction must
+                            # be type-guarded instead of calling ``data.get`` blindly.
+                            reason = data.get("reason") if isinstance(data, dict) else None
+                            LOG.info("Forbidden (403) for %s %s: reason=%s", method, url, reason)
+                            if (
+                                    reason == "accessDenied.invalidIp"
+                                    and self.email
+                                    and self.password
+                                    and not reauth_attempted
+                            ):
+                                reauth_attempted = True
+                                LOG.info(
+                                    "IP is not whitelisted; re-authenticating to refresh API keys (attempt 1/1)."
+                                )
                                 if self.initialising_keys.is_set():
                                     await self.initialise_keys()
 
                                 await self.initialising_keys.wait()
-                                return await self.request(route, **kwargs)
+                                # Rotate the bearer token for the retried attempt (the
+                                # headers were built once, before the retry loop).
+                                if self.keys is None:
+                                    raise InvalidCredentials(
+                                        "API keys are not initialised after re-authentication."
+                                    )
+                                if isinstance(request_kwargs.get("headers"), dict):
+                                    request_kwargs["headers"]["authorization"] = "Bearer {}".format(
+                                        next(self.keys)
+                                    )
+                                continue
 
                             raise Forbidden(response, data)
 
@@ -403,11 +523,13 @@ class HTTPClient:
                         if response.status == 429:
                             self.total_rate_limits += 1
                             self._last_error = f"rate_limited:{route.stats_key}"
+                            retry_after = _parse_retry_after(response.headers.get("Retry-After"))
+                            backoff = (tries + 1) * 5 if retry_after is None else retry_after
                             LOG.warning(
-                                    "Rate-limited by the API (429). "
-                                    "Retrying after backoff (attempt %d/5).", tries + 1
+                                    "Rate-limited by the API (429) for %s. Retrying after %ss "
+                                    "(attempt %d/5).", url, backoff, tries + 1
                             )
-                            await asyncio.sleep((tries + 1) * 5)
+                            await asyncio.sleep(backoff)
                             continue
 
                         if response.status == 503:
@@ -437,7 +559,13 @@ class HTTPClient:
                 continue
 
         else:
+            # Retry budget exhausted. Label the failure accurately instead of
+            # reporting every terminal status as a gateway error.
             self.total_errors += 1
+            if response.status == 429:
+                self._last_error = f"rate_limited:{route.stats_key}:429"
+                raise RateLimitError(response, data)
+
             self._last_error = f"gateway_error:{route.stats_key}:{response.status}"
             if response.status in (500, 502, 504):
                 if isinstance(data, str):
@@ -446,6 +574,9 @@ class HTTPClient:
                     raise GatewayError(response, text)
 
                 raise GatewayError(response, data)
+
+            if response.status == 403:
+                raise Forbidden(response, data)
 
             raise HTTPException(response, data)
 
@@ -490,20 +621,25 @@ class HTTPClient:
         return self.request(Route("GET", self.base_url, "/locations/{}".format(location_id)), **kwargs)
 
     def get_location_clans(self, location_id, **kwargs):
-        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/clans".format(location_id), **kwargs), **kwargs)
+        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/clans".format(location_id), **kwargs),
+                            **kwargs)
 
     def get_location_players(self, location_id, **kwargs):
-        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/players".format(location_id), **kwargs), **kwargs)
+        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/players".format(location_id), **kwargs),
+                            **kwargs)
 
     def get_location_clans_builder_base(self, location_id, **kwargs):
-        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/clans-builder-base".format(location_id), **kwargs),
+        return self.request(Route("GET", self.base_url,
+                                  "/locations/{}/rankings/clans-builder-base".format(location_id), **kwargs),
                             **kwargs)
 
     def get_location_clans_capital(self, location_id, **kwargs):
-        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/capitals".format(location_id), **kwargs), **kwargs)
+        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/capitals".format(location_id),
+                                  **kwargs), **kwargs)
 
     def get_location_players_builder_base(self, location_id, **kwargs):
-        return self.request(Route("GET", self.base_url, "/locations/{}/rankings/players-builder-base".format(location_id), **kwargs),
+        return self.request(Route("GET", self.base_url,
+                                  "/locations/{}/rankings/players-builder-base".format(location_id), **kwargs),
                             **kwargs)
 
     # leagues
@@ -542,11 +678,12 @@ class HTTPClient:
         return self.request(Route("GET", self.base_url, "/leagues/{}/seasons".format(league_id), **kwargs), **kwargs)
 
     def get_league_season_info(self, league_id, season_id, **kwargs):
-        return self.request(Route("GET", self.base_url, "/leagues/{}/seasons/{}".format(league_id, season_id), **kwargs),
-                            **kwargs)
+        return self.request(Route("GET", self.base_url, "/leagues/{}/seasons/{}".format(league_id, season_id),
+                                  **kwargs), **kwargs)
 
     def get_league_group(self, league_group_tag, league_season_id, **kwargs):
-        return self.request(Route("GET", self.base_url, "/leaguegroup/{}/{}".format(league_group_tag, league_season_id)), **kwargs)
+        return self.request(Route("GET", self.base_url,
+                                  "/leaguegroup/{}/{}".format(league_group_tag, league_season_id)), **kwargs)
 
     # players
 
@@ -583,20 +720,28 @@ class HTTPClient:
         self.initialising_keys.clear()
 
         try:
-            # Use context manager to automatically clean up after ourselves
-            async with aiohttp.ClientSession() as session:
+            # Use context manager to automatically clean up after ourselves.
+            # The developer-site session is short-lived and has its own timeout:
+            # without it aiohttp's default total timeout (300s) can hang login().
+            # Note: the *client's* shared session must never be closed from in here,
+            # it may be serving in-flight requests while keys are refreshed.
+            async with aiohttp.ClientSession(
+                    timeout=aiohttp.ClientTimeout(total=LOGIN_TIMEOUT_SECONDS)
+            ) as session:
                 body = {"email": self.email, "password": self.password}
                 resp = await session.post("https://developer.clashofclans.com/api/login", json=body)
                 if resp.status == 403:
                     LOG.error("Invalid credentials used when attempting to log in")
-                    await self.close()
                     raise InvalidCredentials()
 
                 LOG.info("Successfully logged into the developer site.")
 
                 resp_payload = await resp.json()
                 if not self.ip:
-                    ip = json_loads(base64_b64decode(resp_payload["temporaryAPIToken"].split(".")[1] + "====").decode("utf-8"))["limits"][1]["cidrs"][0].split("/")[0]
+                    token_payload = json_loads(
+                        base64_b64decode(resp_payload["temporaryAPIToken"].split(".")[1] + "====").decode("utf-8")
+                    )
+                    ip = token_payload["limits"][1]["cidrs"][0].split("/")[0]
                 else:
                     ip = self.ip
                 LOG.info("Found IP address to be %s", ip)
@@ -604,7 +749,8 @@ class HTTPClient:
                 resp = await session.post("https://developer.clashofclans.com/api/apikey/list")
                 keys = (await resp.json()).get("keys", [])
                 for key in keys:
-                    LOG.debug(f"Key {key}")
+                    # Never log the key material itself - only harmless metadata.
+                    LOG.debug("Considering API key id=%s name=%s", key.get("id"), key.get("name"))
                     if key["name"] != self.key_names or ip not in key["cidrRanges"]:
                         continue
                     self._keys.append(key["key"])
@@ -621,7 +767,8 @@ class HTTPClient:
                                 "Deleting key with the name %s and IP %s (not matching our current IP address).",
                                 self.key_names, key["cidrRanges"],
                         )
-                        resp = await session.post("https://developer.clashofclans.com/api/apikey/revoke", json={"id": key["id"]})
+                        resp = await session.post("https://developer.clashofclans.com/api/apikey/revoke",
+                                                  json={"id": key["id"]})
                         if resp.status == 200:
                             keys.remove(key)
 
@@ -652,7 +799,6 @@ class HTTPClient:
                                  self.key_count, len(self._keys), len(self._keys))
 
                 if len(self._keys) == 0:
-                    await self.close()
                     raise RuntimeError(
                             "There are {} API keys already created and none match a key_name of '{}'."
                             "Please specify a key_name kwarg, or go to 'https://developer.clashofclans.com' to delete "
@@ -660,11 +806,16 @@ class HTTPClient:
                     )
 
             self.keys = cycle(self._keys)
-            self.initialising_keys.set()
             LOG.info("Successfully initialised keys for use.")
 
         except Exception:
+            # Re-raise: callers of login()/re-auth must see InvalidCredentials (and
+            # friends) instead of a "successful" login that explodes later.
             LOG.exception("Failed to initialise keys.")
+            raise
+        finally:
+            # Always wake up tasks parked on this event - on success *and* on
+            # failure - so a failed (re)auth never deadlocks other requests.
             self.initialising_keys.set()
 
     def add_middleware(self, *funcs) -> None:
@@ -698,7 +849,37 @@ class HTTPClient:
                 self.middleware.remove_response(func)
 
     async def get_data_from_url(self, url):
-        async with self.__session.get(url) as response:
+        """Download raw bytes from ``url`` (used to save badges/icons/images).
+
+        The URL comes from an API payload, so it is validated before use: only
+        ``https://`` URLs whose host is ``clashofclans.com`` or ``supercell.com``
+        (or a subdomain of either) are fetched. That blocks scheme confusion
+        (``file://``, ``http://``) and SSRF against arbitrary or internal hosts.
+        Extend ``ALLOWED_ASSET_HOSTS``/``ALLOWED_ASSET_HOST_SUFFIXES`` if Supercell
+        starts serving these assets from another domain.
+
+        Raises
+        ------
+        ClashOfClansException
+            The client has no open HTTP session (login() was not called or was closed).
+        InvalidArgument
+            The URL is not an ``https://`` URL on an allowed Supercell/Clash host.
+        NotFound, HTTPException
+            The remote server answered with an error status.
+        """
+        session = self.__session
+        if session is None:
+            raise ClashOfClansException(
+                "Cannot fetch {!r}: the HTTP session is closed or was never created.".format(url)
+            )
+
+        parsed = urlparse(url) if isinstance(url, str) else None
+        if parsed is None or parsed.scheme != "https" or not _is_allowed_asset_host(parsed.hostname):
+            raise InvalidArgument(
+                "Refusing to fetch {!r}: only https URLs on clashofclans.com/supercell.com are allowed.".format(url)
+            )
+
+        async with session.get(url) as response:
             if response.status == 200:
                 return await response.read()
             if response.status == 404:

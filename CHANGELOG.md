@@ -22,6 +22,33 @@ Todas as mudanÃƒÂ§as notÃƒÂ¡veis neste projeto.
 
 
 
+## [5.6.0] — 2026-10-07
+
+### Adicionado
+
+- **Suíte de testes de superfície** — `tests/test_async_layers.py`, `tests/test_client_surface.py`, `tests/test_http_layer.py`, `tests/test_game_models.py` e `tests/test_export_and_reports.py` (total: 258 testes)
+
+- **`scripts/download_assets.py`** — novo utilitário que resolve o tarball `geniuslib-assets-<versão>.tar.gz` via GitHub API e o extrai com segurança em `geniuslib/static/assets/`
+
+- **`MANIFEST.in`** — mantém README, LICENÇA e stubs de tipos; exclui os 413 MB de `static/assets/` do sdist (wheel continua com ~1,1 MB)
+
+- **`__all__` explícito** em `geniuslib/__init__.py` — 212 nomes públicos declarados
+
+### Alterado
+
+- **Limpeza total de lint** — `ruff check .` de 535 para 0 erros (E501, E741, F401, F403, W293) e `ruff format` nos arquivos tocados
+
+- **`geniuslib/client.py`** — `inspect.iscoroutinefunction` no lugar de `asyncio.iscoroutinefunction` no dispatch assíncrono (prepara a remoção planejada)
+
+- **`geniuslib/events.py`** — `_prepare_loop()` religa com segurança o event loop armazenado; `MAX_BACKOFF` limita a espera de operações agendadas
+
+- **`.gitignore`** refeito e 50 artefatos rastreados removidos (`.coverage`, `.mypy_cache/`, `ruff.json`)
+
+- **`pyproject.toml`** — `license = "MIT"` no formato PEP 639 (remove aviso de deprecação do setuptools)
+
+### Corrigido
+
+- **Aviso de deprecação `asyncio.iscoroutinefunction`** — removido o uso no dispatch de eventos
 ## [5.3.0] Ã¢Â€Â” 2026-07-15
 
 

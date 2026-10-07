@@ -4,8 +4,6 @@ Provides functions to compare two players or two clans
 side by side, highlighting key differences.
 """
 
-from typing import Any, Dict, List, Optional, Tuple
-
 
 def compare_players(player1, player2) -> dict:
     """Compare two players and return a dict of differences.
@@ -119,4 +117,9 @@ def _clan_diff(c1: dict, c2: dict) -> dict:
         "member_count": c1["member_count"] - c2["member_count"],
         "points": c1["points"] - c2["points"],
         "war_wins": c1["war_wins"] - c2["war_wins"],
+        "war_ties": c1.get("war_ties", 0) - c2.get("war_ties", 0),
+        "war_losses": c1.get("war_losses", 0) - c2.get("war_losses", 0),
+        "war_league": (c1.get("war_league") or "")
+        if c1.get("war_league") == c2.get("war_league")
+        else f"{c1.get('war_league') or ''} vs {c2.get('war_league') or ''}",
     }

@@ -3,14 +3,14 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 import asyncio
-import inspect
 import calendar
+import inspect
 import os
 import re
 import time as _time
-
-from collections import deque, UserDict
+from collections import UserDict, deque
 from datetime import datetime, timedelta, timezone
+
 try:
     from datetime import UTC  # Python 3.11+
 except ImportError:  # pragma: no cover
@@ -18,7 +18,6 @@ except ImportError:  # pragma: no cover
 from functools import wraps
 from operator import attrgetter
 from typing import Any, Callable, Generic, Iterable, List, Optional, Type, TypeVar, Union
-
 
 TAG_VALIDATOR = re.compile(r"^#?[PYLQGRJCUV0289]+$")
 

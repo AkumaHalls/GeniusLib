@@ -4,11 +4,10 @@
 
 import typing
 
-
-from .players import ClanMember
-from .miscmodels import try_enum, ChatLanguage, Location, Label, BaseLeague, CapitalDistrict
-from .utils import get, cached_property, correct_tag
 from .abc import BaseClan
+from .miscmodels import BaseLeague, CapitalDistrict, ChatLanguage, Label, Location, try_enum
+from .players import ClanMember
+from .utils import cached_property, correct_tag, get
 
 
 class RankedClan(BaseClan):
@@ -111,9 +110,11 @@ class Clan(BaseClan):
     war_wins: :class:`int`
         The number of wars the clan has won.
     war_ties: :class:`int`
-        The number of wars the clan has tied. This is only available from the clan search endpoint else -1.
+        The number of wars the clan has tied. This is only available from the clan
+        search endpoint, otherwise it will be ``None``.
     war_losses: :class:`int`
-        The number of wars the clan has lost.  This is only available from the clan search endpoint else -1.
+        The number of wars the clan has lost. This is only available from the clan
+        search endpoint, otherwise it will be ``None``.
     public_war_log: :class:`bool`
         Indicates if the clan has a public war log.
         If this is ``False``, operations to find the clan's current
@@ -199,8 +200,8 @@ class Clan(BaseClan):
         self.war_frequency: str = data_get("warFrequency")
         self.war_win_streak: int = data_get("warWinStreak")
         self.war_wins: int = data_get("warWins")
-        self.war_ties: int = data_get("warTies", -1)
-        self.war_losses: int = data_get("warLosses", -1)
+        self.war_ties: int = data_get("warTies")
+        self.war_losses: int = data_get("warLosses")
         self.public_war_log: bool = data_get("isWarLogPublic")
         self.description: str = data_get("description")
         self.war_league = try_enum(BaseLeague, data=data_get("warLeague"))
@@ -213,8 +214,11 @@ class Clan(BaseClan):
 
         # update members globally. only available via /clans/{clanTag}
         member_cls = self.member_cls
-        member_data = data.get("memberList", [])
-        for rank, mdata in enumerate(sorted(member_data, key=lambda x: x["builderBaseTrophies"], reverse=True), 1):
+        member_data = [
+            dict(mdata) for mdata in data.get("memberList", [])
+        ]
+        member_data.sort(key=lambda x: x.get("builderBaseTrophies", 0), reverse=True)
+        for rank, mdata in enumerate(member_data, 1):
             mdata["builderBaseRank"] = rank
         self._iter_members = (
             member_cls(data=mdata, client=self._client, clan=self) for mdata in member_data

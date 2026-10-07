@@ -2,9 +2,9 @@
 # (c) 2026 AkumaHalls / ClashGenius
 from typing import List, Optional
 
-from .wars import ClanWar
 from .war_attack import WarAttack
 from .war_members import ClanWarMember
+from .wars import ClanWar
 
 
 def new_stars(attack: WarAttack) -> int:
@@ -23,15 +23,24 @@ def new_stars(attack: WarAttack) -> int:
     :class:`int`
         The number of new stars gained (0-3).
     """
-    defender = attack.defender
-    if not defender.defenses:
-        return attack.stars
+    defender = getattr(attack, "defender", None)
+    if not defender or not getattr(defender, "defenses", None):
+        return getattr(attack, "stars", 0) or 0
 
-    other_defenses = [d.stars for d in defender.defenses if d.order != attack.order]
+    attack_stars = getattr(attack, "stars", 0) or 0
+    attack_order = getattr(attack, "order", None)
+    other_defenses = []
+    for d in defender.defenses:
+        d_stars = getattr(d, "stars", 0) or 0
+        d_order = getattr(d, "order", None)
+        if attack_order is not None and d_order is not None and d_order == attack_order:
+            continue
+        other_defenses.append(d_stars)
     if not other_defenses:
-        return attack.stars
+        return attack_stars
     previous_best = max(other_defenses)
-    return max(0, attack.stars - previous_best)
+    return max(0, attack_stars - previous_best)
+
 
 
 def previous_best_attack(member: ClanWarMember, target_tag: str) -> Optional[WarAttack]:
@@ -49,10 +58,11 @@ def previous_best_attack(member: ClanWarMember, target_tag: str) -> Optional[War
     Optional[:class:`WarAttack`]
         The best previous attack, or ``None`` if no prior attack exists.
     """
-    prior = [a for a in member.attacks if a.defender_tag == target_tag]
+    prior = [a for a in getattr(member, "attacks", []) if getattr(a, "defender_tag", None) == target_tag]
     if not prior:
         return None
-    return max(prior, key=lambda a: (a.stars, a.destruction))
+    return max(prior, key=lambda a: (getattr(a, "stars", 0) or 0, getattr(a, "destruction", 0.0) or 0.0))
+
 
 
 def best_attack_on(member: ClanWarMember) -> Optional[WarAttack]:
@@ -138,8 +148,17 @@ def get_cleanup_attacks(war: ClanWar, clan_tag: str) -> List[WarAttack]:
     List[:class:`WarAttack`]
         List of attacks that scored 0 new stars.
     """
-    clan = war.clan if war.clan.tag == clan_tag else war.opponent
-    return [a for m in clan.members for a in m.attacks if new_stars(a) == 0]
+    war_clan = getattr(war, "clan", None)
+    war_opp = getattr(war, "opponent", None)
+    if not war_clan or not war_opp:
+        return []
+    clan = war_clan if getattr(war_clan, "tag", None) == clan_tag else war_opp
+    result = []
+    for m in getattr(clan, "members", []):
+        for a in getattr(m, "attacks", []):
+            if new_stars(a) == 0:
+                result.append(a)
+    return result
 
 
 def count_missed_attacks(war: ClanWar, clan_tag: str) -> int:
@@ -157,9 +176,13 @@ def count_missed_attacks(war: ClanWar, clan_tag: str) -> int:
     :class:`int`
         Number of unused attacks.
     """
-    clan = war.clan if war.clan.tag == clan_tag else war.opponent
-    total = war.attacks_per_member * len(clan.members)
-    used = len(clan.attacks)
+    war_clan = getattr(war, "clan", None)
+    war_opp = getattr(war, "opponent", None)
+    if not war_clan or not war_opp:
+        return 0
+    clan = war_clan if getattr(war_clan, "tag", None) == clan_tag else war_opp
+    total = (getattr(war, "attacks_per_member", 0) or 0) * len(getattr(clan, "members", []))
+    used = len(getattr(clan, "attacks", []))
     return total - used
 
 
@@ -181,8 +204,8 @@ def get_attack_order(member: ClanWarMember, defender_tag: str) -> int:
         Attack number (1-based). Returns 0 if no attack on this defender.
     """
     attacks = sorted(
-        [a for a in member.attacks if a.defender_tag == defender_tag],
-        key=lambda a: a.order
+        [a for a in getattr(member, "attacks", []) if getattr(a, "defender_tag", None) == defender_tag],
+        key=lambda a: getattr(a, "order", 0) or 0
     )
     return len(attacks)
 
@@ -202,17 +225,27 @@ def get_war_result(war: ClanWar, clan_tag: str) -> str:
     :class:`str`
         ``"win"``, ``"lose"``, ``"tie"``, or ``"ongoing"``.
     """
-    if war.state not in ("warEnded",):
+    state = getattr(war, "state", "")
+    if state not in ("warEnded",):
         return "ongoing"
 
-    clan = war.clan if war.clan.tag == clan_tag else war.opponent
-    other = war.opponent if war.clan.tag == clan_tag else war.clan
+    war_clan = getattr(war, "clan", None)
+    war_opp = getattr(war, "opponent", None)
+    if not war_clan or not war_opp:
+        return "ongoing"
+    clan = war_clan if getattr(war_clan, "tag", None) == clan_tag else war_opp
+    other = war_opp if getattr(war_clan, "tag", None) == clan_tag else war_clan
 
-    if clan.stars > other.stars:
+    clan_stars = getattr(clan, "stars", 0) or 0
+    other_stars = getattr(other, "stars", 0) or 0
+    clan_destr = getattr(clan, "destruction", 0) or 0
+    other_destr = getattr(other, "destruction", 0) or 0
+
+    if clan_stars > other_stars:
         return "win"
-    if clan.stars == other.stars:
-        if clan.destruction > other.destruction:
+    if clan_stars == other_stars:
+        if clan_destr > other_destr:
             return "win"
-        if clan.destruction == other.destruction:
+        if clan_destr == other_destr:
             return "tie"
     return "lose"

@@ -1,95 +1,104 @@
 """Tests for the battlelog_analytics module."""
 
-import pytest
-from datetime import date, datetime, timezone
-from unittest.mock import MagicMock
+from datetime import date
 
+import pytest
+
+from geniuslib import battlelog_analytics
 from geniuslib.battlelog import (
     BattleLogEntry,
-    BattleLogResource,
     LeagueHistoryEntry,
     LeagueTierGroup,
     LeagueTierGroupBattleLogEntry,
     LeagueTierGroupMember,
 )
-from geniuslib import battlelog_analytics
-
 
 # ---------------------------------------------------------------------------
 # Helpers – build real model objects from minimal dicts
 # ---------------------------------------------------------------------------
 
+
 def _make_attack_entry(stars=3, destruction=100, gold=100000, elixir=80000, dark=0, ts="20260101T120000.000Z"):
-    return BattleLogEntry(data={
-        "battleType": "legendLeague",
-        "attack": True,
-        "timestamp": ts,
-        "armyShareCode": "ABC123",
-        "opponentPlayerTag": "#OPP1",
-        "stars": stars,
-        "destructionPercentage": destruction,
-        "lootedResources": [
-            {"name": "gold", "amount": gold},
-            {"name": "elixir", "amount": elixir},
-        ] + ([{"name": "darkElixir", "amount": dark}] if dark else []),
-        "extraLootedResources": [],
-        "availableLoot": [
-            {"name": "gold", "amount": 300000},
-            {"name": "elixir", "amount": 300000},
-        ],
-    })
+    return BattleLogEntry(
+        data={
+            "battleType": "legendLeague",
+            "attack": True,
+            "timestamp": ts,
+            "armyShareCode": "ABC123",
+            "opponentPlayerTag": "#OPP1",
+            "stars": stars,
+            "destructionPercentage": destruction,
+            "lootedResources": [
+                {"name": "gold", "amount": gold},
+                {"name": "elixir", "amount": elixir},
+            ]
+            + ([{"name": "darkElixir", "amount": dark}] if dark else []),
+            "extraLootedResources": [],
+            "availableLoot": [
+                {"name": "gold", "amount": 300000},
+                {"name": "elixir", "amount": 300000},
+            ],
+        }
+    )
 
 
 def _make_defense_entry(stars=1, destruction=45, ts="20260101T130000.000Z"):
-    return BattleLogEntry(data={
-        "battleType": "legendLeague",
-        "attack": False,
-        "timestamp": ts,
-        "armyShareCode": "",
-        "opponentPlayerTag": "#OPP2",
-        "stars": stars,
-        "destructionPercentage": destruction,
-        "lootedResources": [],
-        "extraLootedResources": [],
-        "availableLoot": [],
-    })
+    return BattleLogEntry(
+        data={
+            "battleType": "legendLeague",
+            "attack": False,
+            "timestamp": ts,
+            "armyShareCode": "",
+            "opponentPlayerTag": "#OPP2",
+            "stars": stars,
+            "destructionPercentage": destruction,
+            "lootedResources": [],
+            "extraLootedResources": [],
+            "availableLoot": [],
+        }
+    )
 
 
-def _make_league_history(season_id=202601, trophies=5200, tier_id=22, placement=150,
-                         atk_w=5, atk_l=3, atk_s=14, def_w=4, def_l=4, def_s=8):
-    return LeagueHistoryEntry(data={
-        "leagueSeasonId": season_id,
-        "leagueTrophies": trophies,
-        "leagueTierId": tier_id,
-        "placement": placement,
-        "attackWins": atk_w,
-        "attackLosses": atk_l,
-        "attackStars": atk_s,
-        "defenseWins": def_w,
-        "defenseLosses": def_l,
-        "defenseStars": def_s,
-        "maxBattles": 8,
-    })
+def _make_league_history(
+    season_id=202601, trophies=5200, tier_id=22, placement=150, atk_w=5, atk_l=3, atk_s=14, def_w=4, def_l=4, def_s=8
+):
+    return LeagueHistoryEntry(
+        data={
+            "leagueSeasonId": season_id,
+            "leagueTrophies": trophies,
+            "leagueTierId": tier_id,
+            "placement": placement,
+            "attackWins": atk_w,
+            "attackLosses": atk_l,
+            "attackStars": atk_s,
+            "defenseWins": def_w,
+            "defenseLosses": def_l,
+            "defenseStars": def_s,
+            "maxBattles": 8,
+        }
+    )
 
 
-def _make_tier_group_member(name="Player1", clan="TestClan", trophies=5100,
-                            atk_w=6, atk_l=2, def_w=3, def_l=5):
-    return LeagueTierGroupMember(data={
-        "playerTag": "#P1",
-        "playerName": name,
-        "clanTag": "#CLAN1",
-        "clanName": clan,
-        "leagueTrophies": trophies,
-        "attackWinCount": atk_w,
-        "attackLoseCount": atk_l,
-        "defenseWinCount": def_w,
-        "defenseLoseCount": def_l,
-    })
+def _make_tier_group_member(name="Player1", clan="TestClan", trophies=5100, atk_w=6, atk_l=2, def_w=3, def_l=5):
+    return LeagueTierGroupMember(
+        data={
+            "playerTag": "#P1",
+            "playerName": name,
+            "clanTag": "#CLAN1",
+            "clanName": clan,
+            "leagueTrophies": trophies,
+            "attackWinCount": atk_w,
+            "attackLoseCount": atk_l,
+            "defenseWinCount": def_w,
+            "defenseLoseCount": def_l,
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
+
 
 class TestBattleWinRate:
     def test_basic(self):
@@ -285,8 +294,26 @@ class TestTierGroupAttackAnalysis:
     def test_basic(self):
         group = LeagueTierGroup(data={"members": [], "attackLogs": [], "defenseLogs": []})
         group.attack_logs = [
-            LeagueTierGroupBattleLogEntry(data={"opponentPlayerTag": "#O1", "opponentName": "O1", "stars": 3, "destructionPercentage": 100, "trophies": 30, "creationTime": None}),
-            LeagueTierGroupBattleLogEntry(data={"opponentPlayerTag": "#O2", "opponentName": "O2", "stars": 2, "destructionPercentage": 75, "trophies": 15, "creationTime": None}),
+            LeagueTierGroupBattleLogEntry(
+                data={
+                    "opponentPlayerTag": "#O1",
+                    "opponentName": "O1",
+                    "stars": 3,
+                    "destructionPercentage": 100,
+                    "trophies": 30,
+                    "creationTime": None,
+                }
+            ),
+            LeagueTierGroupBattleLogEntry(
+                data={
+                    "opponentPlayerTag": "#O2",
+                    "opponentName": "O2",
+                    "stars": 2,
+                    "destructionPercentage": 75,
+                    "trophies": 15,
+                    "creationTime": None,
+                }
+            ),
         ]
         result = battlelog_analytics.tier_group_attack_analysis(group)
         assert result["total_attacks"] == 2
@@ -298,7 +325,16 @@ class TestTierGroupDefenseAnalysis:
     def test_basic(self):
         group = LeagueTierGroup(data={"members": [], "attackLogs": [], "defenseLogs": []})
         group.defense_logs = [
-            LeagueTierGroupBattleLogEntry(data={"opponentPlayerTag": "#O1", "opponentName": "O1", "stars": 0, "destructionPercentage": 20, "trophies": 0, "creationTime": None}),
+            LeagueTierGroupBattleLogEntry(
+                data={
+                    "opponentPlayerTag": "#O1",
+                    "opponentName": "O1",
+                    "stars": 0,
+                    "destructionPercentage": 20,
+                    "trophies": 0,
+                    "creationTime": None,
+                }
+            ),
         ]
         result = battlelog_analytics.tier_group_defense_analysis(group)
         assert result["clean_sheets"] == 1

@@ -3,23 +3,23 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 import asyncio
+import functools
 import logging
-import traceback
-
 from collections.abc import Iterable
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 import geniuslib.raid
-from .client import Client
+
 from .clans import Clan
+from .client import Client
 from .enums import WarRound
-from .players import Player
-from .wars import ClanWar
 from .errors import Maintenance, PrivateWarLog
-from .utils import correct_tag, get_season_end, get_clan_games_start, get_clan_games_end
+from .utils import correct_tag, get_clan_games_end, get_clan_games_start, get_season_end
+from .wars import ClanWar
 
 LOG = logging.getLogger(__name__)
 DEFAULT_SLEEP = 10
+MAX_BACKOFF = 300
 
 
 class Event:
@@ -427,18 +427,8 @@ class EventsClient(Client):
         self._data_maxsize = 500
 
     def _setup(self):
-        self._updater_tasks = {
-            "clan": self.loop.create_task(self._clan_updater()),
-            "player": self.loop.create_task(self._player_updater()),
-            "war": self.loop.create_task(self._war_updater()),
-            "maintenance": self.loop.create_task(self._maintenance_poller()),
-            "season": self.loop.create_task(self._end_of_season_poller()),
-            "raid_weekend": self.loop.create_task(self._raid_poller()),
-            "clan_games": self.loop.create_task(self._clan_games_poller())
-        }
-
-        for task in self._updater_tasks.values():
-            task.add_done_callback(self._task_callback_check)
+        self._updater_tasks = {}
+        self._tasks_loop = None
 
         self._clan_updates = set()
         self._player_updates = set()
@@ -450,13 +440,75 @@ class EventsClient(Client):
         self._players = {}
         self._wars = {}
 
+    def _prepare_loop(self):
+        """Rebind ``self.loop`` to the running loop when the stored one is stale.
+
+        The base :class:`Client` captures a loop at construction time; if the
+        client is later used from a different (running) loop, task creation and
+        HTTP would be bound to the wrong loop. Only rebinds when the stored loop
+        is not itself running, so an active loop is never swapped mid-flight.
+        """
+        try:
+            running = asyncio.get_running_loop()
+        except RuntimeError:
+            return
+        if running is not self.loop and not self.loop.is_running():
+            self.loop = running
+
+    def _start_tasks(self):
+        """Create (or restart) the updater and poller tasks on the current loop."""
+        self._prepare_loop()
+
+        if self._updater_tasks:
+            for task in self._updater_tasks.values():
+                if not task.done():
+                    task.cancel()
+
+        self._updater_tasks = {
+            "clan": self.loop.create_task(self._clan_updater()),
+            "player": self.loop.create_task(self._player_updater()),
+            "war": self.loop.create_task(self._war_updater()),
+            "maintenance": self.loop.create_task(self._maintenance_poller()),
+            "season": self.loop.create_task(self._end_of_season_poller()),
+            "raid_weekend": self.loop.create_task(self._raid_poller()),
+            "clan_games": self.loop.create_task(self._clan_games_poller())
+        }
+
+        self._tasks_loop = self.loop
+
+        for task in self._updater_tasks.values():
+            task.add_done_callback(self._task_callback_check)
+
+    async def login(self, email: str, password: str) -> None:
+        self._prepare_loop()
+        await super().login(email, password)
+        self._start_tasks()
+
+    def login_with_keys(self, *keys: str) -> None:
+        self._prepare_loop()
+        super().login_with_keys(*keys)
+        self._start_tasks()
+
+    async def login_with_tokens(self, *tokens: str) -> None:
+        self._prepare_loop()
+        await super().login_with_tokens(*tokens)
+        self._start_tasks()
+
     def _evict_data_dicts(self):
-        for store in (self._clans, self._players, self._wars):
-            if len(store) > self._data_maxsize:
-                excess = len(store) - self._data_maxsize
-                keys_to_remove = list(store.keys())[:excess]
-                for k in keys_to_remove:
-                    store.pop(k, None)
+        watched = (
+            (self._clans, self._clan_updates),
+            (self._players, self._player_updates),
+            (self._wars, self._war_updates),
+        )
+        for store, watch in watched:
+            if len(store) <= self._data_maxsize:
+                continue
+            excess = len(store) - self._data_maxsize
+            # evict least-recently-used entries, but never a tag we are actively
+            # watching - losing its cached object would swallow change events.
+            candidates = [key for key in store if key not in watch]
+            for key in candidates[:excess]:
+                store.pop(key, None)
 
     async def close(self) -> None:
         if hasattr(self, '_updater_tasks') and self._updater_tasks:
@@ -621,31 +673,40 @@ class EventsClient(Client):
 
     def _get_cached_clan(self, clan_tag):
         try:
-            return self._clans[clan_tag]
+            value = self._clans.pop(clan_tag)
         except KeyError:
             return None
+        self._clans[clan_tag] = value  # reinsert as most recently used
+        return value
 
     def _update_clan(self, clan):
+        self._clans.pop(clan.tag, None)
         self._clans[clan.tag] = clan
         self._evict_data_dicts()
 
     def _get_cached_player(self, player_tag):
         try:
-            return self._players[player_tag]
+            value = self._players.pop(player_tag)
         except KeyError:
             return None
+        self._players[player_tag] = value  # reinsert as most recently used
+        return value
 
     def _update_player(self, player):
+        self._players.pop(player.tag, None)
         self._players[player.tag] = player
         self._evict_data_dicts()
 
     def _get_cached_war(self, key):
         try:
-            return self._wars[key]
+            value = self._wars.pop(key)
         except KeyError:
             return None
+        self._wars[key] = value  # reinsert as most recently used
+        return value
 
     def _update_war(self, key, war):
+        self._wars.pop(key, None)
         self._wars[key] = war
         self._evict_data_dicts()
 
@@ -769,31 +830,56 @@ class EventsClient(Client):
             try:
                 client.loop.run_forever()
             except KeyboardInterrupt:
-                client.close()
+                pass
             finally:
+                client.loop.run_until_complete(client.close())
                 client.loop.close()
 
+        .. note::
+
+            The updater/poller tasks are started by the login methods
+            (:meth:`login`, :meth:`login_with_tokens` or :meth:`login_with_keys`);
+            calling this before logging in will run the loop with nothing to do.
         """
+        if not self._updater_tasks:
+            LOG.warning(
+                "run_forever() called with no updater tasks. "
+                "Call login()/login_with_tokens()/login_with_keys() first."
+            )
         try:
             self.loop.run_forever()
         except KeyboardInterrupt:
-            self.close()
+            pass
+        finally:
+            if not self.loop.is_closed():
+                self.loop.run_until_complete(self.close())
 
     def dispatch(self, event_name: str, *args, **kwargs):
         # pylint: disable=broad-except
         registered = self._listeners["client"].get(event_name)
         if registered is None:
             if event_name == "event_error":
-                LOG.exception("Ignoring exception in event task.")
-                print("Ignoring exception in event task.")
-                traceback.print_exc()
+                exception = args[0] if args else None
+                if isinstance(exception, BaseException):
+                    LOG.error("Ignoring exception in event task.", exc_info=exception)
+                else:
+                    LOG.error("Ignoring exception in event task: %r", exception)
+            return
 
-        else:
-            for event in registered:
-                try:
-                    asyncio.ensure_future(event(*args, **kwargs))
-                except (BaseException, Exception):
-                    LOG.exception("Ignoring exception in %s.", event_name)
+        for event in registered:
+            try:
+                task = asyncio.ensure_future(event(*args, **kwargs))
+            except Exception:
+                LOG.exception("Ignoring exception in %s.", event_name)
+                continue
+            task.add_done_callback(functools.partial(self._log_listener_exception, event_name))
+
+    def _log_listener_exception(self, event_name: str, task: "asyncio.Future"):
+        if task.cancelled():
+            return
+        exception = task.exception()
+        if exception is not None:
+            LOG.error("Ignoring exception in %s listener.", event_name, exc_info=exception)
 
     def _task_callback_check(self, result):
         if not result.done():
@@ -821,7 +907,8 @@ class EventsClient(Client):
         for name, value in self._updater_tasks.items():
             if value != result:
                 continue
-            self._updater_tasks[name] = self.loop.create_task(lookup[name]())
+            loop = asyncio.get_running_loop()
+            self._updater_tasks[name] = loop.create_task(lookup[name]())
             self._updater_tasks[name].add_done_callback(self._task_callback_check)
 
     async def _raid_poller(self):
@@ -829,21 +916,25 @@ class EventsClient(Client):
         if not self.raid_clan_tag:
             LOG.warning("raid_clan_tag not set. Raid weekend events disabled.")
             return
-        try:
-            age = 0
-            while self.loop.is_running():
+
+        age = 0
+        backoff = DEFAULT_SLEEP
+        while self.loop.is_running():
+            try:
                 try:
                     raid_logs = await self.get_raid_log(self.raid_clan_tag, limit=1)
-                    if not raid_logs:
-                        await asyncio.sleep(DEFAULT_SLEEP)
-                        continue
-                    [raid_log_entry] = raid_logs
-                    raid_log_entry: geniuslib.raid.RaidLogEntry
                 except Maintenance:
                     await asyncio.sleep(15)
                 except Exception:
                     await asyncio.sleep(DEFAULT_SLEEP)
                 else:
+                    backoff = DEFAULT_SLEEP
+                    if not raid_logs:
+                        await asyncio.sleep(DEFAULT_SLEEP)
+                        continue
+                    [raid_log_entry] = raid_logs
+                    raid_log_entry: geniuslib.raid.RaidLogEntry
+
                     if raid_log_entry.start_time.seconds_until + age > 0 and raid_log_entry.end_time.seconds_until > 0:
                         # raid started
                         self.dispatch("raid_weekend_start")
@@ -853,30 +944,34 @@ class EventsClient(Client):
                     # sleep for response_retry + 1
                     age = raid_log_entry._response_retry + 1
                     await asyncio.sleep(age)
-        except asyncio.CancelledError:
-            pass
-        except Exception as exception:
-            self.dispatch("event_error", exception)
-            await asyncio.sleep(DEFAULT_SLEEP)
-            return await self._raid_poller()
+            except asyncio.CancelledError:
+                return
+            except Exception as exception:
+                self.dispatch("event_error", exception)
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
 
     async def _end_of_season_poller(self):
-        try:
-            while self.loop.is_running():
+        backoff = DEFAULT_SLEEP
+        while self.loop.is_running():
+            try:
                 end_of_season = get_season_end()
                 now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
                 await asyncio.sleep((end_of_season - now).total_seconds())
                 self.dispatch("new_season_start")
-        except asyncio.CancelledError:
-            pass
-        except Exception as exception:
-            self.dispatch("event_error", exception)
-            await asyncio.sleep(DEFAULT_SLEEP)
-            return await self._end_of_season_poller()
+            except asyncio.CancelledError:
+                return
+            except Exception as exception:
+                self.dispatch("event_error", exception)
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
+            else:
+                backoff = DEFAULT_SLEEP
 
     async def _clan_games_poller(self):
-        try:
-            while self.loop.is_running():
+        backoff = DEFAULT_SLEEP
+        while self.loop.is_running():
+            try:
                 clan_games_start = get_clan_games_start()
                 clan_games_end = get_clan_games_end()
                 now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
@@ -891,18 +986,21 @@ class EventsClient(Client):
                     continue
                 await asyncio.sleep(mute_time.total_seconds())
                 self.dispatch(event)
-        except asyncio.CancelledError:
-            pass
-        except Exception as exception:
-            self.dispatch("event_error", exception)
-            await asyncio.sleep(DEFAULT_SLEEP)
-            return await self._clan_games_poller()
+            except asyncio.CancelledError:
+                return
+            except Exception as exception:
+                self.dispatch("event_error", exception)
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
+            else:
+                backoff = DEFAULT_SLEEP
 
     async def _maintenance_poller(self):
         # pylint: disable=broad-except, protected-access
         maintenance_start = None
-        try:
-            while self.loop.is_running():
+        backoff = DEFAULT_SLEEP
+        while self.loop.is_running():
+            try:
                 try:
                     player = await self.get_player(self.maintenance_player_tag)
                     await asyncio.sleep(player._response_retry + 1)
@@ -916,22 +1014,24 @@ class EventsClient(Client):
                 except Exception:
                     await asyncio.sleep(DEFAULT_SLEEP)
                 else:
+                    backoff = DEFAULT_SLEEP
                     if maintenance_start is not None:
                         self._in_maintenance_event.set()
                         self.dispatch("maintenance_completion", maintenance_start)
                         maintenance_start = None
 
-        except asyncio.CancelledError:
-            pass
-        except Exception as exception:
-            self.dispatch("event_error", exception)
-            await asyncio.sleep(DEFAULT_SLEEP)
-            return await self._maintenance_poller()
+            except asyncio.CancelledError:
+                return
+            except Exception as exception:
+                self.dispatch("event_error", exception)
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
 
     async def _war_updater(self):
         # pylint: disable=broad-except
-        try:
-            while self.loop.is_running():
+        backoff = DEFAULT_SLEEP
+        while self.loop.is_running():
+            try:
                 await asyncio.sleep(DEFAULT_SLEEP)
                 await self._in_maintenance_event.wait()  # don't run if we're hitting maintenance errors.
 
@@ -943,77 +1043,85 @@ class EventsClient(Client):
                     options = (WarRound.current_war, )
 
                 tasks = [
-                    self.loop.create_task(self._run_war_update(tag, option))
+                    asyncio.get_running_loop().create_task(self._run_war_update(tag, option))
                     for tag in self._war_updates for option in options
                 ]
                 await asyncio.gather(*tasks)
                 self.dispatch("war_loop_finish", self.war_loops_run)
                 self.war_loops_run += 1
 
-        except asyncio.CancelledError:
-            return
-        except Exception as exception:
-            self.dispatch("event_error", exception)
+            except asyncio.CancelledError:
+                return
+            except Exception as exception:
+                self.dispatch("event_error", exception)
 
-            for lock in (v for k, v in self._locks.items() if "war" in k):
-                self._safe_unlock(lock)
+                for lock in (v for k, v in self._locks.items() if "war" in k):
+                    self._safe_unlock(lock)
 
-            await asyncio.sleep(DEFAULT_SLEEP)
-            return await self._war_updater()
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
+            else:
+                backoff = DEFAULT_SLEEP
 
     async def _clan_updater(self):
         # pylint: disable=broad-except
-        try:
-            while self.loop.is_running():
+        backoff = DEFAULT_SLEEP
+        while self.loop.is_running():
+            try:
                 await asyncio.sleep(DEFAULT_SLEEP)
                 await self._in_maintenance_event.wait()  # don't run if we're hitting maintenance errors.
 
                 self.dispatch("clan_loop_start", self.clan_loops_run)
                 tasks = [
-                    self.loop.create_task(self._run_clan_update(index, tag))
+                    asyncio.get_running_loop().create_task(self._run_clan_update(index, tag))
                     for index, tag in enumerate(self._clan_updates)
                 ]
                 await asyncio.gather(*tasks)
                 self.dispatch("clan_loop_finish", self.clan_loops_run)
                 self.clan_loops_run += 1
 
-        except asyncio.CancelledError:
-            return
-        except Exception as exception:
-            self.dispatch("event_error", exception)
+            except asyncio.CancelledError:
+                return
+            except Exception as exception:
+                self.dispatch("event_error", exception)
 
-            for lock in (v for k, v in self._locks.items() if "clan" in k):
-                self._safe_unlock(lock)
+                for lock in (v for k, v in self._locks.items() if "clan" in k):
+                    self._safe_unlock(lock)
 
-            await asyncio.sleep(DEFAULT_SLEEP)
-            return await self._clan_updater()
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
+            else:
+                backoff = DEFAULT_SLEEP
 
     async def _player_updater(self):
         # pylint: disable=broad-except
-        try:
-            while self.loop.is_running():
+        backoff = DEFAULT_SLEEP
+        while self.loop.is_running():
+            try:
                 await asyncio.sleep(DEFAULT_SLEEP)
                 await self._in_maintenance_event.wait()  # don't run if we're hitting maintenance errors.
 
                 self.dispatch("player_loop_start", self.player_loops_run)
                 tasks = [
-                    self.loop.create_task(self._run_player_update(index, tag))
+                    asyncio.get_running_loop().create_task(self._run_player_update(index, tag))
                     for index, tag in enumerate(self._player_updates)
                 ]
                 await asyncio.gather(*tasks)
                 self.dispatch("player_loop_finish", self.player_loops_run)
                 self.player_loops_run += 1
 
-        except asyncio.CancelledError:
-            return
-        except Exception as exception:
-            self.dispatch("event_error", exception)
+            except asyncio.CancelledError:
+                return
+            except Exception as exception:
+                self.dispatch("event_error", exception)
 
-            for lock in (v for k, v in self._locks.items() if "player" in k):
-                self._safe_unlock(lock)
+                for lock in (v for k, v in self._locks.items() if "player" in k):
+                    self._safe_unlock(lock)
 
-            await asyncio.sleep(DEFAULT_SLEEP)
-            return await self._player_updater()
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
+            else:
+                backoff = DEFAULT_SLEEP
 
     @staticmethod
     def _safe_unlock(lock):
@@ -1044,14 +1152,17 @@ class EventsClient(Client):
         except Maintenance:
             self._safe_unlock(lock)
             return
-        except (Exception, BaseException) as exception:
+        except asyncio.CancelledError:
+            self._safe_unlock(lock)
+            raise
+        except Exception as exception:
             self.dispatch("event_error", exception)
             self._safe_unlock(lock)
             return
 
         # sleep for either
         seconds = max(player._response_retry, self.player_retry_interval)
-        self.loop.call_later(seconds, self._safe_unlock, lock)
+        asyncio.get_running_loop().call_later(seconds, self._safe_unlock, lock)
 
         cached_player = self._get_cached_player(player_tag)
         self._update_player(player)
@@ -1085,13 +1196,17 @@ class EventsClient(Client):
         except Maintenance:
             self._safe_unlock(lock)
             return
-        except (Exception, BaseException) as exception:
+        except asyncio.CancelledError:
+            self._safe_unlock(lock)
+            raise
+        except Exception as exception:
             self.dispatch("event_error", exception)
             self._safe_unlock(lock)
             return
 
         # sleep for either the global retry or whenever a new player object is available, whichever is smaller.
-        self.loop.call_later(max(clan._response_retry, self.clan_retry_interval), self._safe_unlock, lock)
+        asyncio.get_running_loop().call_later(max(clan._response_retry, self.clan_retry_interval),
+                                              self._safe_unlock, lock)
 
         cached_clan = self._get_cached_clan(clan_tag)
         self._update_clan(clan)
@@ -1128,7 +1243,10 @@ class EventsClient(Client):
         except (Maintenance, PrivateWarLog):
             self._safe_unlock(lock)
             return
-        except (Exception, BaseException) as exception:
+        except asyncio.CancelledError:
+            self._safe_unlock(lock)
+            raise
+        except Exception as exception:
             self.dispatch("event_error", exception)
             self._safe_unlock(lock)
             return
@@ -1138,7 +1256,8 @@ class EventsClient(Client):
             return
 
         # sleep for either the global retry or whenever a new war object is available, whichever is smaller.
-        self.loop.call_later(max(war._response_retry, self.war_retry_interval), self._safe_unlock, lock)
+        asyncio.get_running_loop().call_later(max(war._response_retry, self.war_retry_interval),
+                                              self._safe_unlock, lock)
 
         cached_war = self._get_cached_war(clan_tag)
         self._update_war(clan_tag, war)

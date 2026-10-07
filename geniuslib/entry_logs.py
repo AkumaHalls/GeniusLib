@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import asyncio
 from abc import ABC, abstractmethod
-from typing import Optional, TYPE_CHECKING, Type, Union
+from typing import TYPE_CHECKING, Optional, Type, Union
 
 from .raid import RaidLogEntry
 from .wars import ClanWarLogEntry
@@ -14,22 +14,27 @@ if TYPE_CHECKING:
 
 class LogPaginator(ABC):
     @abstractmethod
-    def __init__(self, client: Client,
-                 clan_tag: str,
-                 limit: int,
-                 page: bool,
-                 json_resp: dict,
-                 model: Union[Type[ClanWarLogEntry], Type[RaidLogEntry]],
-                 **kwargs):
+    def __init__(
+        self,
+        client: Client,
+        clan_tag: str,
+        limit: int,
+        page: bool,
+        json_resp: dict,
+        model: Union[Type[ClanWarLogEntry], Type[RaidLogEntry]],
+        **kwargs,
+    ):
 
         self._clan_tag = clan_tag
         self._limit = limit
         self._page = page
-        
+
         self.kwargs = kwargs
         self.kwargs["lookup_cache"] = kwargs.get("lookup_cache", client.lookup_cache if client else None)
         self.kwargs["update_cache"] = kwargs.get("update_cache", client.update_cache if client else None)
-        self.kwargs["ignore_cached_errors"] = kwargs.get("ignore_cached_errors", client.ignore_cached_errors if client else None)
+        self.kwargs["ignore_cached_errors"] = kwargs.get(
+            "ignore_cached_errors", client.ignore_cached_errors if client else None
+        )
 
         self._init_data = json_resp  # Initial data; this is const
         self._init_logs = json_resp.get("items", [])
@@ -49,8 +54,12 @@ class LogPaginator(ABC):
         """Fetch the next item in the iter object and return the entry"""
         if self._sync_index == len(self._init_logs):
             raise StopIteration
-        ret = self._model(data=self._init_logs[self._sync_index],
-                          client=self._client, response_retry=self._response_retry, clan_tag=self._clan_tag)
+        ret = self._model(
+            data=self._init_logs[self._sync_index],
+            client=self._client,
+            response_retry=self._response_retry,
+            clan_tag=self._clan_tag,
+        )
         self._sync_index += 1
         return ret
 
@@ -59,11 +68,18 @@ class LogPaginator(ABC):
         items from the endpoint"""
         try:
             if isinstance(index, slice):
-                return [self._model(data=item,
-                                    client=self._client, response_retry=self._response_retry, clan_tag=self._clan_tag)
-                        for item in self._init_logs[index]]
-            return self._model(data=self._init_logs[index],
-                               client=self._client, response_retry=self._response_retry, clan_tag=self._clan_tag)
+                return [
+                    self._model(
+                        data=item, client=self._client, response_retry=self._response_retry, clan_tag=self._clan_tag
+                    )
+                    for item in self._init_logs[index]
+                ]
+            return self._model(
+                data=self._init_logs[index],
+                client=self._client,
+                response_retry=self._response_retry,
+                clan_tag=self._clan_tag,
+            )
         except Exception:
             raise
 
@@ -73,6 +89,7 @@ class LogPaginator(ABC):
         self._max_index = len(self._init_logs)
         self._min_index = 0
         self._async_index = 0
+        self._cursor_stalled = False
 
         # Make copies of the init data since they will change.
         self._logs = self._init_logs[:]
@@ -101,8 +118,12 @@ class LogPaginator(ABC):
         if not self._page:
             if self._async_index == len(self._logs):
                 raise StopAsyncIteration
-            ret = self._model(data=self._logs[self._async_index],
-                              client=self._client, response_retry=self._response_retry, clan_tag=self._clan_tag)
+            ret = self._model(
+                data=self._logs[self._async_index],
+                client=self._client,
+                response_retry=self._response_retry,
+                clan_tag=self._clan_tag,
+            )
             self._async_index += 1
             return ret
 
@@ -116,11 +137,20 @@ class LogPaginator(ABC):
 
         # Iteration has reached the end of the array, fetch the next
         # set of logs from the endpoint
-        elif self._next_page:
+        elif self._page and self._next_page and not self._cursor_stalled:
+            cursor_before = self._next_page
             await self._paginate()
+            if not self._logs:
+                raise StopAsyncIteration
             self._min_index = self._max_index
             self._max_index = self._max_index + len(self._logs)
-            ret = self._logs[self._async_index - self._min_index]
+            next_page = self._next_page
+            if next_page == cursor_before:
+                self._cursor_stalled = True
+            idx = self._async_index - self._min_index
+            if idx < 0 or idx >= len(self._logs):
+                raise StopAsyncIteration
+            ret = self._logs[idx]
         else:
             raise StopAsyncIteration
 
@@ -132,9 +162,7 @@ class LogPaginator(ABC):
         Request data from the endpoint and update the iter variables with
         the new data. `self._fetch_endpoint` is a child defined method.
         """
-        self._page_data = await self._fetch_endpoint(self._client,
-                                                     self._clan_tag,
-                                                     **self.options)
+        self._page_data = await self._fetch_endpoint(self._client, self._clan_tag, **self.options)
         self._logs = self._page_data.get("items", [])
         self._response_retry = self._page_data.get("_response_retry", 0)
 
@@ -149,30 +177,33 @@ class LogPaginator(ABC):
     @property
     def _next_page(self) -> Optional[str]:
         """Determine if there is a next page for the endpoint query"""
-        try:
-            return self._page_data.get("paging").get("cursors").get("after")
-        except KeyError:
+        if not self._page_data:
             return None
+        paging = self._page_data.get("paging")
+        if not paging:
+            return None
+        cursors = paging.get("cursors")
+        if not cursors:
+            return None
+        return cursors.get("after")
 
     @staticmethod
     @abstractmethod
-    async def _fetch_endpoint(client: Client,
-                              clan_tag: str,
-                              fut: Optional[asyncio.Future] = None,
-                              **options) -> dict:
+    async def _fetch_endpoint(client: Client, clan_tag: str, fut: Optional[asyncio.Future] = None, **options) -> dict:
         """Function to fetch data from the endpoint"""
         pass
 
     @classmethod
     @abstractmethod
-    async def init_cls(cls,
-                       client: Client,
-                       clan_tag: str,
-                       model: Type[ClanWarLogEntry],
-                       limit: int,
-                       paginate: bool = True,
-                       **kwargs,
-                       ) -> Union[ClanWarLog, RaidLog]:
+    async def init_cls(
+        cls,
+        client: Client,
+        clan_tag: str,
+        model: Type[ClanWarLogEntry],
+        limit: int,
+        paginate: bool = True,
+        **kwargs,
+    ) -> Union[ClanWarLog, RaidLog]:
         """Class method to return an instantiated object"""
         pass
 
@@ -184,16 +215,17 @@ class ClanWarLog(LogPaginator, ABC):
         super().__init__(**kwargs)
 
     @classmethod
-    async def init_cls(cls,
-                       client: Client,
-                       clan_tag: str,
-                       model: Type[ClanWarLogEntry],
-                       limit: int,
-                       page: bool = True,
-                       after: str = None,
-                       before: str = None,
-                       **kwargs
-                       ) -> ClanWarLog:
+    async def init_cls(
+        cls,
+        client: Client,
+        clan_tag: str,
+        model: Type[ClanWarLogEntry],
+        limit: int,
+        page: bool = True,
+        after: str = None,
+        before: str = None,
+        **kwargs,
+    ) -> ClanWarLog:
 
         # Add the limit if specified
         args = {"limit": limit} if limit else {}
@@ -206,13 +238,12 @@ class ClanWarLog(LogPaginator, ABC):
         args["ignore_cached_errors"] = kwargs.get("ignore_cached_errors", client.ignore_cached_errors)
 
         json_resp = await cls._fetch_endpoint(client, clan_tag, **args)
-        return ClanWarLog(client=client, clan_tag=clan_tag, limit=limit,
-                          page=page, json_resp=json_resp, model=model, **kwargs)
+        return ClanWarLog(
+            client=client, clan_tag=clan_tag, limit=limit, page=page, json_resp=json_resp, model=model, **kwargs
+        )
 
     @staticmethod
-    async def _fetch_endpoint(client: Client, clan_tag: str,
-                              fut: Optional[asyncio.Future] = None,
-                              **options) -> dict:
+    async def _fetch_endpoint(client: Client, clan_tag: str, fut: Optional[asyncio.Future] = None, **options) -> dict:
         result = await client.http.get_clan_war_log(clan_tag, **options)
         if fut:
             fut.set_result(result)
@@ -221,20 +252,22 @@ class ClanWarLog(LogPaginator, ABC):
 
 class RaidLog(LogPaginator, ABC):
     """Represents a Generator for a RaidLog"""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     @classmethod
-    async def init_cls(cls,
-                       client: Client,
-                       clan_tag: str,
-                       model: Type[RaidLogEntry],
-                       limit: int,
-                       page: bool = True,
-                       after: str = None,
-                       before: str = None,
-                       **kwargs
-                       ) -> RaidLog:
+    async def init_cls(
+        cls,
+        client: Client,
+        clan_tag: str,
+        model: Type[RaidLogEntry],
+        limit: int,
+        page: bool = True,
+        after: str = None,
+        before: str = None,
+        **kwargs,
+    ) -> RaidLog:
 
         # Add the limit if specified
         args = {"limit": limit} if limit else {}
@@ -247,13 +280,18 @@ class RaidLog(LogPaginator, ABC):
         args["ignore_cached_errors"] = kwargs.get("ignore_cached_errors", client.ignore_cached_errors)
 
         json_resp = await cls._fetch_endpoint(client, clan_tag, **args)
-        return RaidLog(client=client, clan_tag=clan_tag, limit=limit,
-                       page=page, json_resp=json_resp, model=model, **kwargs,)
+        return RaidLog(
+            client=client,
+            clan_tag=clan_tag,
+            limit=limit,
+            page=page,
+            json_resp=json_resp,
+            model=model,
+            **kwargs,
+        )
 
     @staticmethod
-    async def _fetch_endpoint(client: Client, clan_tag: str,
-                              fut: Optional[asyncio.Future] = None,
-                              **options) -> dict:
+    async def _fetch_endpoint(client: Client, clan_tag: str, fut: Optional[asyncio.Future] = None, **options) -> dict:
         result = await client.http.get_clan_raid_log(clan_tag, **options)
         if fut:
             fut.set_result(result)

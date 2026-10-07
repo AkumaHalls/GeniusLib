@@ -3,7 +3,6 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 from geniuslib.abc import BaseClan
-from geniuslib.miscmodels import try_enum, Badge
 
 
 class PlayerClan(BaseClan):

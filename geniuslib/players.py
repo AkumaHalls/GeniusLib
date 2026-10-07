@@ -2,31 +2,29 @@
 # Based on coc.py (MIT License, copyright (c) 2019-2020 mathsman5133)
 # (c) 2026 AkumaHalls / ClashGenius
 
-from typing import Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
-from .miscmodels import BaseLeague, PlayerHouseElement, try_enum, Achievement, Label, League, LegendStatistics
+from .abc import BasePlayer
+from .constants import (
+    ACHIEVEMENT_ORDER,
+    BUILDER_TROOPS_ORDER,
+    EQUIPMENT,
+    HERO_ORDER,
+    HOME_TROOP_ORDER,
+    PETS_ORDER,
+    SIEGE_MACHINE_ORDER,
+    SPELL_ORDER,
+    SUPER_TROOP_ORDER,
+)
 from .enums import (
     Role,
 )
-
-from .constants import (
-    HERO_ORDER,
-    BUILDER_TROOPS_ORDER,
-    HOME_TROOP_ORDER,
-    SPELL_ORDER,
-    SIEGE_MACHINE_ORDER,
-    ACHIEVEMENT_ORDER,
-    SUPER_TROOP_ORDER,
-    PETS_ORDER,
-    EQUIPMENT,
-)
-from .abc import BasePlayer
-from .hero import Hero, Equipment, Pet
+from .hero import Equipment, Hero, Pet
+from .miscmodels import Achievement, BaseLeague, Label, League, LegendStatistics, PlayerHouseElement, try_enum
 from .player_clan import PlayerClan
 from .spell import Spell
 from .troop import Troop
 from .utils import cached_property
-
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import

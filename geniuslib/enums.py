@@ -22,6 +22,16 @@ class ExtendedEnum(Enum):
             return str(self.name) == other or str(self.value) == other
         return False
 
+    def __hash__(self):
+        """Make members hashable again.
+
+        Defining ``__eq__`` on a class resets ``__hash__`` to ``None``, which made every
+        ``ExtendedEnum`` member unhashable (``hash()``, ``set`` and ``dict`` lookups all
+        raised ``TypeError``). Hashing the value keeps members usable as dict keys while
+        staying consistent with the value-based ``__eq__`` above.
+        """
+        return hash(self.value)
+
     @property
     def in_game_name(self) -> str:
         raise NotImplementedError

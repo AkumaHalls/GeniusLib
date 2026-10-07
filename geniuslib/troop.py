@@ -1,7 +1,7 @@
 
 from .abc import LeveledUnit
-from .enums import Resource, VillageType, ProductionBuildingType
-from .miscmodels import TimeDelta, TID
+from .enums import ProductionBuildingType, Resource, VillageType
+from .miscmodels import TID, TimeDelta
 
 
 class Troop(LeveledUnit):
@@ -164,12 +164,15 @@ class Troop(LeveledUnit):
         if not self._static_data:
             return
 
-        start_level = self._static_data["levels"][0]["level"]
+        levels = self._static_data.get("levels") or []
+        if not levels:
+            return
+
+        start_level = levels[0]["level"]
         # hacky way to deal with lv 1 builder base troops showing as lv 1 instead of correct level
         if self.__data and self._level == 1 and self.is_builder_base:
-            self._level = self._static_data["levels"][0]["level"] + self._level - 1
+            self._level = start_level + self._level - 1
 
-        levels = self._static_data["levels"]
         level_idx = self._level - start_level
         if level_idx < 0 or level_idx >= len(levels):
             return

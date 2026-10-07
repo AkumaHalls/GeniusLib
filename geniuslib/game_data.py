@@ -1,16 +1,16 @@
-from .characters import Guardian, Helper
-from .buildings import Trap, Building, SeasonalDefense, SeasonalDefenseModule
-from .cosmetics import Decoration, Obstacle, Skin, Scenery, ClanCapitalHousePart
-from. hero import Hero, Pet, Equipment
-from .troop import Troop
-from .spell import Spell
-from .abc import LeveledUnit
-from .miscmodels import TimeDelta
-from .enums import BuildingType
-
 import re
-
 from typing import TYPE_CHECKING, Optional
+
+from .abc import LeveledUnit
+from .buildings import Building, SeasonalDefense, SeasonalDefenseModule, Trap
+from .characters import Guardian, Helper
+from .cosmetics import ClanCapitalHousePart, Decoration, Obstacle, Scenery, Skin
+from .enums import BuildingType
+from .hero import Equipment, Hero, Pet
+from .miscmodels import TimeDelta
+from .spell import Spell
+from .troop import Troop
+
 if TYPE_CHECKING:
     from client import Client
 
@@ -129,11 +129,11 @@ class Boosts:
 
 class StaticData:
     """Represents static game data loaded from game files.
-    
+
     This class loads and organizes all static game data from the game's data files.
     It provides access to all available game items at all levels, useful for looking
     up item information, max levels, and statistics.
-    
+
     Attributes
     ----------
     buildings: List[:class:`Building`]
@@ -165,7 +165,7 @@ class StaticData:
     troops: List[:class:`Troop`]
         List of all available troops & siege machines.
     """
-    
+
     __slots__ = (
         "_data",
         "helpers",
@@ -184,7 +184,7 @@ class StaticData:
         "skins",
         "sceneries",
     )
-    
+
     def __init__(self, data: dict):
         self._data = data
 
@@ -240,7 +240,7 @@ class StaticData:
 
 class AccountData:
     """Represents player account data parsed from game files.
-    
+
     Parses raw account data from game files and creates game objects representing
     the player's village state, including buildings, troops, heroes, ongoing upgrades,
     and active boosts. This provides a complete snapshot of a player's account.
@@ -395,7 +395,7 @@ class AccountData:
                     if item_data is None:
                         continue
                     guardian = Guardian(
-                        level=item.get("lvl"), data=item_data
+                        level=item.get("lvl", 0), data=item_data
                     )
                     self.add_upgrade(item, guardian)
                     self.guardians.append(guardian)
@@ -411,19 +411,20 @@ class AccountData:
                         crafting_station: list[dict] = item["types"]
                         for seasonal_defense in crafting_station:
                             seasonal_def_data = next((
-                                item for item in item_data["seasonal_defenses"]
+                                item for item in item_data.get("seasonal_defenses", [])
                                 if item["_id"] == seasonal_defense["data"]
-                            ))
+                            ), None)
                             if seasonal_def_data is None:
                                 continue
                             modules = []
-                            for module in seasonal_defense["modules"]:
+                            for module in seasonal_defense.get("modules", []):
                                 module_data = next((
-                                    item for item in seasonal_def_data["modules"] if item["_id"] == module["data"]
-                                ))
+                                    item for item in seasonal_def_data.get("modules", [])
+                                    if item["_id"] == module["data"]
+                                ), None)
                                 if module_data is None:
                                     continue
-                                modules.append(SeasonalDefenseModule(level=module["lvl"], data=module_data))
+                                modules.append(SeasonalDefenseModule(level=module.get("lvl", 0), data=module_data))
                                 self.add_upgrade(item, module)
                             seasonal_defenses.append(SeasonalDefense(data=seasonal_def_data, modules=modules))
 
@@ -446,7 +447,7 @@ class AccountData:
                     if item_data is None:
                         continue
                     trap = Trap(
-                        level=item.get("lvl"), data=item_data
+                        level=item.get("lvl", 0), data=item_data
                     )
                     self.add_upgrade(item, trap)
                     self.traps.append((trap, item.get("cnt", 1)))
@@ -475,7 +476,7 @@ class AccountData:
                     item_data = self.get_static_data_item(item_id=item_id)
                     if item_data is None:
                         continue
-                    troop = Troop(data={}, static_data=item_data, level=item["lvl"])
+                    troop = Troop(data={}, static_data=item_data, level=item.get("lvl", 0))
                     self.add_upgrade(item, troop)
                     self.troops.append(troop)
 
@@ -485,7 +486,7 @@ class AccountData:
                     item_data = self.get_static_data_item(item_id=item_id)
                     if item_data is None:
                         continue
-                    spell = Spell(data={}, static_data=item_data, level=item["lvl"])
+                    spell = Spell(data={}, static_data=item_data, level=item.get("lvl", 0))
                     self.add_upgrade(item, spell)
                     self.spells.append(spell)
 
@@ -495,7 +496,7 @@ class AccountData:
                     item_data = self.get_static_data_item(item_id=item_id)
                     if item_data is None:
                         continue
-                    hero = Hero(data={}, static_data=item_data, level=item["lvl"])
+                    hero = Hero(data={}, static_data=item_data, level=item.get("lvl", 0))
                     self.add_upgrade(item, hero)
                     self.heroes.append(hero)
 
@@ -505,7 +506,7 @@ class AccountData:
                     item_data = self.get_static_data_item(item_id=item_id)
                     if item_data is None:
                         continue
-                    pet = Pet(data={}, static_data=item_data, level=item["lvl"])
+                    pet = Pet(data={}, static_data=item_data, level=item.get("lvl", 0))
                     self.add_upgrade(item, pet)
                     self.pets.append(pet)
 
@@ -515,7 +516,7 @@ class AccountData:
                     item_data = self.get_static_data_item(item_id=item_id)
                     if item_data is None:
                         continue
-                    equipment = Equipment(data={}, static_data=item_data, level=item["lvl"])
+                    equipment = Equipment(data={}, static_data=item_data, level=item.get("lvl", 0))
                     self.equipment.append(equipment)
 
             elif section == "skins":

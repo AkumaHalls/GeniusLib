@@ -15,8 +15,7 @@ Usage::
 import csv
 import io
 import json
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List
 
 
 def to_json(obj, indent: int = 2) -> str:
@@ -97,6 +96,11 @@ def to_csv(obj, obj_type: str = "player") -> str:
         writer.writeheader()
         writer.writerow(_flatten_war(data))
 
+    elif obj_type == "raid":
+        writer = csv.DictWriter(output, fieldnames=_RAID_FIELDS)
+        writer.writeheader()
+        writer.writerow(_flatten_raid(data))
+
     return output.getvalue()
 
 
@@ -132,24 +136,57 @@ def export_clans(clans: list, format: str = "json") -> str:
 # --- Internal helpers ---
 
 _PLAYER_FIELDS = [
-    "tag", "name", "town_hall", "trophies", "exp_level",
-    "war_stars", "attack_wins", "defense_wins", "clan",
+    "tag",
+    "name",
+    "town_hall",
+    "trophies",
+    "exp_level",
+    "war_stars",
+    "attack_wins",
+    "defense_wins",
+    "clan",
 ]
 
 _CLAN_FIELDS = [
-    "tag", "name", "level", "member_count", "points",
-    "versus_points", "description", "war_league",
+    "tag",
+    "name",
+    "level",
+    "member_count",
+    "points",
+    "builder_base_points",
+    "description",
+    "war_league",
 ]
 
 _MEMBER_FIELDS = [
-    "tag", "name", "role", "town_hall", "trophies",
-    "donations", "donations_received",
+    "tag",
+    "name",
+    "role",
+    "town_hall",
+    "trophies",
+    "donations",
+    "donations_received",
 ]
 
 _WAR_FIELDS = [
-    "state", "clan_name", "clan_tag", "clan_stars",
-    "opponent_name", "opponent_tag", "opponent_stars",
+    "state",
+    "clan_name",
+    "clan_tag",
+    "clan_stars",
+    "opponent_name",
+    "opponent_tag",
+    "opponent_stars",
     "attacks_per_member",
+]
+
+_RAID_FIELDS = [
+    "state",
+    "start_time",
+    "end_time",
+    "total_loot",
+    "completed_raid_count",
+    "attack_count",
+    "destroyed_district_count",
 ]
 
 
@@ -158,6 +195,19 @@ def _extract_data(obj) -> dict:
         return obj._raw_data
     if hasattr(obj, "__dict__"):
         return {k: v for k, v in obj.__dict__.items() if not k.startswith("_")}
+    # Try to extract from __slots__ if present (models with __slots__)
+    slots = getattr(obj.__class__, "__slots__", None)
+    if slots:
+        result = {}
+        for s in slots:
+            if s.startswith("_"):
+                continue
+            try:
+                result[s] = getattr(obj, s)
+            except AttributeError:
+                continue
+        if result:
+            return result
     return {}
 
 
@@ -187,7 +237,7 @@ def _flatten_clan(data: dict) -> dict:
         "level": data.get("clanLevel") or data.get("level", 0),
         "member_count": data.get("members") or data.get("member_count", 0),
         "points": data.get("clanPoints") or data.get("points", 0),
-        "versus_points": data.get("clanVersusPoints") or data.get("versus_points", 0),
+        "builder_base_points": data.get("clanBuilderBasePoints") or data.get("builder_base_points", 0),
         "description": (data.get("description") or "")[:50],
         "war_league": data.get("warLeague", {}).get("name", "") if isinstance(data.get("warLeague"), dict) else "",
     }
@@ -206,8 +256,20 @@ def _flatten_member(data: dict) -> dict:
 
 
 def _flatten_war(data: dict) -> dict:
-    clan = data.get("clan", {})
-    opp = data.get("opponent", {})
+    clan = data.get("clan", {}) if isinstance(data.get("clan"), dict) else {}
+    opp = data.get("opponent", {}) if isinstance(data.get("opponent"), dict) else {}
+    if hasattr(data.get("clan"), "name") and not clan:
+        clan = {
+            "name": getattr(data.get("clan"), "name", ""),
+            "tag": getattr(data.get("clan"), "tag", ""),
+            "stars": getattr(data.get("clan"), "stars", 0),
+        }
+    if hasattr(data.get("opponent"), "name") and not opp:
+        opp = {
+            "name": getattr(data.get("opponent"), "name", ""),
+            "tag": getattr(data.get("opponent"), "tag", ""),
+            "stars": getattr(data.get("opponent"), "stars", 0),
+        }
     return {
         "state": data.get("state", ""),
         "clan_name": clan.get("name", ""),
@@ -217,6 +279,18 @@ def _flatten_war(data: dict) -> dict:
         "opponent_tag": opp.get("tag", ""),
         "opponent_stars": opp.get("stars", 0),
         "attacks_per_member": data.get("attacksPerMember") or data.get("attacks_per_member", 0),
+    }
+
+
+def _flatten_raid(data: dict) -> dict:
+    return {
+        "state": data.get("state", ""),
+        "start_time": data.get("startTime") or data.get("start_time") or "",
+        "end_time": data.get("endTime") or data.get("end_time") or "",
+        "total_loot": data.get("capitalTotalLoot") or data.get("total_loot", 0),
+        "completed_raid_count": data.get("raidsCompleted") or data.get("completed_raid_count", 0),
+        "attack_count": data.get("totalAttacks") or data.get("attack_count", 0),
+        "destroyed_district_count": data.get("enemyDistrictsDestroyed") or data.get("destroyed_district_count", 0),
     }
 
 
@@ -239,10 +313,13 @@ def _get_field(data: dict, field: str) -> Any:
         "member_count": ["members", "member_count"],
         "points": ["clanPoints", "points"],
         "versus_points": ["clanVersusPoints", "versus_points"],
+        "builder_base_points": ["clanBuilderBasePoints", "builder_base_points"],
+        "role": ["role"],
     }
     for key in mapping.get(field, [field]):
         if key in data:
-            return data[key]
-        if isinstance(data.get(key), dict):
-            return data[key].get("name", "")
+            val = data[key]
+            if isinstance(val, dict):
+                return val.get("name", "")
+            return val
     return ""

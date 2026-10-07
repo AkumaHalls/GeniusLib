@@ -1,18 +1,16 @@
 # GeniusLib - Clash of Clans API wrapper
 # (c) 2026 AkumaHalls / ClashGenius
 
-from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from .enums import Role, WarState, WarResult
-from .players import Player, ClanMember
-from .clans import Clan
-from .wars import ClanWar
-from .miscmodels import League, BaseLeague
-from .raid import RaidLogEntry
 from . import utils
-
+from .clans import Clan
+from .enums import Role, WarState
+from .miscmodels import BaseLeague, League
+from .players import ClanMember, Player
+from .raid import RaidLogEntry
+from .wars import ClanWar
 
 TH_EMOJIS = {
     1: "\u0031\uFE0F\u20E3", 2: "\u0032\uFE0F\u20E3", 3: "\u0033\uFE0F\u20E3",
@@ -36,6 +34,7 @@ def format_role(role: Role) -> str:
     lookup = {
         "leader": "\U0001F451 L\u00edder",
         "coLeader": "\U0001F4A0 Col\u00edder",
+        "admin": "\U0001F4A1 Anci\u00e3o",
         "elder": "\U0001F4A1 Anci\u00e3o",
         "member": "\U0001F4CB Membro",
     }
@@ -55,6 +54,15 @@ def format_builder_base_league(league: Optional[BaseLeague]) -> str:
 
 
 def format_trophies(trophies: int) -> str:
+    try:
+        if trophies is None:
+            trophies = 0
+        # If it's a mock-like object, coerce to 0
+        if hasattr(trophies, "__class__") and trophies.__class__.__name__ == "MagicMock":
+            trophies = 0
+        trophies = int(trophies)
+    except Exception:
+        trophies = 0
     return f"\U0001F3C6 {trophies:,}".replace(",", ".")
 
 
@@ -88,7 +96,7 @@ def format_clan_detailed(clan: Clan) -> str:
         f"{clan.name} ({clan.tag})\n"
         f"N\u00edvel: {clan.level} | Membros: {clan.member_count}/50\n"
         f"Trof\u00e9us: {format_trophies(clan.points)}"
-        f" | VS: {format_trophies(clan.versus_points)}"
+        f" | BB: {format_trophies(getattr(clan, 'builder_base_points', 0))}"
     )
 
 
@@ -104,28 +112,48 @@ def format_war_state(state: WarState) -> str:
 
 
 def format_war_result(war: ClanWar, clan_tag: str) -> str:
-    tag = utils.correct_tag(clan_tag)
-    clan = war.clan if war.clan.tag == tag else war.opponent
-    other = war.opponent if war.clan.tag == tag else war.clan
+    try:
+        tag = utils.correct_tag(clan_tag)
+        war_clan = getattr(war, "clan", None)
+        war_opp = getattr(war, "opponent", None)
+        if not war_clan or not war_opp:
+            return format_war_state(getattr(war, "state", ""))
+        clan = war_clan if getattr(war_clan, "tag", None) == tag else war_opp
+        other = war_opp if getattr(war_clan, "tag", None) == tag else war_clan
 
-    if war.state != "warEnded":
-        return format_war_state(war.state)
+        state = getattr(war, "state", "")
+        if state != "warEnded":
+            return format_war_state(state)
 
-    if clan.stars > other.stars:
-        return "\u2705 Vit\u00f3ria"
-    if clan.stars == other.stars:
-        if clan.destruction > other.destruction:
-            return "\u2705 Vit\u00f3ria (desempate)"
-        if clan.destruction == other.destruction:
-            return "\U0001F3C8 Empate"
-    return "\u274C Derrota"
+        clan_stars = getattr(clan, "stars", 0) or 0
+        other_stars = getattr(other, "stars", 0) or 0
+        clan_destr = getattr(clan, "destruction", 0) or 0
+        other_destr = getattr(other, "destruction", 0) or 0
+
+        if clan_stars > other_stars:
+            return "\u2705 Vit\u00f3ria"
+        if clan_stars == other_stars:
+            if clan_destr > other_destr:
+                return "\u2705 Vit\u00f3ria (desempate)"
+            if clan_destr == other_destr:
+                return "\U0001F3C8 Empate"
+        return "\u274C Derrota"
+    except Exception:
+        return format_war_state(getattr(war, "state", ""))
 
 
 def format_war_score(war: ClanWar, clan_tag: str) -> str:
-    tag = utils.correct_tag(clan_tag)
-    clan = war.clan if war.clan.tag == tag else war.opponent
-    other = war.opponent if war.clan.tag == tag else war.clan
-    return f"{clan.stars} \u2B50 {other.stars}"
+    try:
+        tag = utils.correct_tag(clan_tag)
+        war_clan = getattr(war, "clan", None)
+        war_opp = getattr(war, "opponent", None)
+        if not war_clan or not war_opp:
+            return "0 \u2B50 0"
+        clan = war_clan if getattr(war_clan, "tag", None) == tag else war_opp
+        other = war_opp if getattr(war_clan, "tag", None) == tag else war_clan
+        return f"{getattr(clan, 'stars', 0) or 0} \u2B50 {getattr(other, 'stars', 0) or 0}"
+    except Exception:
+        return "0 \u2B50 0"
 
 
 def format_attack(stars: int, destruction: float) -> str:

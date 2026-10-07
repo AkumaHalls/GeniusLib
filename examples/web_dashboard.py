@@ -5,13 +5,12 @@ Run: python web_dashboard.py
 Visit: http://localhost:8080
 """
 
-import asyncio
 import os
 
 from aiohttp import web
 
 from geniuslib import Client
-from geniuslib.formatters import format_war_score, format_war_result, format_clan_detailed
+from geniuslib.formatters import format_war_result, format_war_score
 from geniuslib.raid_analytics import raid_summary
 
 COC_EMAIL = os.environ.get("COC_EMAIL", "seu_email@exemplo.com")
@@ -68,10 +67,13 @@ async def index(request: web.Request) -> web.Response:
 
     <div class="clan-info">
         <span class="stat"><span class="stat-value">{clan.war_wins}W</span> <span class="stat-label">Wins</span></span>
-        <span class="stat"><span class="stat-value">{clan.war_losses}L</span> <span class="stat-label">Losses</span></span>
+        <span class="stat"><span class="stat-value">{clan.war_losses}L</span>
+            <span class="stat-label">Losses</span></span>
         <span class="stat"><span class="stat-value">{clan.war_ties}T</span> <span class="stat-label">Ties</span></span>
-        <span class="stat"><span class="stat-value">{clan.clan_points:,}</span> <span class="stat-label">Points</span></span>
-        <span class="stat"><span class="stat-value">{clan.clan_capital_points:,}</span> <span class="stat-label">Capital</span></span>
+        <span class="stat"><span class="stat-value">{clan.clan_points:,}</span>
+            <span class="stat-label">Points</span></span>
+        <span class="stat"><span class="stat-value">{clan.clan_capital_points:,}</span>
+            <span class="stat-label">Capital</span></span>
     </div>
 
     <h2>Current War</h2>
@@ -97,12 +99,15 @@ async def index(request: web.Request) -> web.Response:
     <div class="raid-card">
         <div>
             <strong>{raid.state}</strong>
-            <br><small>{raid.start_time.strftime('%b %d')} — {raid.end_time.strftime('%b %d, %Y')}</small>
+            <br><small>{raid.start_time.strftime("%b %d")} — {raid.end_time.strftime("%b %d, %Y")}</small>
         </div>
         <div>
-            <span class="stat"><span class="stat-value">{s['offensive']['total_loot']:,}</span> <span class="stat-label">Loot</span></span>
-            <span class="stat"><span class="stat-value">{s['offensive']['total_attacks']}</span> <span class="stat-label">Attacks</span></span>
-            <span class="stat"><span class="stat-value">{s['missed_attacks']}</span> <span class="stat-label">Missed</span></span>
+            <span class="stat"><span class="stat-value">{s["offensive"]["total_loot"]:,}</span>
+                <span class="stat-label">Loot</span></span>
+            <span class="stat"><span class="stat-value">{s["offensive"]["total_attacks"]}</span>
+                <span class="stat-label">Attacks</span></span>
+            <span class="stat"><span class="stat-value">{s["missed_attacks"]}</span>
+                <span class="stat-label">Missed</span></span>
         </div>
     </div>"""
     else:

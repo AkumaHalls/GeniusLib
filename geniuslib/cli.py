@@ -13,18 +13,27 @@ Usage::
 
 import argparse
 import asyncio
+import contextlib
+import csv
+import getpass
 import json
+import os
 import sys
+import warnings
 from typing import Optional
 
 from . import Client
 from .formatters import (
-    format_player_brief, format_clan_brief, format_clan_detailed,
-    format_war_state, format_war_result, format_war_score,
-    format_raid_brief, format_member_brief,
+    format_clan_brief,
+    format_clan_detailed,
+    format_member_brief,
+    format_player_brief,
+    format_war_result,
+    format_war_score,
+    format_war_state,
 )
-from .war_analytics import get_war_result, count_missed_attacks
 from .raid_analytics import raid_summary
+from .war_analytics import count_missed_attacks
 
 
 def _parse_args(argv: Optional[list] = None) -> argparse.Namespace:
@@ -33,7 +42,10 @@ def _parse_args(argv: Optional[list] = None) -> argparse.Namespace:
         description="GeniusLib - Clash of Clans API CLI",
     )
     parser.add_argument("--email", help="Developer site email")
-    parser.add_argument("--password", help="Developer site password")
+    parser.add_argument(
+        "--password",
+        help="Developer site password (deprecated: prefer the GENIUSLIB_PASSWORD env var)",
+    )
     parser.add_argument("--token", help="API token (alternative to email/password)")
 
     sub = parser.add_subparsers(dest="command")
@@ -75,15 +87,62 @@ def _print_json(data) -> None:
     print(json.dumps(data, indent=2, default=str))
 
 
+def _resolve_password(args) -> Optional[str]:
+    """Resolve the developer-site password: flag > GENIUSLIB_PASSWORD > prompt."""
+    if args.password is not None:
+        warnings.warn(
+            "Passing --password on the command line is deprecated and will be removed; "
+            "use the GENIUSLIB_PASSWORD environment variable instead.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        return args.password
+
+    env_password = os.environ.get("GENIUSLIB_PASSWORD")
+    if env_password:
+        return env_password
+
+    if args.email:
+        try:
+            return getpass.getpass("Developer site password: ")
+        except (EOFError, KeyboardInterrupt):
+            print("\nPassword entry cancelled", file=sys.stderr)
+            sys.exit(1)
+
+    return None
+
+
+def _truncate_description(description: Optional[str]) -> str:
+    if not description:
+        return "N/A"
+    if len(description) > 100:
+        return description[:100] + "..."
+    return description
+
+
 async def _login(args) -> Client:
     client = Client()
-    if args.token:
-        await client.login_with_tokens(args.token)
-    elif args.email and args.password:
-        await client.login(args.email, args.password)
-    else:
-        print("Use --email/--password or --token to authenticate", file=sys.stderr)
-        sys.exit(1)
+    try:
+        if args.token:
+            await client.login_with_tokens(args.token)
+        elif args.email:
+            password = _resolve_password(args)
+            if password:
+                await client.login(args.email, password)
+            else:
+                print(
+                    "Set GENIUSLIB_PASSWORD (or pass --password) together with --email, "
+                    "or use --token to authenticate",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+        else:
+            print("Use --email/--password or --token to authenticate", file=sys.stderr)
+            sys.exit(1)
+    except BaseException:
+        with contextlib.suppress(Exception):
+            await client.close()
+        raise
     return client
 
 
@@ -102,7 +161,7 @@ async def _cmd_player(client: Client, args) -> None:
 async def _cmd_clan(client: Client, args) -> None:
     clan = await client.get_clan(args.tag)
     print(format_clan_detailed(clan))
-    print(f"  Descrição: {clan.description[:100] if clan.description else 'N/A'}...")
+    print(f"  Descrição: {_truncate_description(clan.description)}")
     print(f"  Guerra: {format_war_state(clan.war_state)}")
     print(f"  Liga: {clan.war_league.name if clan.war_league else 'N/A'}")
 
@@ -166,15 +225,20 @@ async def _cmd_export(client: Client, args) -> None:
     if args.format == "json":
         print(json.dumps(raw, indent=2, default=str))
     else:
+        writer = csv.writer(sys.stdout, lineterminator="\n")
         if args.type == "player":
-            print("tag,name,town_hall,trophies,exp_level,clan")
+            writer.writerow(["tag", "name", "town_hall", "trophies", "exp_level", "clan"])
             clan_name = (raw.get("clan") or {}).get("name", "")
-            print(f"{raw.get('tag')},{raw.get('name')},{raw.get('townHallLevel')},"
-                  f"{raw.get('trophies')},{raw.get('expLevel')},{clan_name}")
+            writer.writerow([
+                raw.get("tag"), raw.get("name"), raw.get("townHallLevel"),
+                raw.get("trophies"), raw.get("expLevel"), clan_name,
+            ])
         else:
-            print("tag,name,level,members,points")
-            print(f"{raw.get('tag')},{raw.get('name')},{raw.get('clanLevel')},"
-                  f"{raw.get('members')},{raw.get('clanPoints')}")
+            writer.writerow(["tag", "name", "level", "members", "points"])
+            writer.writerow([
+                raw.get("tag"), raw.get("name"), raw.get("clanLevel"),
+                raw.get("members"), raw.get("clanPoints"),
+            ])
 
 
 async def _cmd_compare(client: Client, args) -> None:

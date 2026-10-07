@@ -3,7 +3,7 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 import typing
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from . import BasePlayer
 from .miscmodels import Badge, Timestamp, try_enum
@@ -35,15 +35,17 @@ class RaidMember(BasePlayer):
         The raid log entry this member is in
     """
 
-    __slots__ = ("tag",
-                 "name",
-                 "attack_count",
-                 "attack_limit",
-                 "bonus_attack_limit",
-                 "capital_resources_looted",
-                 "raid_log_entry",
-                 "_cs_attacks",
-                 "_client")
+    __slots__ = (
+        "tag",
+        "name",
+        "attack_count",
+        "attack_limit",
+        "bonus_attack_limit",
+        "capital_resources_looted",
+        "raid_log_entry",
+        "_cs_attacks",
+        "_client",
+    )
 
     def __init__(self, *, data, client, raid_log_entry):
         super().__init__(data=data, client=client)
@@ -52,17 +54,20 @@ class RaidMember(BasePlayer):
         self._from_data(data)
 
     def __repr__(self):
-        attrs = [
-            ("tag", self.tag),
-            ("raid_log_entry", repr(self.raid_log_entry)),
-            ("attack_count", self.attack_count)
-        ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        attrs = [("tag", self.tag), ("raid_log_entry", repr(self.raid_log_entry)), ("attack_count", self.attack_count)]
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
-        return (isinstance(other, RaidMember)
-                and self.tag == other.tag
-                and self.raid_log_entry == other.raid_log_entry)
+        return isinstance(other, RaidMember) and self.tag == other.tag and self.raid_log_entry == other.raid_log_entry
+
+    def __hash__(self):
+        entry = self.raid_log_entry
+        clan_tag = entry.clan_tag if entry is not None else None
+        start = getattr(entry.start_time, "raw_time", None) if entry is not None else None
+        return hash((self.tag, clan_tag, start))
 
     def _from_data(self, data):
         data_get = data.get
@@ -79,9 +84,13 @@ class RaidMember(BasePlayer):
         """List[:class:`RaidAttack`]: The member's attacks in this raid log entry.
         Can be empty due to missing parts in the API response.
         """
-        return list(attack for attack_raid in self.raid_log_entry.attack_log
-                    for district in attack_raid.districts for attack in district.attacks
-                    if attack and attack.attacker_tag == self.tag)
+        return list(
+            attack
+            for attack_raid in self.raid_log_entry.attack_log
+            for district in attack_raid.districts
+            for attack in district.attacks
+            if attack and attack.attacker_tag == self.tag
+        )
 
 
 class RaidAttack:
@@ -105,17 +114,18 @@ class RaidAttack:
         :class:`int` - The raid attacks stars
     """
 
-    __slots__ = ("raid_log_entry",
-                 "raid_clan",
-                 "district",
-                 "raid_member",
-                 "attacker_tag",
-                 "attacker_name",
-                 "destruction",
-                 "stars",
-                 "_client",
-                 "_raw_data",
-                 )
+    __slots__ = (
+        "raid_log_entry",
+        "raid_clan",
+        "district",
+        "raid_member",
+        "attacker_tag",
+        "attacker_name",
+        "destruction",
+        "stars",
+        "_client",
+        "_raw_data",
+    )
 
     def __repr__(self):
         attrs = [
@@ -126,15 +136,23 @@ class RaidAttack:
             ("destruction", self.destruction),
             ("stars", self.stars),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
-        return (isinstance(other, RaidAttack)
-                and self.attacker_tag == other.attacker_tag
-                and self.destruction == other.destruction
-                and self.raid_clan == other.raid_clan
-                and self.district == other.district
-                and self.stars == other.stars)
+        return (
+            isinstance(other, RaidAttack)
+            and self.attacker_tag == other.attacker_tag
+            and self.destruction == other.destruction
+            and self.raid_clan == other.raid_clan
+            and self.district == other.district
+            and self.stars == other.stars
+        )
+
+    def __hash__(self):
+        return hash(self.attacker_tag)
 
     def __init__(self, data, client, raid_log_entry, raid_clan, district):
         self.raid_log_entry = raid_log_entry
@@ -182,52 +200,68 @@ class RaidDistrict:
     """
 
     def __eq__(self, other):
-        return (isinstance(other, RaidDistrict)
-                and self.id == other.id
-                and self.raid_clan == other.raid_clan)
+        return isinstance(other, RaidDistrict) and self.id == other.id and self.raid_clan == other.raid_clan
 
-    __slots__ = ("id",
-                 "name",
-                 "hall_level",
-                 "stars",
-                 "destruction",
-                 "attack_count",
-                 "looted",
-                 "attacks",
-                 "raid_log_entry",
-                 "raid_clan",
-                 "_client",
-                 "_raw_data")
+    def __hash__(self):
+        clan = self.raid_clan
+        return hash((self.id, clan.tag if clan is not None else None, clan.index if clan is not None else None))
+
+    __slots__ = (
+        "id",
+        "name",
+        "hall_level",
+        "stars",
+        "destruction",
+        "attack_count",
+        "looted",
+        "attacks",
+        "raid_log_entry",
+        "raid_clan",
+        "_client",
+        "_raw_data",
+    )
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        attrs = [("id", self.id),
-                 ("raid_log_entry", repr(self.raid_log_entry)),
-                 ("raid_clan", repr(self.raid_clan)),
-                 ("hall_level", self.hall_level),
-                 ("stars", self.stars),
-                 ("destruction", self.destruction)]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        attrs = [
+            ("id", self.id),
+            ("raid_log_entry", repr(self.raid_log_entry)),
+            ("raid_clan", repr(self.raid_clan)),
+            ("hall_level", self.hall_level),
+            ("stars", self.stars),
+            ("destruction", self.destruction),
+        ]
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __init__(self, *, data, client, raid_log_entry, raid_clan):
         self.id: int = data.get("id")
         self.name: str = data.get("name")
         self.hall_level: int = data.get("districtHallLevel")
-        self.stars: int = data.get("stars")
-        self.destruction: float = data.get("destructionPercent")
-        self.attack_count: int = data.get("attackCount")
-        self.looted: int = data.get("totalLooted")
+        self.stars: int = data.get("stars", 0)
+        self.destruction: float = data.get("destructionPercent", 0.0)
+        self.attack_count: int = data.get("attackCount", 0)
+        looted_val = data.get("totalLooted", 0)
+        self.looted: int = looted_val if looted_val is not None else 0
         self.raid_log_entry = raid_log_entry  # type: RaidLogEntry
         self.raid_clan = raid_clan  # type: RaidClan
         self._raw_data = data if client and client.raw_attribute else None
         self._client = client
         if data.get("attacks", None):
-            self.attacks: List[RaidAttack] = [RaidAttack(data=adata, client=client,
-                                                         raid_log_entry=self.raid_log_entry,
-                                                         raid_clan=self.raid_clan, district=self)
-                                              for adata in data.get("attacks")]
+            self.attacks: List[RaidAttack] = [
+                RaidAttack(
+                    data=adata,
+                    client=client,
+                    raid_log_entry=self.raid_log_entry,
+                    raid_clan=self.raid_clan,
+                    district=self,
+                )
+                for adata in data.get("attacks")
+            ]
         else:
             self.attacks = []
         if self.destruction != 0 and self.stars == 0:  # attempt to fix an api bug responding with the wrong star count
@@ -237,27 +271,27 @@ class RaidDistrict:
 class RaidClan:
     """Represents the clan object returned by clan raid seasons.
 
-        Attributes
-        ----------
-        tag: :class:`str`
-            The clan's tag
-        name: :class:`str`
-            The clan's name
-        badge: :class:`Badge`
-            The clan's badge
-        level: :class:`int`
-            The clan's level.
-        attack_count: :class:`int`
-            The number of attacks in the raid.
-        district_count: :class:`int`
-            The number of districts in the raid.
-        destroyed_district_count: :class:`int`
-            The number of destroyed districts in the raid.
-        index:
-            :class:`int` - The index/order of the raid clan in the raid weekend
-        raid_log_entry:
-            :class:`RaidLogEntry` - The raid log entry this attack belongs to
-        """
+    Attributes
+    ----------
+    tag: :class:`str`
+        The clan's tag
+    name: :class:`str`
+        The clan's name
+    badge: :class:`Badge`
+        The clan's badge
+    level: :class:`int`
+        The clan's level.
+    attack_count: :class:`int`
+        The number of attacks in the raid.
+    district_count: :class:`int`
+        The number of districts in the raid.
+    destroyed_district_count: :class:`int`
+        The number of destroyed districts in the raid.
+    index:
+        :class:`int` - The index/order of the raid clan in the raid weekend
+    raid_log_entry:
+        :class:`RaidLogEntry` - The raid log entry this attack belongs to
+    """
 
     __slots__ = (
         "tag",
@@ -277,35 +311,42 @@ class RaidClan:
         "_cs_raid_districts",
         "_cs_looted",
         "_iter_raid_districts",
-        "_raw_data"
+        "_raw_data",
     )
 
     def __init__(self, *, data, client, raid_log_entry, index=0, **_):
         self._client = client
         self._raw_data = data if client and client.raw_attribute else None
         self._response_retry = data.get("_response_retry")
-        self.tag = data.get("attacker", data.get("defender")).get("tag")
-        self.name = data.get("attacker", data.get("defender")).get("name")
-        self.badge = try_enum(Badge, data=data.get("attacker", data.get("defender")).get("badgeUrls"),
-                              client=self._client)
-        self.level = data.get("attacker", data.get("defender")).get("level")
+        clan_data = (
+            data.get("attacker") if data.get("attacker") else data.get("defender") if data.get("defender") else {}
+        )
+        if not clan_data:
+            clan_data = {}
+        self.tag = clan_data.get("tag") if clan_data else None
+        self.name = clan_data.get("name") if clan_data else None
+        self.badge = try_enum(Badge, data=clan_data.get("badgeUrls") if clan_data else None, client=self._client)
+        self.level = clan_data.get("level") if clan_data else None
         self.raid_log_entry = raid_log_entry
         self.index = index
         self._from_data(data)
 
     def __eq__(self, other):
-        return (isinstance(other, RaidClan)
-                and self.tag == other.tag
-                and self.raid_log_entry.start_time == other.raid_log_entry.start_time
-                and self.index == other.index)
+        if not isinstance(other, RaidClan):
+            return False
+        self_start = getattr(self.raid_log_entry, "start_time", None) if self.raid_log_entry else None
+        other_start = getattr(other.raid_log_entry, "start_time", None) if other.raid_log_entry else None
+        return self.tag == other.tag and self_start == other_start and self.index == other.index
+
+    def __hash__(self):
+        return hash((self.tag, self.index))
 
     def __repr__(self):
-        attrs = [
-            ("tag", self.tag),
-            ("name", self.name),
-            ("raid_log_entry", repr(self.raid_log_entry))
-        ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        attrs = [("tag", self.tag), ("name", self.name), ("raid_log_entry", repr(self.raid_log_entry))]
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def _from_data(self, data):
         data_get = data.get
@@ -315,9 +356,10 @@ class RaidClan:
         self.destroyed_district_count: int = data_get("districtsDestroyed")
 
         if data_get("districts"):
-            self._iter_raid_districts = (RaidDistrict(data=data, client=self._client,
-                                                      raid_log_entry=self.raid_log_entry, raid_clan=self) for
-                                         data in data_get("districts"))
+            self._iter_raid_districts = (
+                RaidDistrict(data=data, client=self._client, raid_log_entry=self.raid_log_entry, raid_clan=self)
+                for data in data_get("districts")
+            )
         else:
             self._iter_raid_districts = ()
 
@@ -370,37 +412,38 @@ class RaidLogEntry:
         :class:`int`: The amount of defensive reward
     """
 
-    __slots__ = ("clan_tag",
-                 "state",
-                 "start_time",
-                 "end_time",
-                 "total_loot",
-                 "completed_raid_count",
-                 "attack_count",
-                 "destroyed_district_count",
-                 "offensive_reward",
-                 "defensive_reward",
-                 "_raw_data",
-                 "_cs_attack_log",
-                 "_cs_defense_log",
-                 "_cs_members",
-                 "_cs_total_defensive_loot",
-                 "_cs_defense_attack_count",
-                 "_cs_defensive_destroyed_district_count",
-                 "_iter_members",
-                 "_iter_attack_log",
-                 "_iter_defense_log",
-                 "_members",
-                 "_attack_log",
-                 "_defense_log",
-                 "_client",
-                 "_response_retry"
-                 )
+    __slots__ = (
+        "clan_tag",
+        "state",
+        "start_time",
+        "end_time",
+        "total_loot",
+        "completed_raid_count",
+        "attack_count",
+        "destroyed_district_count",
+        "offensive_reward",
+        "defensive_reward",
+        "_raw_data",
+        "_cs_attack_log",
+        "_cs_defense_log",
+        "_cs_members",
+        "_cs_total_defensive_loot",
+        "_cs_defense_attack_count",
+        "_cs_defensive_destroyed_district_count",
+        "_iter_members",
+        "_iter_attack_log",
+        "_iter_defense_log",
+        "_members",
+        "_attack_log",
+        "_defense_log",
+        "_client",
+        "_response_retry",
+    )
 
     def __init__(self, *, data, client, **kwargs):
         self._client = client
-        self.clan_tag = kwargs['clan_tag'] if "clan_tag" in kwargs else ""
-        self._response_retry = kwargs['response_retry'] if "response_retry" in kwargs else 0
+        self.clan_tag = kwargs["clan_tag"] if "clan_tag" in kwargs else ""
+        self._response_retry = kwargs["response_retry"] if "response_retry" in kwargs else 0
         self._raw_data = data if client and client.raw_attribute else None
         self._from_data(data)
         self._members = {}
@@ -412,12 +455,18 @@ class RaidLogEntry:
             ("state", self.state),
             ("start_time", self.start_time),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
-        return (isinstance(other, RaidLogEntry)
-                and self.start_time == other.start_time
-                and self.clan_tag == other.clan_tag)
+        return (
+            isinstance(other, RaidLogEntry) and self.start_time == other.start_time and self.clan_tag == other.clan_tag
+        )
+
+    def __hash__(self):
+        return hash((self.clan_tag, getattr(self.start_time, "raw_time", None)))
 
     def _from_data(self, data: dict) -> None:
         data_get = data.get
@@ -432,33 +481,35 @@ class RaidLogEntry:
         self.offensive_reward: int = data_get("offensiveReward")
         self.defensive_reward: int = data_get("defensiveReward")
 
-        self._iter_attack_log = (RaidClan(data=adata, raid_log_entry=self, client=self._client, index=c)
-                                 for c, adata in enumerate(data_get("attackLog", [])))
+        self._iter_attack_log = (
+            RaidClan(data=adata, raid_log_entry=self, client=self._client, index=c)
+            for c, adata in enumerate(data_get("attackLog", []))
+        )
 
-        self._iter_defense_log = (RaidClan(data=adata, raid_log_entry=self, client=self._client, index=c)
-                                  for c, adata in enumerate(data_get("defenseLog", [])))
+        self._iter_defense_log = (
+            RaidClan(data=adata, raid_log_entry=self, client=self._client, index=c)
+            for c, adata in enumerate(data_get("defenseLog", []))
+        )
 
-        self._iter_members = (RaidMember(data=adata, raid_log_entry=self, client=self._client)
-                              for adata in data_get("members", []))
+        self._iter_members = (
+            RaidMember(data=adata, raid_log_entry=self, client=self._client) for adata in data_get("members", [])
+        )
 
     @cached_property("_cs_members")
     def members(self) -> typing.List[RaidMember]:
-        """List[:class:`RaidMember`]: A list of members that are in the raid.
-        """
+        """List[:class:`RaidMember`]: A list of members that are in the raid."""
         dict_members = self._members = {m.tag: m for m in self._iter_members}
         return list(dict_members.values())
 
     @cached_property("_cs_attack_log")
     def attack_log(self) -> typing.List[RaidClan]:
-        """List[:class:`RaidClan`]: A list of raid clans that are attacked in the raid season.
-        """
+        """List[:class:`RaidClan`]: A list of raid clans that are attacked in the raid season."""
         list_attack_log = self._attack_log = [m for m in self._iter_attack_log]
         return list_attack_log
 
     @cached_property("_cs_defense_log")
     def defense_log(self) -> typing.List[RaidClan]:
-        """List[:class:`RaidClan`]: A list of raid clans which represents all the defensive raids of a season.
-        """
+        """List[:class:`RaidClan`]: A list of raid clans which represents all the defensive raids of a season."""
         list_defense_log = self._defense_log = [m for m in self._iter_defense_log]
         return list_defense_log
 

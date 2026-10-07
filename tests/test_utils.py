@@ -1,7 +1,8 @@
 """Tests for the utils module."""
 
+
 import pytest
-from datetime import datetime, timezone
+
 from geniuslib import utils
 
 

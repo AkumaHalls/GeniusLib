@@ -3,10 +3,10 @@
 # (c) 2026 AkumaHalls / ClashGenius
 
 import asyncio
-
+import inspect
 from collections.abc import Iterable
 
-from .errors import Maintenance, NotFound, Forbidden
+from .errors import Forbidden, Maintenance, NotFound
 
 
 class _AsyncIterator:
@@ -72,8 +72,42 @@ class TaggedIterator(_AsyncIterator):
         except (NotFound, Forbidden, Maintenance):
             return None
 
+    async def _reset_keys(self) -> bool:
+        """Best-effort key rotation after a :class:`KeyError`.
+
+        Uses ``client.reset_keys()`` when the client provides it (synchronous or
+        async), otherwise falls back to ``client.http.initialise_keys()`` only when
+        the HTTP layer has credentials to log in with. Returns ``True`` only if keys
+        are actually available afterwards, so callers can re-raise honestly.
+        """
+        reset = getattr(self.client, "reset_keys", None)
+        if callable(reset):
+            try:
+                result = reset()
+                if inspect.isawaitable(result):
+                    result = await result
+                return True if result is None else bool(result)
+            except Exception:
+                return False
+
+        http = getattr(self.client, "http", None)
+        if http is None or not getattr(http, "email", None) or not getattr(http, "password", None):
+            return False
+
+        initialise = getattr(http, "initialise_keys", None)
+        if not callable(initialise):
+            return False
+
+        try:
+            await initialise()
+        except Exception:
+            return False
+
+        return bool(getattr(http, "_keys", None))
+
     async def _fill_queue(self):
-        tasks = [self.client.loop.create_task(self._run_method(n)) for n in self.tags]
+        loop = asyncio.get_running_loop()
+        tasks = [loop.create_task(self._run_method(n)) for n in self.tags]
 
         results = await asyncio.gather(*tasks)
 
@@ -84,11 +118,13 @@ class TaggedIterator(_AsyncIterator):
     async def _next(self):
         """Retrieves the next item from the queue. If empty, fill the queue first."""
         if self.queue_empty:
-            try:
-                await self._fill_queue()
-            except KeyError:
-                await self.client.reset_keys()
-                return await self._next()
+            for attempt in range(2):
+                try:
+                    await self._fill_queue()
+                    break
+                except KeyError:
+                    if attempt or not await self._reset_keys():
+                        raise
 
             self.queue_empty = False
 

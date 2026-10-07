@@ -1,7 +1,8 @@
 
 from .abc import LeveledUnit
-from .enums import Resource, VillageType, ProductionBuildingType
-from .miscmodels import TimeDelta, TID
+from .enums import ProductionBuildingType, Resource, VillageType
+from .miscmodels import TID, TimeDelta
+
 
 class Spell(LeveledUnit):
     """Represents a Spell object as returned by the API, optionally filled with game data.
@@ -104,7 +105,7 @@ class Spell(LeveledUnit):
         if not self._static_data:
             return
 
-        levels = self._static_data["levels"]
+        levels = self._static_data.get("levels") or []
         level_idx = self._level - 1
         if level_idx < 0 or level_idx >= len(levels):
             return

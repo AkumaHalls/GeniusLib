@@ -30,16 +30,18 @@ class WarAttack:
         :class:`int` - Duration of attack in seconds
     """
 
-    __slots__ = ("war",
-                 "member",
-                 "stars",
-                 "destruction",
-                 "order",
-                 "attacker_tag",
-                 "defender_tag",
-                 "duration",
-                 "_raw_data",
-                 "_client")
+    __slots__ = (
+        "war",
+        "member",
+        "stars",
+        "destruction",
+        "order",
+        "attacker_tag",
+        "defender_tag",
+        "duration",
+        "_raw_data",
+        "_client",
+    )
 
     def __repr__(self):
         attrs = [
@@ -51,7 +53,10 @@ class WarAttack:
             ("order", self.order),
             ("duration", self.duration),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __hash__(self):
         return hash(self.attacker_tag) << self.order
@@ -78,12 +83,12 @@ class WarAttack:
         self._from_data(data)
 
     def _from_data(self, data: dict) -> None:
-        self.stars: int = data["stars"]
-        self.destruction: float = data["destructionPercentage"]
-        self.order: int = data["order"]
-        self.attacker_tag: str = data["attackerTag"]
-        self.defender_tag: str = data["defenderTag"]
-        self.duration: float = data["duration"]
+        self.stars: int = data.get("stars", 0)
+        self.destruction: float = data.get("destructionPercentage", 0.0)
+        self.order: int = data.get("order", 0)
+        self.attacker_tag: str = data.get("attackerTag")
+        self.defender_tag: str = data.get("defenderTag")
+        self.duration: float = data.get("duration", 0)
 
     @property
     def attacker(self) -> "ClanWarMember":

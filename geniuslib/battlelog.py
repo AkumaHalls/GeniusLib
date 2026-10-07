@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
 from .utils import from_timestamp
 
@@ -31,14 +31,20 @@ class BattleLogResource:
 
     def _from_data(self, data: dict) -> None:
         self.name: str = data.get("name")
-        self.amount: int = data.get("amount")
+        self.amount: int = data.get("amount", 0)
 
     def __repr__(self):
         attrs = [("name", self.name), ("amount", self.amount)]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.name == other.name and self.amount == other.amount
+
+    def __hash__(self):
+        return hash((self.name, self.amount))
 
 
 class BattleLogEntry:
@@ -118,7 +124,10 @@ class BattleLogEntry:
             ("destruction_percentage", self.destruction_percentage),
             ("opponent", self.opponent_player_tag),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
@@ -128,6 +137,9 @@ class BattleLogEntry:
             and self.timestamp == other.timestamp
             and self.attack == other.attack
         )
+
+    def __hash__(self):
+        return hash((self.opponent_player_tag, self.timestamp, self.attack))
 
     @property
     def is_attack(self) -> bool:
@@ -212,17 +224,17 @@ class LeagueHistoryEntry:
 
     def _from_data(self, data: dict) -> None:
         data_get = data.get
-        self.league_season_id: int = data_get("leagueSeasonId")
-        self.league_trophies: int = data_get("leagueTrophies")
-        self.league_tier_id: int = data_get("leagueTierId")
-        self.placement: int = data_get("placement")
-        self.attack_wins: int = data_get("attackWins")
-        self.attack_losses: int = data_get("attackLosses")
-        self.attack_stars: int = data_get("attackStars")
-        self.defense_wins: int = data_get("defenseWins")
-        self.defense_losses: int = data_get("defenseLosses")
-        self.defense_stars: int = data_get("defenseStars")
-        self.max_battles: int = data_get("maxBattles")
+        self.league_season_id: int = data_get("leagueSeasonId") if data_get("leagueSeasonId") is not None else 0
+        self.league_trophies: int = data_get("leagueTrophies", 0) or 0
+        self.league_tier_id: int = data_get("leagueTierId", 0) or 0
+        self.placement: int = data_get("placement", 0) or 0
+        self.attack_wins: int = data_get("attackWins", 0) or 0
+        self.attack_losses: int = data_get("attackLosses", 0) or 0
+        self.attack_stars: int = data_get("attackStars", 0) or 0
+        self.defense_wins: int = data_get("defenseWins", 0) or 0
+        self.defense_losses: int = data_get("defenseLosses", 0) or 0
+        self.defense_stars: int = data_get("defenseStars", 0) or 0
+        self.max_battles: int = data_get("maxBattles", 0) or 0
 
     def __repr__(self):
         attrs = [
@@ -231,10 +243,18 @@ class LeagueHistoryEntry:
             ("tier", self.league_tier_id),
             ("placement", self.placement),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.league_season_id == other.league_season_id
+
+    def __hash__(self):
+        if self.league_season_id is not None:
+            return hash(self.league_season_id)
+        return object.__hash__(self)
 
     @property
     def total_attacks(self) -> int:
@@ -310,7 +330,10 @@ class LeagueTierGroupBattleLogEntry:
             ("stars", self.stars),
             ("trophies", self.trophies),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
 
 class LeagueTierGroupMember:
@@ -359,11 +382,11 @@ class LeagueTierGroupMember:
         self.player_name: str = data_get("playerName")
         self.clan_tag: str = data_get("clanTag")
         self.clan_name: str = data_get("clanName")
-        self.league_trophies: int = data_get("leagueTrophies")
-        self.attack_win_count: int = data_get("attackWinCount")
-        self.attack_lose_count: int = data_get("attackLoseCount")
-        self.defense_win_count: int = data_get("defenseWinCount")
-        self.defense_lose_count: int = data_get("defenseLoseCount")
+        self.league_trophies: int = data_get("leagueTrophies", 0)
+        self.attack_win_count: int = data_get("attackWinCount", 0)
+        self.attack_lose_count: int = data_get("attackLoseCount", 0)
+        self.defense_win_count: int = data_get("defenseWinCount", 0)
+        self.defense_lose_count: int = data_get("defenseLoseCount", 0)
 
     def __repr__(self):
         attrs = [
@@ -371,7 +394,10 @@ class LeagueTierGroupMember:
             ("clan", self.clan_name),
             ("trophies", self.league_trophies),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     @property
     def total_attacks(self) -> int:
@@ -437,7 +463,10 @@ class LeagueTierGroup:
             ("attacks", len(self.attack_logs)),
             ("defenses", len(self.defense_logs)),
         ]
-        return "<%s %s>" % (self.__class__.__name__, " ".join("%s=%r" % t for t in attrs),)
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join("%s=%r" % t for t in attrs),
+        )
 
     def get_member(self, tag: str) -> Optional[LeagueTierGroupMember]:
         """Find a member by their player tag.

@@ -1,7 +1,7 @@
 """Tests for the war_analytics module."""
 
-import pytest
 from unittest.mock import MagicMock
+
 from geniuslib import war_analytics
 
 

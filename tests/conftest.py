@@ -1,6 +1,7 @@
 """Shared fixtures for GeniusLib tests."""
 
-from unittest.mock import MagicMock, AsyncMock, PropertyMock
+from unittest.mock import MagicMock
+
 import pytest
 
 

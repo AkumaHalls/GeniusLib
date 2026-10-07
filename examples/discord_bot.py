@@ -17,11 +17,13 @@ from discord.ext import commands
 
 import geniuslib
 from geniuslib.formatters import (
-    format_player_brief, format_clan_detailed, format_war_result,
-    format_war_score, format_raid_brief,
+    format_clan_detailed,
+    format_player_brief,
+    format_war_result,
+    format_war_score,
 )
-from geniuslib.war_analytics import count_missed_attacks
 from geniuslib.raid_analytics import raid_summary
+from geniuslib.war_analytics import count_missed_attacks
 
 logging.basicConfig(level=logging.INFO)
 
@@ -148,8 +150,12 @@ async def cmd_compare(ctx: commands.Context, tag1: str, tag2: str):
                 title="⚔️ Comparação de Jogadores",
                 color=discord.Color.gold(),
             )
-            embed.add_field(name="", value=f"**{p1.name}**\nTH{p1.town_hall}\n{p1.trophies} 🏆\nNível {p1.exp_level}", inline=True)
-            embed.add_field(name="", value=f"**{p2.name}**\nTH{p2.town_hall}\n{p2.trophies} 🏆\nNível {p2.exp_level}", inline=True)
+            embed.add_field(
+                name="", value=f"**{p1.name}**\nTH{p1.town_hall}\n{p1.trophies} 🏆\nNível {p1.exp_level}", inline=True
+            )
+            embed.add_field(
+                name="", value=f"**{p2.name}**\nTH{p2.town_hall}\n{p2.trophies} 🏆\nNível {p2.exp_level}", inline=True
+            )
             await ctx.send(embed=embed)
         except geniuslib.NotFound:
             await ctx.send("Um dos jogadores não foi encontrado.")

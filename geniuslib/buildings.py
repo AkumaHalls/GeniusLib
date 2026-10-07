@@ -1,6 +1,6 @@
 
 from .abc import BaseDataClass, LeveledUnit, LevelManager
-from .enums import Resource, VillageType, BuildingType
+from .enums import BuildingType, Resource, VillageType
 from .miscmodels import TID, TimeDelta
 
 
@@ -25,7 +25,7 @@ class SeasonalDefenseModule(LeveledUnit):
         The time required to build/upgrade to this level.
     ability_data: :class:`dict`
         The ability data for this module.
-    
+
     Note
     ----
     To get the upgrade cost, access the `build_cost` of the next level.
@@ -58,10 +58,14 @@ class SeasonalDefenseModule(LeveledUnit):
         if not self._static_data:
             return
 
-        level_data = self._static_data["levels"][self._level - 1]
+        levels = self._static_data.get("levels") or []
+        if not levels:
+            return
 
-        self.build_cost: int = level_data.get("build_cost")
-        self.build_time: TimeDelta = TimeDelta(seconds=level_data.get("build_time"))
+        level_data = levels[self._level - 1]
+
+        self.build_cost: int = level_data.get("build_cost", 0)
+        self.build_time: TimeDelta = TimeDelta(seconds=level_data.get("build_time", 0))
         self.ability_data: dict = level_data.get("ability_data")
 
 class SeasonalDefense(BaseDataClass):
@@ -196,7 +200,7 @@ class TownhallWeapon(LeveledUnit):
         The time required to build/upgrade to this level.
     dps: :class:`int`
         The weapon's damage per second.
-    
+
     Note
     ----
     To get the upgrade cost, access the `build_cost` of the next level.
@@ -228,7 +232,11 @@ class TownhallWeapon(LeveledUnit):
         if not self._static_data:
             return
 
-        level_data = self._static_data["levels"][self._level - 1]
+        levels = self._static_data.get("levels") or []
+        if not levels:
+            return
+
+        level_data = levels[self._level - 1]
 
         self.build_cost: int = level_data["build_cost"]
         self.build_time = TimeDelta(seconds=level_data["build_time"])
@@ -249,7 +257,7 @@ class Supercharge(LevelManager):
         The hitpoints buff provided by this supercharge.
     dps_buff: :class:`int`
         The damage per second buff provided by this supercharge.
-    
+
     Note
     ----
     To get the upgrade cost, access the `build_cost` of the next level.
@@ -276,7 +284,11 @@ class Supercharge(LevelManager):
         if not self._static_data:
             return
 
-        level_data = self._static_data["levels"][self._level - 1]
+        levels = self._static_data.get("levels") or []
+        if not levels:
+            return
+
+        level_data = levels[self._level - 1]
 
         self.build_cost: int = level_data["build_cost"]
         self.build_time = TimeDelta(seconds=level_data["build_time"])
@@ -328,7 +340,7 @@ class Building(LeveledUnit):
         The merge requirements for this building.
     unlocks: List[:class:`TownhallUnlock`]
         The unlocks provided by this building (only for townhall).
-    
+
     Note
     ----
     To get the upgrade cost, access the `build_cost` of the next level.
@@ -403,7 +415,8 @@ class Building(LeveledUnit):
         if not self._static_data or not self._static_data["levels"]:
             return
 
-        level_data = self._static_data["levels"][self._level - 1]
+        levels = self._static_data["levels"]
+        level_data = levels[self._level - 1]
 
         self.weapon: TownhallWeapon | None = None
         if "weapon" in level_data:
@@ -457,7 +470,7 @@ class Trap(LeveledUnit):
         The townhall level required to build/upgrade to this level.
     damage: :class:`int`
         The damage dealt by the trap.
-    
+
     Note
     ----
     To get the upgrade cost, access the `build_cost` of the next level.
@@ -499,10 +512,11 @@ class Trap(LeveledUnit):
 
 
     def _load_level_data(self):
-        if not self._static_data or not self._static_data["levels"]:
+        levels = self._static_data.get("levels") if self._static_data else []
+        if not levels:
             return
 
-        level_data = self._static_data["levels"][self._level - 1]
+        level_data = levels[self._level - 1]
 
         self.build_cost: int = level_data["build_cost"]
         self.build_time = TimeDelta(seconds=level_data["build_time"])

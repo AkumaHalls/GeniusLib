@@ -1,6 +1,7 @@
 import asyncio
+
 from geniuslib import Client
-from geniuslib.war_analytics import get_war_result, get_best_attack, get_average_stars
+from geniuslib.war_analytics import get_average_stars, get_best_attack, get_war_result
 
 
 async def main():
@@ -27,7 +28,8 @@ async def main():
         best = get_best_attack(war)
         if best:
             lines.append(
-                f"Melhor ataque: {best.attacker.name} vs {best.defender.name} - {best.stars} estrelas ({best.destruction_percentage}%)"
+                f"Melhor ataque: {best.attacker.name} vs {best.defender.name} - "
+                f"{best.stars} estrelas ({best.destruction_percentage}%)"
             )
 
         # Media de estrelas

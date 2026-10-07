@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+include pyproject.toml
+include geniuslib/py.typed
+include geniuslib/events.pyi
+recursive-include geniuslib *.py *.pyi
+include geniuslib/static/static_data.json
+include geniuslib/static/translations.json
+recursive-exclude geniuslib/static/assets *

@@ -5,8 +5,8 @@
 import typing
 
 from .abc import BaseClan
-from .war_members import ClanWarMember, ClanWarLeagueClanMember
 from .utils import cached_property, correct_tag
+from .war_members import ClanWarLeagueClanMember, ClanWarMember
 
 if typing.TYPE_CHECKING:
     from .war_attack import WarAttack  # noqa
@@ -65,7 +65,6 @@ class WarClan(BaseClan):
         "member_cls",
         "_war",
         "_client",
-
         "_members",
         "_iter_members",
         "_cs_attacks",
@@ -76,7 +75,7 @@ class WarClan(BaseClan):
     def __init__(self, *, data, client, war, **kwargs):
         self._war = war
         self._members = {}
-        self.member_cls = kwargs.pop('member_cls', ClanWarMember)
+        self.member_cls = kwargs.pop("member_cls", ClanWarMember)
 
         super().__init__(data=data, client=client)
         self._from_data(data)
@@ -113,7 +112,8 @@ class WarClan(BaseClan):
     @property
     def is_opponent(self) -> bool:
         """:class:`bool`: Indicates whether the clan is the opponent."""
-        return self.tag == self._war.opponent.tag
+        opponent = self._war and self._war.opponent
+        return bool(opponent and self.tag == opponent.tag)
 
     @cached_property("_cs_attacks")
     def attacks(self) -> typing.List["WarAttack"]:
@@ -135,34 +135,42 @@ class WarClan(BaseClan):
 
         Equivalent to the other team's ``.attacks`` property.
         """
-        other = self._war and self._war.clan if self.is_opponent else self._war.opponent
+        other = self._war and (self._war.clan if self.is_opponent else self._war.opponent)
         return other.attacks if other else []
-    
+
     @property
     def average_attack_duration(self) -> int:
         """:class:`int`: Returns the average duration of all clan member's
         attacks this war."""
         count = len(self.attacks)
         total_duration = sum(attack.duration for attack in self.attacks)
-        return int(total_duration/count) if count > 0 else 0
+        return int(total_duration / count) if count > 0 else 0
 
     def get_member(self, tag: str) -> typing.Optional[ClanWarMember]:
         """
         Get a member of the clan for the given tag, or ``None`` if not found.
-
-        Returns
-        --------
-        ClanWarMember or None
-            The clan member who matches the tag.: Optional[:class:`ClanWarMember`]"""
-
-        tag = correct_tag(tag)
+        """
+        if tag is None:
+            return None
         if not self._members:
             _ = self.members
-
-        try:
+        # Exact match first
+        if tag in self._members:
             return self._members[tag]
-        except KeyError:
-            return None
+        # Try corrected tag
+        try:
+            tag_c = correct_tag(tag)
+            if tag_c in self._members:
+                return self._members[tag_c]
+        except Exception:
+            pass
+        # Try case-insensitive match on exact stored keys
+        tag_upper = str(tag).upper().lstrip("#")
+        for k, v in self._members.items():
+            k_upper = str(k).upper().lstrip("#")
+            if k_upper == tag_upper:
+                return v
+        return None
 
 
 class ClanWarLeagueClan(BaseClan):

@@ -1,6 +1,6 @@
 
 from .abc import BaseDataClass
-from .enums import Resource, PlayerHouseElementType, VillageType, SceneryType
+from .enums import PlayerHouseElementType, Resource, SceneryType, VillageType
 from .miscmodels import TID
 
 

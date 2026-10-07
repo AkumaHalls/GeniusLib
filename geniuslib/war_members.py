@@ -8,8 +8,7 @@ from .abc import BasePlayer
 from .war_attack import WarAttack
 
 if typing.TYPE_CHECKING:
-    from .wars import ClanWar
-    from .war_clans import WarClan
+    pass
 
 
 class ClanWarMember(BasePlayer):
@@ -60,7 +59,7 @@ class ClanWarMember(BasePlayer):
         self._attacks = []
         self.war = war  # type: ClanWar
         self.clan = clan  # type: WarClan
-        self.attack_cls = kwargs.pop('attack_cls', WarAttack)
+        self.attack_cls = kwargs.pop("attack_cls", WarAttack)
         self._from_data(data)
 
     def _from_data(self, data):
@@ -84,18 +83,21 @@ class ClanWarMember(BasePlayer):
         return self.war.get_attack(self._best_opponent_attacker, self.tag)
 
     @property
-    def previous_best_opponent_attack(self):
+    def previous_best_opponent_attack(self) -> typing.Optional[WarAttack]:
         """:class:`WarAttack`: Returns the previous best opponent attack on this base.
 
         This is useful for calculating the new stars and/or destruction for new attacks.
+        Returns ``None`` if the member has no defenses.
         """
+        defenses = self.defenses
+        if not defenses:
+            return None
 
-        def key(item):
-            # 100^3 > 99^2 > 50^2 > 99^1. Smallest/largest values possible.
-            return item != self.best_opponent_attack and item.destruction ** item.stars
-
-        # Potential caveat: how does order effect this?
-        return max(self.defenses, key=key)
+        best = self.best_opponent_attack
+        candidates = [d for d in defenses if d != best] or defenses
+        if not candidates:
+            return None
+        return max(candidates, key=lambda a: (a.stars, a.destruction))
 
     @property
     def attacks(self) -> typing.List[WarAttack]:

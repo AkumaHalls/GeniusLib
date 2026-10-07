@@ -1,9 +1,9 @@
 """Tests for the formatters module."""
 
-import pytest
 from unittest.mock import MagicMock
-from geniuslib.enums import Role, WarState, WarResult
+
 from geniuslib import formatters
+from geniuslib.enums import Role, WarState
 
 
 class TestFormatters:

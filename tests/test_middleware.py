@@ -1,13 +1,18 @@
 """Tests for the middleware module."""
 
-import pytest
-from unittest.mock import AsyncMock
-from unittest.mock import MagicMock, AsyncMock
 from itertools import cycle
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
 from geniuslib.http import HTTPClient, Route
 from geniuslib.middleware import (
-    Middleware, Request, Response,
-    middleware, request_logger, response_logger,
+    Middleware,
+    Request,
+    Response,
+    middleware,
+    request_logger,
+    response_logger,
 )
 
 
@@ -169,7 +174,7 @@ class TestMiddleware:
 
     @pytest.mark.asyncio
     async def test_middleware_integration_with_request(self):
-        from unittest.mock import MagicMock, AsyncMock, patch
+        from unittest.mock import MagicMock
 
         @middleware("request")
         async def custom_req_mw(req):

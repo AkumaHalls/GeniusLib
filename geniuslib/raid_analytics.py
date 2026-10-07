@@ -3,7 +3,7 @@
 
 from typing import List, Optional
 
-from .raid import RaidLogEntry, RaidMember, RaidAttack, RaidClan, RaidDistrict
+from .raid import RaidAttack, RaidClan, RaidDistrict, RaidLogEntry, RaidMember
 
 
 def total_member_attack_stars(member: RaidMember) -> int:
@@ -34,9 +34,11 @@ def average_attack_destruction(member: RaidMember) -> float:
 
 
 def count_missed_raid_attacks(raid_entry: RaidLogEntry, clan_tag: str) -> int:
-    clan_members = [m for m in raid_entry.members]
-    total_possible = sum(m.attack_limit + m.bonus_attack_limit for m in clan_members)
-    total_used = sum(m.attack_count for m in clan_members)
+    clan_members = [m for m in getattr(raid_entry, "members", [])]
+    total_possible = sum(
+        (getattr(m, "attack_limit", 0) or 0) + (getattr(m, "bonus_attack_limit", 0) or 0) for m in clan_members
+    )
+    total_used = sum(getattr(m, "attack_count", 0) or 0 for m in clan_members)
     return total_possible - total_used
 
 
@@ -60,10 +62,10 @@ def district_attack_breakdown(district: RaidDistrict) -> dict:
 
 def get_raid_cleanup_attacks(raid_entry: RaidLogEntry, clan_tag: str) -> List[RaidAttack]:
     cleanup = []
-    for raid_clan in raid_entry.attack_log:
-        for district in raid_clan.districts:
-            if district.destruction >= 100:
-                cleanup.extend(district.attacks)
+    for raid_clan in getattr(raid_entry, "attack_log", []):
+        for district in getattr(raid_clan, "districts", []):
+            if (getattr(district, "destruction", 0) or 0) >= 100:
+                cleanup.extend(getattr(district, "attacks", []))
     return cleanup
 
 
@@ -105,9 +107,12 @@ def clan_defensive_stats(raid_entry: RaidLogEntry) -> dict:
 def raid_summary(raid_entry: RaidLogEntry) -> dict:
     off = clan_offensive_stats(raid_entry)
     deff = clan_defensive_stats(raid_entry)
-    missed = count_missed_raid_attacks(raid_entry, raid_entry.clan_tag)
+    missed = count_missed_raid_attacks(raid_entry, getattr(raid_entry, "clan_tag", ""))
     inactive = get_inactive_raid_members(raid_entry)
-    top_attacker = max(raid_entry.members, key=lambda m: m.capital_resources_looted) if raid_entry.members else None
+    members_list = getattr(raid_entry, "members", [])
+    top_attacker = (
+        max(members_list, key=lambda m: getattr(m, "capital_resources_looted", 0) or 0) if members_list else None
+    )
     return {
         "state": raid_entry.state,
         "start_time": raid_entry.start_time,

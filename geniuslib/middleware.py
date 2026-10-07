@@ -20,7 +20,6 @@ Usage::
     client.http.add_middleware(log_request, log_response)
 """
 
-import asyncio
 import logging
 import time
 from dataclasses import dataclass, field
@@ -64,11 +63,18 @@ class Response:
         Response headers.
     elapsed_ms : float
         Time elapsed for the request in milliseconds.
+    method : str
+        HTTP method of the request that produced this response (may be empty
+        when a :class:`Response` is built by hand).
+    url : str
+        URL of the request that produced this response (may be empty).
     """
     status: int
     data: Any = None
     headers: dict = field(default_factory=dict)
     elapsed_ms: float = 0.0
+    method: str = ""
+    url: str = ""
 
 
 RequestMiddleware = Callable[[Request], Awaitable[Optional[Request]]]
@@ -185,13 +191,25 @@ async def request_logger(req: Request) -> Request:
 
 @middleware("response")
 async def response_logger(resp: Response) -> Response:
-    """Log incoming responses at DEBUG level."""
-    LOG.debug("<<< %s (%d, %.1fms)", resp.status, resp.status, resp.elapsed_ms)
+    """Log incoming responses at DEBUG level (method, url, status and timing)."""
+    LOG.debug(
+        "<<< %s %s -> status=%s (%.1fms)",
+        resp.method or "-",
+        resp.url or "-",
+        resp.status,
+        resp.elapsed_ms,
+    )
     return resp
 
 
 @middleware("request")
 async def timing_header(req: Request) -> Request:
-    """Inject a timestamp into the request for latency tracking."""
+    """Inject a timestamp into the request for latency tracking.
+
+    ``HTTPClient.request`` consumes ``_geniuslib_start`` after the request chain
+    runs (it is not a valid aiohttp kwarg) and folds it into the response's
+    ``elapsed_ms``, so middleware added on the response side can see the
+    client-observed latency.
+    """
     req.kwargs["_geniuslib_start"] = time.monotonic()
     return req

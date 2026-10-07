@@ -20,7 +20,7 @@ Usage::
 
 from dataclasses import dataclass, field
 from datetime import timedelta
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 
 @dataclass
@@ -142,6 +142,10 @@ _LAB_COST_TABLE = {
     "Barbarian": {
         8: (100000, 0, 0, 86400),
         9: (200000, 0, 0, 172800),
+    },
+    "Archer": {
+        8: (200000, 0, 0, 172800),
+        9: (400000, 0, 0, 345600),
     },
 }
 
@@ -331,7 +335,7 @@ def estimate_upgrade_cost(
             total_elixir += costs[0]
             total_de += costs[1]
             total_time += costs[3]
-        if total_elixir or total_de:
+        if total_elixir or total_de or total_time:
             upgrades.append(UpgradeCost(
                 name=item_name, item_type=item_type,
                 from_level=current_level, to_level=target_level,
@@ -374,7 +378,7 @@ def estimate_upgrade_time(
 
 _DEFAULT_DAYS_PER_LEVEL = {
     "building": 3,
-    "troop": 7,
+    "troop": 1,
     "hero": 5,
     "spell": 4,
     "pet": 5,
@@ -496,7 +500,10 @@ def format_upgrade_summary(summary: UpgradeSummary) -> str:
         (u.to_level - u.from_level) for u in summary.upgrades
     ) if summary.upgrades else 0
 
-    th_label = f"TH{summary.current_th}" if summary.target_th == summary.current_th else f"TH{summary.current_th} → TH{summary.target_th}"
+    if summary.target_th == summary.current_th:
+        th_label = f"TH{summary.current_th}"
+    else:
+        th_label = f"TH{summary.current_th} → TH{summary.target_th}"
     lines = [
         f"📊 {th_label} — Resumo de Upgrades",
         f"  🏠 Jogador: {summary.player_tag}",
@@ -504,7 +511,8 @@ def format_upgrade_summary(summary: UpgradeSummary) -> str:
         f"  🧪 Elixir: {summary.total_elixir:,}" if summary.total_elixir else None,
         f"  💎 Elixir Negro: {summary.total_dark_elixir:,}" if summary.total_dark_elixir else None,
         f"  ⏱ Tempo total: {summary.total_time_delta}" if summary.total_time_seconds else None,
-        f"  ⏳ Tempo real ({summary.builder_count} builders): ~{summary.estimated_real_time}" if summary.total_time_seconds else None,
+        f"  ⏳ Tempo real ({summary.builder_count} builders): ~{summary.estimated_real_time}"
+        if summary.total_time_seconds else None,
         f"  📦 Total de upgrades: {len(summary.upgrades)} (níveis restantes: {total_levels})",
     ]
     return "\n".join(line for line in lines if line is not None)

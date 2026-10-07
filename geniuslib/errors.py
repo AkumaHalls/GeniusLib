@@ -10,6 +10,14 @@ class ClashOfClansException(Exception):
     """
 
 
+class RequestAborted(ClashOfClansException):
+    """Thrown when a registered middleware returns ``None`` for a request.
+
+    The request is aborted before it reaches the API, so no HTTP call is made.
+    Subclass of :exc:`ClashOfClansException`
+    """
+
+
 class HTTPException(ClashOfClansException):
     """Base exception for when a HTTP request fails
 
@@ -31,7 +39,10 @@ class HTTPException(ClashOfClansException):
 
     """
 
-    __slots__ = ("response", "status", "message", "reason", "_data")
+    # NOTE: ``_data`` used to be declared here but was never assigned, so reading
+    # ``exc._data`` always raised AttributeError. The slot has been removed; every
+    # slot below is populated on both ``_from_response`` and ``__init__`` paths.
+    __slots__ = ("response", "status", "message", "reason")
 
     def _from_response(self, response, data):
         if isinstance(response, int):
@@ -136,4 +147,12 @@ class GatewayError(HTTPException):
     Error code 504: The Gateway has timed-out.
 
     Subclass of :exc:`HTTPException`
+    """
+
+
+class RateLimitError(HTTPException):
+    """Thrown when the API answered 429 (rate limited) on every retry attempt.
+
+    The ``Retry-After`` header is honoured between attempts; this is raised once
+    the retry budget is exhausted. Subclass of :exc:`HTTPException`
     """

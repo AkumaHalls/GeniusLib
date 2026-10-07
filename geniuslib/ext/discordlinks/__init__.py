@@ -2,10 +2,9 @@
 
 import asyncio
 import base64
+import json
 import logging
 import typing
-import json
-
 from collections import namedtuple
 from datetime import datetime, timezone
 

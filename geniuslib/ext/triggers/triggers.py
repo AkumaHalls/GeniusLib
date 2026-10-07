@@ -2,7 +2,6 @@ import asyncio
 import functools
 import logging
 import warnings
-
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from traceback import format_exception
@@ -10,7 +9,6 @@ from typing import Any, Callable, Coroutine, Optional, Union
 
 # custom components
 from .cron import CronSchedule
-
 
 # async def ... function types
 CoroFunction = Callable[[], Coroutine[Any, Any, Any]]
@@ -157,7 +155,8 @@ class BaseTrigger(ABC):
             if self.logger:
                 self.logger.info(f'{self.__class__.__name__} for {func.__name__} auto-started')
             t = self.loop.create_task(wrapped())
-            self._autostart_task = t        else:  # add trigger to registry
+            self._autostart_task = t
+        else:  # add trigger to registry
             trigger_registry.append(wrapped())
             if self.logger:
                 self.logger.info(f'{self.__class__.__name__} for {func.__name__} registered for manual start')

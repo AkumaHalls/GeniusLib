@@ -1,7 +1,7 @@
 """Tests for the raid_analytics module."""
 
-import pytest
 from unittest.mock import MagicMock
+
 from geniuslib import raid_analytics
 
 

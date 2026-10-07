@@ -1,8 +1,9 @@
 
 
 from .abc import LeveledUnit
-from .miscmodels import TimeDelta, TID
-from .enums import Resource, VillageType, ProductionBuildingType, EquipmentRarity
+from .enums import EquipmentRarity, ProductionBuildingType, Resource, VillageType
+from .miscmodels import TID, TimeDelta
+
 
 class Hero(LeveledUnit):
     """Represents a Hero object as returned by the API, optionally filled with game data.
@@ -130,8 +131,11 @@ class Hero(LeveledUnit):
         if not self._static_data:
             return
 
-        start_level = self._static_data["levels"][0]["level"]
-        levels = self._static_data["levels"]
+        levels = self._static_data.get("levels") or []
+        if not levels:
+            return
+
+        start_level = levels[0]["level"]
         level_idx = self._level - start_level
         if level_idx < 0 or level_idx >= len(levels):
             return
@@ -265,7 +269,7 @@ class Pet(LeveledUnit):
         if not self._static_data:
             return
 
-        levels = self._static_data["levels"]
+        levels = self._static_data.get("levels") or []
         level_idx = self._level - 1
         if level_idx < 0 or level_idx >= len(levels):
             return
@@ -388,7 +392,7 @@ class Equipment(LeveledUnit):
         if not self._static_data:
             return
 
-        levels = self._static_data["levels"]
+        levels = self._static_data.get("levels") or []
         level_idx = self._level - 1
         if level_idx < 0 or level_idx >= len(levels):
             return
