@@ -49,6 +49,13 @@ Todas as mudanÃƒÂ§as notÃƒÂ¡veis neste projeto.
 ### Corrigido
 
 - **Aviso de deprecação `asyncio.iscoroutinefunction`** — removido o uso no dispatch de eventos
+
+- **Extração segura de assets** — `scripts/download_assets.py` valida o host, limita o tamanho do download e verifica o SHA-256 publicado no GitHub antes de extrair (guard anti path-traversal; symlinks/hardlinks recusados)
+
+- **`Retry-After` limitado** — backoff de rate-limit limitado a 60s, impedindo que um header servidor-controlado trave o client inteiro
+
+- **Redirects de assets revalidados** — `get_data_from_url` segue redirecionamentos manualmente, revalidando cada hop contra a allowlist de hosts (anti-SSRF)
+
 ## [5.3.0] Ã¢Â€Â” 2026-07-15
 
 
