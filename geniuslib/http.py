@@ -12,7 +12,7 @@ from itertools import cycle
 from json import loads as json_loads
 from time import monotonic, perf_counter
 from typing import Optional
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode, urljoin, urlparse
 
 import aiohttp
 import orjson
@@ -43,6 +43,16 @@ stats_url_matcher = re.compile(r"%23[\da-zA-Z]+|\d{8,}|global")
 # attacker-controllable, so we only follow https URLs on Supercell/Clash domains.
 ALLOWED_ASSET_HOSTS = frozenset({"clashofclans.com", "supercell.com"})
 ALLOWED_ASSET_HOST_SUFFIXES = (".clashofclans.com", ".supercell.com")
+
+# Cap on how long a single rate-limit backoff may pause the requester. The API
+# communicates ``Retry-After`` in integer seconds; a server-controlled value is
+# unbounded, and the sleep happens while holding the request permits, so an
+# oversized header would stall every subsequent call on the client.
+MAX_RATE_LIMIT_BACKOFF = 60
+
+# Upper bound for redirect hops followed while downloading an asset; each hop is
+# re-validated against the asset-host allowlist before it is followed.
+MAX_ASSET_REDIRECTS = 5
 
 
 def _is_allowed_asset_host(host: str) -> bool:
@@ -524,7 +534,10 @@ class HTTPClient:
                             self.total_rate_limits += 1
                             self._last_error = f"rate_limited:{route.stats_key}"
                             retry_after = _parse_retry_after(response.headers.get("Retry-After"))
-                            backoff = (tries + 1) * 5 if retry_after is None else retry_after
+                            if retry_after is None:
+                                backoff = (tries + 1) * 5
+                            else:
+                                backoff = min(retry_after, MAX_RATE_LIMIT_BACKOFF)
                             LOG.warning(
                                     "Rate-limited by the API (429) for %s. Retrying after %ss "
                                     "(attempt %d/5).", url, backoff, tries + 1
@@ -873,16 +886,27 @@ class HTTPClient:
                 "Cannot fetch {!r}: the HTTP session is closed or was never created.".format(url)
             )
 
-        parsed = urlparse(url) if isinstance(url, str) else None
-        if parsed is None or parsed.scheme != "https" or not _is_allowed_asset_host(parsed.hostname):
-            raise InvalidArgument(
-                "Refusing to fetch {!r}: only https URLs on clashofclans.com/supercell.com are allowed.".format(url)
-            )
+        # Follow redirects manually so each hop is re-validated against the
+        # allowlist. auto-following (allow_redirects=True) would let a trusted
+        # host bounce us to an arbitrary/internal target without revalidation.
+        current = url
+        for _ in range(MAX_ASSET_REDIRECTS):
+            parsed = urlparse(current) if isinstance(current, str) else None
+            if parsed is None or parsed.scheme != "https" or not _is_allowed_asset_host(parsed.hostname):
+                raise InvalidArgument(
+                    "Refusing to fetch {!r}: only https URLs on clashofclans.com/supercell.com are allowed.".format(url)
+                )
+            async with session.get(current, allow_redirects=False) as response:
+                if response.status == 200:
+                    return await response.read()
+                if response.status in (301, 302, 303, 307, 308):
+                    location = response.headers.get("Location")
+                    if not location:
+                        break
+                    current = urljoin(current, location)
+                    continue
+                if response.status == 404:
+                    raise NotFound(response, "image not found")
+                raise HTTPException(response, "failed to get image")
 
-        async with session.get(url) as response:
-            if response.status == 200:
-                return await response.read()
-            if response.status == 404:
-                raise NotFound(response, "image not found")
-
-            raise HTTPException(response, "failed to get image")
+        raise HTTPException(response, "too many redirects")
