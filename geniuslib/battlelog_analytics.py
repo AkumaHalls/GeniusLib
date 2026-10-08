@@ -92,26 +92,6 @@ def decode_army_code(code: str, static_data: dict) -> dict:
                         })
                     except (ValueError, AttributeError):
                         continue
-                hero_id = HERO_BASE + int(hm.group("hero_id"))
-                hero_data = static_data.get(hero_id, {})
-                hero_name = hero_data.get("name", f"Hero#{hm.group('hero_id')}")
-                pet_name = None
-                if hm.group("pet_id"):
-                    pet_id = PET_BASE + int(hm.group("pet_id"))
-                    pet_data = static_data.get(pet_id, {})
-                    pet_name = pet_data.get("name", f"Pet#{hm.group('pet_id')}")
-                eq_names = []
-                for eq_group in ("eq1", "eq2"):
-                    eq_val = hm.group(eq_group)
-                    if eq_val:
-                        eq_id = EQUIP_BASE + int(eq_val)
-                        eq_data = static_data.get(eq_id, {})
-                        eq_names.append(eq_data.get("name", f"Eq#{eq_val}"))
-                hero_items.append({
-                    "name": hero_name,
-                    "pet": pet_name,
-                    "equipment": eq_names,
-                })
 
             elif m.group("units"):
                 for part in m.group("units").split("-"):

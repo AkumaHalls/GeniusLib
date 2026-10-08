@@ -239,6 +239,41 @@ class TestBattlePeriodSummary:
         assert result["attacks"]["total_attacks"] == 2
 
 
+class TestDecodeArmyCodeHeroes:
+    """FIX-20a: hero extraction must run once, inside the section loop."""
+
+    STATIC = {
+        28000001: {"name": "Barbarian King"},
+        28000002: {"name": "Archer Queen"},
+        28000003: {"name": "Grand Warden"},
+        4000005: {"name": "Barbarian"},
+        26000007: {"name": "Lightning"},
+        73000002: {"name": "L.A.S.S.I"},
+        90000003: {"name": "Barbarian Puppet"},
+    }
+
+    def test_malformed_last_hero_keeps_valid_part_of_payload(self):
+        result = battlelog_analytics.decode_army_code("u1x5-h1-2-zzz", self.STATIC)
+        assert result["troops"] == [{"name": "Barbarian", "quantity": 1}]
+        assert [h["name"] for h in result["heroes"]] == ["Barbarian King", "Archer Queen"]
+
+    def test_returns_exactly_the_valid_heroes_without_duplicating_the_last(self):
+        result = battlelog_analytics.decode_army_code("h1-2-3", self.STATIC)
+        names = [h["name"] for h in result["heroes"]]
+        assert names == ["Barbarian King", "Archer Queen", "Grand Warden"]
+        assert len(result["heroes"]) == 3
+
+    def test_happy_path_decodes_troops_spells_and_hero_with_pet_and_equipment(self):
+        result = battlelog_analytics.decode_army_code("u3x5-s1x7-h1p2e3", self.STATIC)
+        assert result == {
+            "troops": [{"name": "Barbarian", "quantity": 3}],
+            "spells": [{"name": "Lightning", "quantity": 1}],
+            "heroes": [
+                {"name": "Barbarian King", "pet": "L.A.S.S.I", "equipment": ["Barbarian Puppet"]}
+            ],
+        }
+
+
 class TestLeagueHistoryProgression:
     def test_basic(self):
         history = [
