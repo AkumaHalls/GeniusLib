@@ -22,6 +22,16 @@ Todas as mudanÃƒÂ§as notÃƒÂ¡veis neste projeto.
 
 
 
+## [5.6.1] — 2026-10-08
+
+### Corrigido
+
+- **Heróis duplicados/vazia em `decode_army_code`** — bloco de extração de heróis que rodava fora do laço da seção foi removido; a extração acontece uma única vez dentro do `for` com guarda para herói indescodificável (payload com herói malformado no final não zera mais a resposta nem duplica o último herói)
+
+- **Backoff de 429 segurando o lock de requisições** — o sleep de rate-limit (e o dos erros 5xx de gateway) agora roda depois de liberar o semáforo de requisições, deixando de serializar as demais chamadas durante a espera
+
+- **Vazamento de `_keys` no re-login de `initialise_keys`** — a lista de chaves é reconstruída a cada (re)autenticação em vez de acumular duplicatas, mantendo o tamanho limitado a `key_count` e a rotação de chaves correta
+
 ## [5.6.0] — 2026-10-07
 
 ### Adicionado

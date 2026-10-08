@@ -429,6 +429,11 @@ class HTTPClient:
             self.total_requests += 1
             if tries > 0:
                 self.total_retries += 1
+            # Backoff sleeps run *after* the request lock and throttler are
+            # released: sleeping while holding the semaphore would serialise
+            # every other in-flight request behind this waiter for the whole
+            # delay (rate-limit waits can be up to MAX_RATE_LIMIT_BACKOFF).
+            backoff_delay = None
             try:
                 async with self.__lock, self.__throttle:
                     start = perf_counter()
@@ -542,10 +547,9 @@ class HTTPClient:
                                     "Rate-limited by the API (429) for %s. Retrying after %ss "
                                     "(attempt %d/5).", url, backoff, tries + 1
                             )
-                            await asyncio.sleep(backoff)
-                            continue
+                            backoff_delay = backoff
 
-                        if response.status == 503:
+                        elif response.status == 503:
                             if isinstance(data, str):
                                 # weird case where a 503 will be raised, but html returned.
                                 text = re.compile(r"<[^>]+>").sub("", data)
@@ -553,13 +557,17 @@ class HTTPClient:
 
                             raise Maintenance(response, data)
 
-                        if response.status in (500, 502, 504):
+                        elif response.status in (500, 502, 504):
                             # gateway error, retry again
-                            await asyncio.sleep(tries * 2 + 1)
-                            continue
+                            backoff_delay = tries * 2 + 1
 
-                        # catch any stray status codes
-                        raise HTTPException(response, data)
+                        else:
+                            # catch any stray status codes
+                            raise HTTPException(response, data)
+
+                if backoff_delay is not None:
+                    await asyncio.sleep(backoff_delay)
+                    continue
 
             except asyncio.TimeoutError:
                 self.total_errors += 1
@@ -761,18 +769,23 @@ class HTTPClient:
 
                 resp = await session.post("https://developer.clashofclans.com/api/apikey/list")
                 keys = (await resp.json()).get("keys", [])
+                # Build a fresh key list instead of appending to ``self._keys``:
+                # initialise_keys also runs on 403 re-authentication, and
+                # appending to the previous run's keys let the list grow past
+                # ``key_count`` with stale duplicates (wrong rotation matches).
+                collected = []
                 for key in keys:
                     # Never log the key material itself - only harmless metadata.
                     LOG.debug("Considering API key id=%s name=%s", key.get("id"), key.get("name"))
                     if key["name"] != self.key_names or ip not in key["cidrRanges"]:
                         continue
-                    self._keys.append(key["key"])
-                    if len(self._keys) == self.key_count:
+                    collected.append(key["key"])
+                    if len(collected) == self.key_count:
                         break
 
-                LOG.info("Retrieved %s valid keys from the developer site.", len(self._keys))
+                LOG.info("Retrieved %s valid keys from the developer site.", len(collected))
 
-                if len(self._keys) < self.key_count:
+                if len(collected) < self.key_count:
                     for key in keys[:]:
                         if key["name"] != self.key_names or ip in key["cidrRanges"]:
                             continue
@@ -785,7 +798,7 @@ class HTTPClient:
                         if resp.status == 200:
                             keys.remove(key)
 
-                    while len(self._keys) < self.key_count and len(keys) < KEY_MAXIMUM:
+                    while len(collected) < self.key_count and len(keys) < KEY_MAXIMUM:
                         data = {
                             "name"       : self.key_names,
                             "description": "Created on {}".format(datetime.now().strftime("%c")),
@@ -802,22 +815,25 @@ class HTTPClient:
                             LOG.error(key.get("description"))
                             raise ValueError(key.get("description"))
 
-                        self._keys.append(key["key"]["key"])
+                        collected.append(key["key"]["key"])
 
-                if len(keys) == 10 and len(self._keys) < self.key_count:
+                if len(keys) == 10 and len(collected) < self.key_count:
                     LOG.critical("%s keys were requested to be used, but a maximum of %s could be "
                                  "found/made on the developer site, as it has a maximum of 10 keys per account. "
                                  "Please delete some keys or lower your `key_count` level."
                                  "I will use %s keys for the life of this client.",
-                                 self.key_count, len(self._keys), len(self._keys))
+                                 self.key_count, len(collected), len(collected))
 
-                if len(self._keys) == 0:
+                if len(collected) == 0:
                     raise RuntimeError(
                             "There are {} API keys already created and none match a key_name of '{}'."
                             "Please specify a key_name kwarg, or go to 'https://developer.clashofclans.com' to delete "
                             "unused keys.".format(len(keys), self.key_names)
                     )
 
+            # Publish atomically: only replace ``_keys`` once a complete fresh
+            # set exists, so a failed (re)login leaves the previous keys usable.
+            self._keys = collected
             self.keys = cycle(self._keys)
             LOG.info("Successfully initialised keys for use.")
 
