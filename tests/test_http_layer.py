@@ -403,6 +403,34 @@ class TestRateLimit:
 
         assert sleeps == [5, 10, 15, 20, 25]
 
+    async def test_429_backoff_sleeps_with_request_lock_released(self, monkeypatch):
+        """FIX-20b: the 429 backoff must not park while holding the request lock."""
+        http = ready_http()
+        install_session(
+            http,
+            FakeSession([FakeResponse(429, {}, headers={"Retry-After": "7"})]),
+        )
+        lock = http._HTTPClient__lock
+        permits_when_free = lock._value
+        observed = []
+
+        async def fake_sleep(delay):
+            # While the requester is parked in the backoff wait, record how many
+            # semaphore permits are still available: fewer than the initial value
+            # means the request lock is held during the sleep and every other
+            # in-flight request is serialised behind this waiter.
+            observed.append((delay, lock._value))
+
+        monkeypatch.setattr(http_module.asyncio, "sleep", fake_sleep)
+
+        with pytest.raises(RateLimitError):
+            await http.request(route())
+
+        assert observed, "backoff sleep never happened"
+        assert [delay for delay, _ in observed] == [7, 7, 7, 7, 7]
+        held = [permits for _, permits in observed if permits != permits_when_free]
+        assert held == [], "request lock was held during backoff sleeps: {}".format(held)
+
 
 class TestReauthentication:
     def _invalid_ip_payload(self):
@@ -617,6 +645,38 @@ class TestInitialiseKeys:
             await http.initialise_keys()
 
         assert http.initialising_keys.is_set()
+
+    async def test_repeated_initialise_keys_stays_bounded_by_key_count(self, monkeypatch):
+        """FIX-20c: re-authentication must rebuild ``_keys``, not accumulate."""
+        http = make_http(ip="203.0.113.5", key_count=1)
+        entries = [
+            {"id": 1, "name": "genius-test", "cidrRanges": ["203.0.113.5"], "key": "K1"},
+            {"id": 2, "name": "genius-test", "cidrRanges": ["203.0.113.5"], "key": "K2"},
+        ]
+
+        def factory(*args, **kwargs):
+            session = FakeLoginSession(
+                [
+                    FakeResponse(200, {"temporaryAPIToken": "unused"}),
+                    FakeResponse(200, {"keys": entries}),
+                ]
+            )
+            return MagicMock(
+                __aenter__=AsyncMock(return_value=session),
+                __aexit__=AsyncMock(return_value=False),
+            )
+
+        patch_client_session(monkeypatch, factory)
+
+        await http.initialise_keys()
+        assert len(http._keys) == http.key_count
+
+        await http.initialise_keys()
+        await http.initialise_keys()
+
+        assert len(http._keys) == http.key_count
+        assert http._keys == ["K1"]
+        assert next(http.keys) == "K1"
 
 
 class TestGetDataFromUrl:
